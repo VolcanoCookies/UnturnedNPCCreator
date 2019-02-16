@@ -1,9 +1,9 @@
-# $Unturned NPC Maker ~ Change Log
+# Unturned NPC Maker ~ Change Log
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
+## 0.0.1    2/17/2019
+- Added prompt on exit
+- Added custom character name color option, and canvas to display the color
+- Added "Lean, Under Arrest, Rest, Prone, Crouch" options to stance
 
-## 1.0.0
-
-- engage
