@@ -1,4 +1,4 @@
-# ${project-name} Change Log
+# $Unturned NPC Maker ~ Change Log
 
 All notable changes to this project will be documented in this file.
 
