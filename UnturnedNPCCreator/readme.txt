@@ -1,0 +1,26 @@
+This file will be updated with help everytime a new update for the program rolls out, however a more up-to-date version will be kept on the official support discord.
+
+Loading NPC's
+- When filling out folder name fields. Be sure to only give the name of the Character/Vendor etc folder.
+- If your NPC is located here: C:\Users\frane\Desktop\UnturnedNPCCreator\Bundles\NPCs\Characters\Chief you would only type "Chief".
+
+If you have questions that aren't asnwered here, go on the official support discord and I will try and help you the best I can.
+Either use the program, click on files, then Discord. Or use this link: https://discord.gg/BhJM5ve
+
+Currently the program is only tested on a Windows 10 machine, if you use anything else, especially macOS or linux, and you are experiencing errors, be sure to submit them to the discord server so i can try and optimize the application cross platform. Be sure to specify your operating system.
+
+Q: From where can I load NPC's
+A: Currently only from the Bundles folder next to the executable file. This is also where all new NPC's will be created, if you want to load a NPC from somewhere else, first copy it to the Bundles folder next to the executable, then load it like you'd normaly do.
+
+Q: I have the correct name and the NPC is in the Bundles folder but it doesn't load.
+A: Make sure that the NPC is in the correct subfolder. Use it like this:
+Bundles
+	NPCs
+		Characters			
+		Vendors
+		Dialogues
+		Quests
+
+
+You are free to use the program and distribute but need to give credit to the creator.
+If you publish any content with NPCs made with this application you need to due credit, "NPC's made with Unturned NPC Creator by Volcano" will do.
