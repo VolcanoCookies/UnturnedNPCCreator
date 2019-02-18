@@ -1,0 +1,45 @@
+GUID
+Type NPC
+ID
+
+Shirt
+Pants
+Vest
+Hat
+Mask
+Glasses
+Backpack
+
+Has_Halloween_Outfit
+Halloween_Shirt
+Halloween_Pants
+Halloween_Vest
+Halloween_Hat
+Halloween_Mask
+Halloween_Glasses
+Halloween_Backpack
+
+Has_Christmas_Outfit
+Christmas_Shirt
+Christmas_Pants
+Christmas_Vest
+Christmas_Hat
+Christmas_Mask
+Christmas_Glasses
+Christmas_Backpack
+
+Face 1
+Beard
+Hair
+Color_Skin #000000
+Color_Hair #000000
+
+Primary
+Secondary
+Tertiary
+Equipped
+
+Backward false
+Pose Stand
+
+Dialogue
