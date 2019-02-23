@@ -1,27 +1,24 @@
-GUID b6a72d806231445aa6e4e0eb9569998e
+GUID 209192e21ab44684bd14e097a493c8ff
 Type NPC
-ID 764
+ID 756
 
-Shirt 223
-Pants 224
-Hat 225
+Shirt 230
+Pants 231
+Hat 239
 
 Has_Halloween_Outfit True
-Halloween_Shirt 795
-Halloween_Pants 794
-Halloween_Vest 796
-Halloween_Hat 793
+Halloween_Shirt 558
+Halloween_Pants 559
+Halloween_Hat 560
 
 Has_Christmas_Outfit True
-Christmas_Shirt 223
-Christmas_Pants 224
-Christmas_Hat 278
+Christmas_Shirt 230
+Christmas_Pants 231
+Christmas_Hat 239
+Christmas_Vest 597
 
-Face 3
-Beard 3
+Face 20
 Color_Skin #4B3D31
 Color_Hair #191919
 
-Secondary 99
-
-Dialogue 65
+Dialogue 59
