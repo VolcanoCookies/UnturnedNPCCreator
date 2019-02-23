@@ -25,6 +25,10 @@ import java.awt.GridLayout;
 
 public class Conditions extends JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8852545862960352227L;
 	private int conditionIndex = 0;
 	private JTabbedPane tabbedPane;
 	private JMenuBar menuBar;
@@ -100,16 +104,34 @@ public class Conditions extends JPanel {
 		
 	}
 	
-	public void Save() {
-		String output = "";
+	public void Load(String[] conditions)
+	{
+		for(int i = 0; i < conditions.length; i++)
+		{
+			NewCondition NC = new NewCondition();
+			
+			NC.fillFields(conditions[i]);
+			
+			tabbedPane.addTab("Con#" + ++conditionIndex , null, NC, null);
+		}
+		
+		
+	}
+	
+	public String Save() {
 		int i = 0;
-		output = "Conditions " + tabbedPane.getTabCount() + "\n";
+		String output = "Conditions " + tabbedPane.getTabCount() + "\n";
 		for(Component panel : tabbedPane.getComponents())
 		{
-			output += ((NewCondition) panel).ReturnConditions(i++) + "\n";
+			output += ((NewCondition) panel).ReturnConditions(i++);
 		}
+		return output;
 	}
 	private class SwingActionAddCondition extends AbstractAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -5916764870521404311L;
 		public SwingActionAddCondition() {
 			putValue(NAME, "Add Condition");
 			putValue(SHORT_DESCRIPTION, "Add a new condition");
@@ -119,6 +141,10 @@ public class Conditions extends JPanel {
 		}
 	}
 	private class SwingActionSave extends AbstractAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -8946515299665761207L;
 		public SwingActionSave() {
 			putValue(NAME, "Save");
 			putValue(SHORT_DESCRIPTION, "Save the conditions.");
@@ -128,6 +154,10 @@ public class Conditions extends JPanel {
 		}
 	}
 	private class SwingActionRemoveCurrent extends AbstractAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -1449903464403442892L;
 		public SwingActionRemoveCurrent() {
 			putValue(NAME, "Remove Current");
 			putValue(SHORT_DESCRIPTION, "Remove the currently selected condition");

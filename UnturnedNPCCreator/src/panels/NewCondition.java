@@ -7,10 +7,13 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
@@ -21,8 +24,6 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-
-import windows.Conditions;
 
 public class NewCondition extends JPanel {
 
@@ -41,7 +42,7 @@ public class NewCondition extends JPanel {
 	private JPanel panelKillsAnimal;
 	private JPanel panelTimeOfDay;
 	private JPanel panelCompareFlags;
-	//Textfields
+	//Textfield
 	private JTextField textFieldTargetExperience;
 	private JTextField textFieldTargetReputation;
 	private JTextField textFieldShortConditionID;
@@ -98,18 +99,21 @@ public class NewCondition extends JPanel {
 	private JToggleButton toggleButtonConditionBAllowUnset;
 	private JToggleButton toggleButtonReset;
 	//ComboBox
-	private JComboBox comboBoxSkillsets;
-	private JComboBox comboBoxZombieType;
-	private JComboBox comboBoxConditionLogic;
-	private JComboBox comboBoxConditionType;
+	private static JComboBox comboBoxSkillsets;
+	private static JComboBox comboBoxZombieType;
+	private static JComboBox comboBoxConditionLogic;
+	private static JComboBox comboBoxConditionType;
 	//RadioButton
 	private JRadioButton rdbtnActive;
 	private JRadioButton rdbtnReady;
 	private JRadioButton rdbtnCompleted;
 	//ButtonGroup
 	private final ButtonGroup buttonGroupQuestStatus = new ButtonGroup();
-	private JToggleButton toggleButtonShortConditionValue;
 	private JLabel lblConditionB;
+	private JPanel panelPlayerKills;
+	private JTextField textFieldPlayerTargetKills;
+	private JLabel lblPlayerTargetKills;
+	private JTextField textFieldShortConditionValue;
 	
 	public NewCondition() {
 		new JPanel();
@@ -132,6 +136,12 @@ public class NewCondition extends JPanel {
 		add(lblConditionType, gbc_lblConditionType);
 		
 		comboBoxConditionType = new JComboBox();
+		comboBoxConditionType.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+			((Window) getParent().getParent().getParent().getParent().getParent().getParent()).toFront();
+			}
+		});
 		comboBoxConditionType.setMaximumRowCount(13);
 		comboBoxConditionType.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
@@ -140,7 +150,7 @@ public class NewCondition extends JPanel {
 						showCondition(comboBoxConditionType.getSelectedIndex());
 			}
 		});
-		comboBoxConditionType.setModel(new DefaultComboBoxModel(new String[] {"Experience", "Reputation", "Flag_Bool", "Flag_Short", "Quest", "Skillset", "Item", "Kills_Zombie", "Kills_Horde", "Kills_Animal", "Time_Of_Day", "Compare_Flags"}));
+		comboBoxConditionType.setModel(new DefaultComboBoxModel(new String[] {"Experience", "Reputation", "Flag_Bool", "Flag_Short", "Quest", "Skillset", "Item", "Kills_Zombie", "Kills_Horde", "Kills_Animal", "Time_Of_Day", "Compare_Flags", "Kills_Player"}));
 		comboBoxConditionType.setSelectedIndex(0);
 		GridBagConstraints gbc_comboBoxConditionType = new GridBagConstraints();
 		gbc_comboBoxConditionType.insets = new Insets(0, 0, 5, 0);
@@ -362,21 +372,15 @@ public class NewCondition extends JPanel {
 		gbc_lblShortConditionValue.gridy = 1;
 		panelFlagShort.add(lblShortConditionValue, gbc_lblShortConditionValue);
 		
-		toggleButtonShortConditionValue = new JToggleButton("False");
-		toggleButtonShortConditionValue.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if(e.getStateChange()==ItemEvent.SELECTED)
-					toggleButtonShortConditionValue.setText("True");
-				else
-					toggleButtonShortConditionValue.setText("False");
-			}
-		});
-		toggleButtonShortConditionValue.setToolTipText("Target value for the flag \"True\" or \"False\"");
-		GridBagConstraints gbc_toggleButtonShortConditionValue = new GridBagConstraints();
-		gbc_toggleButtonShortConditionValue.insets = new Insets(0, 0, 5, 0);
-		gbc_toggleButtonShortConditionValue.gridx = 1;
-		gbc_toggleButtonShortConditionValue.gridy = 1;
-		panelFlagShort.add(toggleButtonShortConditionValue, gbc_toggleButtonShortConditionValue);
+		textFieldShortConditionValue = new JTextField();
+		textFieldShortConditionValue.setToolTipText("Target value for the flag, 16 bit integer meaning the range [-32768, 32767].");
+		textFieldShortConditionValue.setColumns(10);
+		GridBagConstraints gbc_textFieldShortConditionValue = new GridBagConstraints();
+		gbc_textFieldShortConditionValue.insets = new Insets(0, 0, 5, 0);
+		gbc_textFieldShortConditionValue.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldShortConditionValue.gridx = 1;
+		gbc_textFieldShortConditionValue.gridy = 1;
+		panelFlagShort.add(textFieldShortConditionValue, gbc_textFieldShortConditionValue);
 		
 		lblShortAllowUnset = new JLabel("Allow Unset");
 		GridBagConstraints gbc_lblShortAllowUnset = new GridBagConstraints();
@@ -807,6 +811,36 @@ public class NewCondition extends JPanel {
 		gbl_panelCompareFlags.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panelCompareFlags.setLayout(gbl_panelCompareFlags);
 		
+		panelPlayerKills = new JPanel();
+		GridBagConstraints gbc_PlayerKills = new GridBagConstraints();
+		gbc_PlayerKills.insets = new Insets(0, 0, 0, 5);
+		gbc_PlayerKills.fill = GridBagConstraints.BOTH;
+		gbc_PlayerKills.gridx = 0;
+		gbc_PlayerKills.gridy = 2;
+		panelConditionType.add(panelPlayerKills, "name_883773697512332");
+		GridBagLayout gbl_panelPlayerKills = new GridBagLayout();
+		gbl_panelPlayerKills.columnWidths = new int[]{77, 86, 0};
+		gbl_panelPlayerKills.rowHeights = new int[]{20, 0, 0, 0};
+		gbl_panelPlayerKills.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+		gbl_panelPlayerKills.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+		panelPlayerKills.setLayout(gbl_panelPlayerKills);
+		
+		lblPlayerTargetKills = new JLabel("Player kills: ");
+		GridBagConstraints gbc_lblPlayerTargetKills = new GridBagConstraints();
+		gbc_lblPlayerTargetKills.insets = new Insets(0, 0, 5, 5);
+		gbc_lblPlayerTargetKills.gridx = 0;
+		gbc_lblPlayerTargetKills.gridy = 0;
+		panelPlayerKills.add(lblPlayerTargetKills, gbc_lblPlayerTargetKills);
+		
+		textFieldPlayerTargetKills = new JTextField();
+		GridBagConstraints gbc_textFieldPlayerTargetKills = new GridBagConstraints();
+		gbc_textFieldPlayerTargetKills.insets = new Insets(0, 0, 5, 0);
+		gbc_textFieldPlayerTargetKills.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldPlayerTargetKills.gridx = 1;
+		gbc_textFieldPlayerTargetKills.gridy = 0;
+		panelPlayerKills.add(textFieldPlayerTargetKills, gbc_textFieldPlayerTargetKills);
+		textFieldPlayerTargetKills.setColumns(10);
+		
 		lblConditionA = new JLabel("Condition A");
 		lblConditionA.setFont(new Font("Tahoma", Font.BOLD, 11));
 		GridBagConstraints gbc_lblConditionA = new GridBagConstraints();
@@ -967,7 +1001,7 @@ public class NewCondition extends JPanel {
 		if (comboBoxConditionType.getSelectedIndex()==3) {
 			output += "Flag_Short\n";
 			output += "Condition_" + index + "_ID " + textFieldShortConditionID.getText() + "\n";
-			output += "Condition_" + index + "_Value " + toggleButtonShortConditionValue.getText() + "\n";
+			output += "Condition_" + index + "_Value " + textFieldShortConditionValue.getText() + "\n";
 			output += "Condition_" + index + "_Allow_Unset  " + toggleButtonShortAllowUnset.getText() + "\n";
 		}
 		if (comboBoxConditionType.getSelectedIndex()==4) {
@@ -1050,8 +1084,268 @@ public class NewCondition extends JPanel {
 		if (comboBoxConditionLogic.getSelectedIndex()==3) output += "Not_Equal";
 		if (comboBoxConditionLogic.getSelectedIndex()==4) output += "Greater_Than_Or_Equal_To";
 		if (comboBoxConditionLogic.getSelectedIndex()==5) output += "Greated_Than";
+		output += "\n";
 		
 		return output;
+	}
+
+	public void fillFields(String condition) {
+		String strings[] = condition.split("\n");
+		int i = 0;
+		String type = "";
+		while(!type.toLowerCase().contains("_type"))
+		{
+			type = strings[i++].toLowerCase();
+			if(type.equals("experience"))
+			{
+				comboBoxConditionType.setSelectedIndex(0);
+				for(String string : strings)
+				{
+					if(string.toLowerCase().contains("_value"))
+						textFieldTargetExperience.setText(string.split(" ")[1]);
+				}
+			}
+			if(type.equals("reputation"))
+			{
+				comboBoxConditionType.setSelectedIndex(1);
+				for(String string : strings)
+				{
+					if(string.toLowerCase().contains("_value"))
+						textFieldTargetReputation.setText(string.split(" ")[1]);
+				}
+			}
+			if(type.equals("flag_bool"))
+			{
+				comboBoxConditionType.setSelectedIndex(2);
+				for(String string : strings)
+				{
+					if(string.toLowerCase().contains("_value"))
+						if(string.toLowerCase().contains("true"))
+							toggleButtonBoolConditionValue.setSelected(true);
+						else if(string.toLowerCase().contains("false"))
+							toggleButtonBoolConditionValue.setSelected(false);
+					if(string.toLowerCase().contains("allow_unset"))
+						if(string.toLowerCase().contains("true"))
+							toggleButtonBoolAllowUnset.setSelected(true);
+						else if(string.toLowerCase().contains("false"))
+							toggleButtonBoolAllowUnset.setSelected(false);
+				}
+			}
+			if(type.equals("flag_short"))
+			{
+				comboBoxConditionType.setSelectedIndex(3);
+				for(String string : strings)
+				{
+					if(string.toLowerCase().contains("_value"))
+						textFieldShortConditionValue.setText(string.split(" ")[1]);
+					if(string.toLowerCase().contains("allow_unset"))
+						if(string.toLowerCase().contains("true"))
+							toggleButtonShortAllowUnset.setSelected(true);
+						else if(string.toLowerCase().contains("false"))
+							toggleButtonShortAllowUnset.setSelected(false);
+				}
+			}
+			if(type.equals("quest"))
+			{
+				comboBoxConditionType.setSelectedIndex(4);
+				for(String string : strings)
+				{
+					if(string.toLowerCase().contains("id"))
+						textFieldQuestID.setText(string.split(" ")[1]);
+					if(string.toLowerCase().contains("status"))
+					{
+						if(string.toLowerCase().contains("active"))
+							rdbtnActive.setSelected(true);
+						if(string.toLowerCase().contains("ready"))
+							rdbtnReady.setSelected(true);
+						if(string.toLowerCase().contains("completed"))
+							rdbtnCompleted.setSelected(true);
+					}
+					
+				}
+			}
+			if(type.equals("skillset"))
+			{
+				comboBoxConditionType.setSelectedIndex(5);
+				for(String string : strings)
+				{
+					if(string.toLowerCase().contains("value"))
+					{
+						if(string.toLowerCase().contains("civilian"))
+							comboBoxSkillsets.setSelectedIndex(0);
+						if(string.toLowerCase().contains("chef"))
+							comboBoxSkillsets.setSelectedIndex(1);
+						if(string.toLowerCase().contains("medic"))
+							comboBoxSkillsets.setSelectedIndex(2);
+						if(string.toLowerCase().contains("farm"))
+							comboBoxSkillsets.setSelectedIndex(3);
+						if(string.toLowerCase().contains("fire"))
+							comboBoxSkillsets.setSelectedIndex(4);
+						if(string.toLowerCase().contains("fish"))
+							comboBoxSkillsets.setSelectedIndex(5);
+						if(string.toLowerCase().contains("camp"))
+							comboBoxSkillsets.setSelectedIndex(6);
+						if(string.toLowerCase().contains("army"))
+							comboBoxSkillsets.setSelectedIndex(7);
+						if(string.toLowerCase().contains("thief"))
+							comboBoxSkillsets.setSelectedIndex(8);
+						if(string.toLowerCase().contains("work"))
+							comboBoxSkillsets.setSelectedIndex(9);
+						if(string.toLowerCase().contains("police"))
+							comboBoxSkillsets.setSelectedIndex(10);
+					}
+				}
+			}
+			if(type.equals("item"))
+			{
+				comboBoxConditionType.setSelectedIndex(6);
+				for(String string : strings)
+				{
+					if(string.toLowerCase().contains("id"))
+						textFieldItemID.setText(string.split(" ")[1]);
+					if(string.toLowerCase().contains("amount"))
+						textFieldItemAmount.setText(string.split(" ")[1]);
+				}
+			}
+			if(type.equals("kills_zombie"))
+			{
+				comboBoxConditionType.setSelectedIndex(7);
+				for(String string : strings)
+				{
+					if(string.toLowerCase().contains("zombie"))
+					{
+						if(string.toLowerCase().contains("none"))
+							comboBoxZombieType.setSelectedIndex(0);
+						if(string.toLowerCase().contains("normal"))
+							comboBoxZombieType.setSelectedIndex(1);
+						if(string.toLowerCase().contains("mega"))
+							comboBoxZombieType.setSelectedIndex(2);
+						if(string.toLowerCase().contains("crawler"))
+							comboBoxZombieType.setSelectedIndex(3);
+						if(string.toLowerCase().contains("sprinter"))
+							comboBoxZombieType.setSelectedIndex(4);
+						if(string.toLowerCase().contains("flanker_friendly"))
+							comboBoxZombieType.setSelectedIndex(5);
+						if(string.toLowerCase().contains("flanker_stalk"))
+							comboBoxZombieType.setSelectedIndex(6);
+						if(string.toLowerCase().contains("burner"))
+							comboBoxZombieType.setSelectedIndex(7);	
+						if(string.toLowerCase().contains("acid"))
+							comboBoxZombieType.setSelectedIndex(8);
+						if(string.toLowerCase().contains("boss_electric"))
+							comboBoxZombieType.setSelectedIndex(9);
+						if(string.toLowerCase().contains("boss_wind"))
+							comboBoxZombieType.setSelectedIndex(10);
+						if(string.toLowerCase().contains("boss_fire"))
+							comboBoxZombieType.setSelectedIndex(11);						
+					}
+					if(string.toLowerCase().contains("id"))
+						textFieldZombieConditionID.setText(string.split(" ")[1]);
+					if(string.toLowerCase().contains("value"))
+						textFieldZombieTargetKills.setText(string.split(" ")[1]);
+					if(string.toLowerCase().contains("spawn"))
+					{
+						if(string.toLowerCase().contains("true"))
+							toggleButtonZombieSpawn.setSelected(true);
+						else
+							toggleButtonZombieSpawn.setSelected(false);
+					}
+					if(string.toLowerCase().contains("nav"))
+						textFieldZombieNavmeshIndex.setText(string.split(" ")[1]);
+				}
+			}
+			if(type.equals("kills_horde"))
+			{
+				comboBoxConditionType.setSelectedIndex(8);
+				for(String string : strings)
+				{
+					if(string.toLowerCase().contains("id"))
+						textFieldHordeConditionID.setText(string.split(" ")[1]);
+					if(string.toLowerCase().contains("value"))
+						textFieldHordeTargetBeacons.setText(string.split(" ")[1]);
+					if(string.toLowerCase().contains("nav"))
+						textFieldHordeNavmeshIndex.setText(string.split(" ")[1]);
+				}
+			}
+			if(type.equals("kills_animal"))
+			{
+				comboBoxConditionType.setSelectedIndex(9);
+				for(String string : strings)
+				{
+					if(string.toLowerCase().contains("animal_id"))
+						textFieldAnimalID.setText(string.split(" ")[1]);
+					if(string.toLowerCase().contains("id"))
+						textFieldAnimalConditionID.setText(string.split(" ")[1]);
+					if(string.toLowerCase().contains("value"))
+						textFieldAnimalTargetKills.setText(string.split(" ")[1]);
+				}
+			}
+			if(type.equals("time_of_day"))
+			{
+				comboBoxConditionType.setSelectedIndex(10);
+				for(String string : strings)
+				{
+					if(string.toLowerCase().contains("seconds"))
+						textFieldSeconds.setText(string.split(" ")[1]);
+				}
+			}
+			if(type.equals("compare_flags"))
+			{
+				comboBoxConditionType.setSelectedIndex(11);
+				for(String string : strings)
+				{
+					if(string.toLowerCase().contains("a_id"))
+						textFieldConditionAID.setText(string.split(" ")[1]);
+					if(string.toLowerCase().contains("b_id"))
+						textFieldConditionBID.setText(string.split(" ")[1]);
+					if(string.toLowerCase().contains("a_unset"))
+					{
+						if(string.toLowerCase().contains("true"))
+							toggleButtonConditionAAllowUnset.setSelected(true);
+						else
+							toggleButtonConditionAAllowUnset.setSelected(false);
+					}
+					if(string.toLowerCase().contains("b_unset"))
+					{
+						if(string.toLowerCase().contains("true"))
+							toggleButtonConditionBAllowUnset.setSelected(true);
+						else
+							toggleButtonConditionBAllowUnset.setSelected(false);
+					}
+				}
+			}if(type.equals("kills_player"))
+			{
+				comboBoxConditionType.setSelectedIndex(11);
+				for(String string : strings)
+				{
+					if(string.toLowerCase().contains("value"))
+						textFieldPlayerTargetKills.setText(string.split(" ")[1]);
+				}
+			}
+			for(String string: strings)
+			{
+				if(string.toLowerCase().contains("reset"))
+					if(string.toLowerCase().contains("true"))
+						toggleButtonReset.setSelected(true);
+					else if(string.toLowerCase().contains("false"))
+						toggleButtonReset.setSelected(false);
+				if(string.toLowerCase().contains("_logic"))
+				{
+					if(string.toLowerCase().contains("less_than"))
+						comboBoxConditionLogic.setSelectedIndex(0);
+					if(string.toLowerCase().contains("less_than_or_equal_to"))
+						comboBoxConditionLogic.setSelectedIndex(1);
+					if(string.toLowerCase().contains("equal"))
+						comboBoxConditionLogic.setSelectedIndex(2);
+					if(string.toLowerCase().contains("not_equal"))
+						comboBoxConditionLogic.setSelectedIndex(3);
+					if(string.toLowerCase().contains("greater_than_or_equal_to"))
+						comboBoxConditionLogic.setSelectedIndex(4);
+					if(string.toLowerCase().contains("greater_than"))
+						comboBoxConditionLogic.setSelectedIndex(5);
+				}
+			}
+		}
 	}
 	
 }

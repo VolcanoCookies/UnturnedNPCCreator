@@ -3,11 +3,13 @@ package panels;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -33,7 +35,6 @@ import javax.swing.event.ChangeListener;
 
 import util.FileManager;
 import windows.Window;
-import java.awt.Rectangle;
 
 public class CharacterPanel extends JPanel {
 
@@ -66,13 +67,21 @@ public class CharacterPanel extends JPanel {
 	private static JTextField textFieldB1;
 	private static JTextField textFieldHex2;
 	private static JTextField textFieldHex1;
+	private JTextField textFieldHex3;
+	private JTextField textFieldR3;
+	private JTextField textFieldG3;
+	private JTextField textFieldB3;
 	//Actions
 	private final Action actionLoad = new SwingActionLoad();
 	private final Action actionSaveCharacter = new SwingActionSaveCharacter();
 	private final Action actionCreateCharacter = new SwingActionCreateCharacter();
+	private final Action actionToggleBeardSelection = new SwingActionToggleBeardSelection();
+	private final Action actionToggleHairSelection = new SwingActionToggleHairSelection();
+	private final Action actionToggleFaceSelector = new SwingActionToggleFaceSelector();
 	//Canvas
 	private static Canvas skinColor;
 	private static Canvas hairColor;
+	private Canvas characterColor;
 	//Sliders
 	private static JSlider sliderSkinRed;
 	private static JSlider sliderSkinGreen;
@@ -99,42 +108,34 @@ public class CharacterPanel extends JPanel {
 	private static JRadioButton radioButtonLegendary;
 	private static JRadioButton radioButtonColorNone;
 	private static JRadioButton radioButtonMythical;
-	//Checkbox
-	private static JCheckBox checkBoxIsLeftHanded;
-	private static JPanel panel;
-	private JPanel panelEquipped;
-	private static JPanel characterNameColorPanel;
-	
-	private JLabel lblHex2;
-	private JLabel lblHex1;
-	private static JPanel facePanel;
-	private JButton buttonToggleFaceSelector;
-	private final Action actionToggleFaceSelector = new SwingActionToggleFaceSelector();
-	private JButton buttonToggleBeardSelector;
-	private JButton buttonToggleHairSelector;
-	private static JPanel beardPanel;
-	private static JPanel hairPanel;
-	private final Action actionToggleBeardSelection = new SwingActionToggleBeardSelection();
-	private final Action actionToggleHairSelection = new SwingActionToggleHairSelection();
 	private JRadioButton radioButtonLean;
 	private JRadioButton radioButtonUnderArrest;
 	private JRadioButton radioButtonRest;
 	private JRadioButton radioButtonProne;
 	private JRadioButton radioButtonCrouch;
-	private JPanel panelCharacterCustomColor;
-	private JTextField textFieldHex3;
+	private JRadioButton radioButtonCustom;
+	//Checkbox
+	private static JCheckBox checkBoxIsLeftHanded;
+	private static JPanel panel;
+	private JPanel panelEquipped;
+	private static JPanel characterNameColorPanel;
+	//Buttons
+	private JButton buttonToggleFaceSelector;
+	private JButton buttonToggleBeardSelector;
+	private JButton buttonToggleHairSelector;
+	private JLabel lblHex2;
+	private JLabel lblHex1;
 	private JLabel lblHexColor;
 	private JLabel lblRed_1;
 	private JLabel lblGreen_1;
 	private JLabel lblBlue_1;
+	private static JPanel facePanel;
+	private static JPanel beardPanel;
+	private static JPanel hairPanel;
+	private JPanel panelCharacterCustomColor;
 	private JSlider sliderCharacterRed;
 	private JSlider sliderCharacterGreen;
 	private JSlider sliderCharacterBlue;
-	private Canvas characterColor;
-	private JRadioButton radioButtonCustom;
-	private JTextField textFieldR3;
-	private JTextField textFieldG3;
-	private JTextField textFieldB3;
 	
 
 	/**
@@ -142,7 +143,7 @@ public class CharacterPanel extends JPanel {
 	 */
 	public CharacterPanel() {
 		setLayout(new BorderLayout(0, 0));
-		setBounds(new Rectangle(10000, 10000, 537, 2000));
+		setBounds(new Rectangle(10000, 10000, 1000, 1000));
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setWheelScrollingEnabled(true);
@@ -150,11 +151,12 @@ public class CharacterPanel extends JPanel {
 		add(scrollPane, BorderLayout.CENTER);
 
 		panel = new JPanel();
+		panel.setSize(new Dimension(1000, 100));
 		scrollPane.setViewportView(panel);
 		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[] { 80, 326, 80, 0 };
+		gbl_panel.columnWidths = new int[] {80, 100, 80};
 		gbl_panel.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 23, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-		gbl_panel.columnWeights = new double[] { 0.0, 1.0, 0.0, Double.MIN_VALUE };
+		gbl_panel.columnWeights = new double[] { 0.0, 0.0, 0.0 };
 		gbl_panel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
 				0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };		
 		panel.setLayout(gbl_panel);
@@ -377,7 +379,7 @@ public class CharacterPanel extends JPanel {
 		radioButtonColorNone.setMnemonic('7');
 		radioButtonColorNone.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				characterColor.setBackground(Color.white);
+				characterColor.setBackground(Color.WHITE);
 			}
 		});
 		buttonGroupCharacterNameColor.add(radioButtonColorNone);
@@ -422,9 +424,9 @@ public class CharacterPanel extends JPanel {
 		gbc_panelCharacterCustomColor.gridy = 9;
 		panel.add(panelCharacterCustomColor, gbc_panelCharacterCustomColor);
 		GridBagLayout gbl_panelCharacterCustomColor = new GridBagLayout();
-		gbl_panelCharacterCustomColor.columnWidths = new int[]{58, 394, 0, 0};
+		gbl_panelCharacterCustomColor.columnWidths = new int[]{58, 0, 0, 0};
 		gbl_panelCharacterCustomColor.rowHeights = new int[]{0, 0, 0, 0, 0};
-		gbl_panelCharacterCustomColor.columnWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
+		gbl_panelCharacterCustomColor.columnWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
 		gbl_panelCharacterCustomColor.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panelCharacterCustomColor.setLayout(gbl_panelCharacterCustomColor);
 		
@@ -615,7 +617,6 @@ public class CharacterPanel extends JPanel {
 		facePanel = new JPanel();
 		facePanel.setVisible(false);
 		facePanel.setEnabled(false);
-		facePanel.add(new FaceSelector());
 		GridBagConstraints gbc_facePanel = new GridBagConstraints();
 		gbc_facePanel.gridwidth = 3;
 		gbc_facePanel.insets = new Insets(0, 0, 5, 0);
@@ -642,7 +643,6 @@ public class CharacterPanel extends JPanel {
 		beardPanel = new JPanel();
 		beardPanel.setVisible(false);
 		beardPanel.setEnabled(false);
-		beardPanel.add(new BeardSelector());
 		GridBagConstraints gbc_beardPanel = new GridBagConstraints();
 		gbc_beardPanel.gridwidth = 3;
 		gbc_beardPanel.insets = new Insets(0, 0, 5, 0);
@@ -669,7 +669,6 @@ public class CharacterPanel extends JPanel {
 		hairPanel = new JPanel();
 		hairPanel.setVisible(false);
 		hairPanel.setEnabled(false);
-		hairPanel.add(new HairSelector());
 		GridBagConstraints gbc_hairPanel = new GridBagConstraints();
 		gbc_hairPanel.gridwidth = 3;
 		gbc_hairPanel.insets = new Insets(0, 0, 5, 0);
@@ -1120,6 +1119,11 @@ public class CharacterPanel extends JPanel {
 		radioButtonCrouch.setMnemonic('8');
 		panelStance.add(radioButtonCrouch);
 		
+		radioButtonCrouch = new JRadioButton("Surrender");
+		buttonGroupStance.add(radioButtonCrouch);
+		radioButtonCrouch.setMnemonic('9');
+		panelStance.add(radioButtonCrouch);
+		
 		checkBoxIsLeftHanded = new JCheckBox("Is left handed");
 		GridBagConstraints gbc_checkBoxIsLeftHanded = new GridBagConstraints();
 		gbc_checkBoxIsLeftHanded.fill = GridBagConstraints.HORIZONTAL;
@@ -1543,13 +1547,30 @@ public class CharacterPanel extends JPanel {
 				if (string.contains("Backwards "))
 					if(string.toLowerCase().contains("true"))
 						checkBoxIsLeftHanded.setSelected(true);
-				if (string.contains("Face "))
-					((FaceSelector) facePanel.getComponents()[0]).setFaceID(string.split(" ")[1]);
-				if (string.contains("Beard "))
-					((BeardSelector) beardPanel.getComponents()[0]).setBeardID(string.split(" ")[1]);
-				if (string.contains("Hair ") && !string.toLowerCase().contains("color"))
-					((HairSelector) hairPanel.getComponents()[0]).setHairID(string.split(" ")[1]);
-				
+				if (string.contains("Face ")) {
+					if(facePanel.getComponents().length>0)
+						((FaceSelector) facePanel.getComponents()[0]).setFaceID(string.split(" ")[1]);
+					else {
+						facePanel.add(new FaceSelector());
+						((FaceSelector) facePanel.getComponents()[0]).setFaceID(string.split(" ")[1]);
+					}
+				}
+				if (string.contains("Beard ")) {
+					if(beardPanel.getComponents().length>0)
+						((BeardSelector) beardPanel.getComponents()[0]).setBeardID(string.split(" ")[1]);
+					else {
+						beardPanel.add(new BeardSelector());
+						((BeardSelector) beardPanel.getComponents()[0]).setBeardID(string.split(" ")[1]);
+					}
+				}
+				if (string.contains("Hair ") && !string.toLowerCase().contains("color")) {
+					if(hairPanel.getComponents().length>0)
+						((HairSelector) hairPanel.getComponents()[0]).setHairID(string.split(" ")[1]);
+					else {
+						hairPanel.add(new HairSelector());
+						((HairSelector) hairPanel.getComponents()[0]).setHairID(string.split(" ")[1]);
+					}
+				}
 				textFieldName.setText(Window.currentPath.split("/")[Window.currentPath.split("/").length-2]);
 			}
 		}
@@ -1628,6 +1649,11 @@ public class CharacterPanel extends JPanel {
 		String[] assetValues = new String[256];
 		String[] englishValues = new String[2];
 		int i = 0;
+		assetValues[i++] = "Type NPC";
+		if (textFieldGUID.getText().length()>0)
+			assetValues[i++] = "GUID " + textFieldGUID.getText();
+		if (textFieldID.getText().chars().allMatch(Character::isDigit) && textFieldID.getText().length()>0)
+			assetValues[i++] = "ID " + textFieldID.getText();
 		if (textFieldShirt.getText().chars().allMatch(Character::isDigit) && textFieldShirt.getText().length()>0)
 			assetValues[i++] = "Shirt " + textFieldShirt.getText();
 		if (textFieldPants.getText().chars().allMatch(Character::isDigit) && textFieldPants.getText().length()>0)
@@ -1642,36 +1668,44 @@ public class CharacterPanel extends JPanel {
 			assetValues[i++] = "Glasses " + textFieldGlasses.getText();
 		if (textFieldBackpack.getText().chars().allMatch(Character::isDigit) && textFieldBackpack.getText().length()>0)
 			assetValues[i++] = "Backpack " + textFieldBackpack.getText();
-		if (textFieldCharacterName.getText().length()>0)
-			assetValues[i++] = "Character " + textFieldCharacterName.getText();
-		if (textFieldID.getText().chars().allMatch(Character::isDigit) && textFieldID.getText().length()>0)
-			assetValues[i++] = "ID " + textFieldID.getText();
-		if (textFieldDialogID.getText().chars().allMatch(Character::isDigit) && textFieldDialogID.getText().length()>0)
-			assetValues[i++] = "Dialogue " + textFieldDialogID.getText();
-		if (textFieldGUID.getText().length()>0)
-			assetValues[i++] = "GUID " + textFieldGUID.getText();
+		
 		if (textFieldPrimary.getText().length()>0)
 			assetValues[i++] = "Primary " + textFieldPrimary.getText();
 		if (textFieldSecondary.getText().length()>0)
 			assetValues[i++] = "Secondary " + textFieldSecondary.getText();
 		if (textFieldTertiary.getText().length()>0)
 			assetValues[i++] = "Tertiary " + textFieldTertiary.getText();
+		if (textFieldPrimary.getText().length()>0)
+			if (buttonGroupEquipped.getSelection().getMnemonic() == '1') assetValues[i++] = "Equipped Primary";
+		if (textFieldSecondary.getText().length()>0)
+			if (buttonGroupEquipped.getSelection().getMnemonic() == '2') assetValues[i++] = "Equipped Secondary";
+		if (textFieldTertiary.getText().length()>0)
+			if (buttonGroupEquipped.getSelection().getMnemonic() == '3') assetValues[i++] = "Equipped Tertiary";
+		
 		if (buttonGroupStance.getSelection().getMnemonic() == '1') assetValues[i++] = "Pose Stand";
 		if (buttonGroupStance.getSelection().getMnemonic() == '2') assetValues[i++] = "Pose Sit";
 		if (buttonGroupStance.getSelection().getMnemonic() == '3') assetValues[i++] = "Pose Asleep";
-		if (buttonGroupStance.getSelection().getMnemonic() == '4') assetValues[i++] = "Pose Lean";
-		if (buttonGroupStance.getSelection().getMnemonic() == '5') assetValues[i++] = "Pose Under Arrest";
+		if (buttonGroupStance.getSelection().getMnemonic() == '4') assetValues[i++] = "Pose Passive";
+		if (buttonGroupStance.getSelection().getMnemonic() == '5') assetValues[i++] = "Pose Under_Arrest";
 		if (buttonGroupStance.getSelection().getMnemonic() == '6') assetValues[i++] = "Pose Rest";
 		if (buttonGroupStance.getSelection().getMnemonic() == '7') assetValues[i++] = "Pose Prone";
 		if (buttonGroupStance.getSelection().getMnemonic() == '8') assetValues[i++] = "Pose Crouch";
-		if (buttonGroupEquipped.getSelection().getMnemonic() == '1') assetValues[i++] = "Equipped Primary";
-		if (buttonGroupEquipped.getSelection().getMnemonic() == '2') assetValues[i++] = "Equipped Secondary";
-		if (buttonGroupEquipped.getSelection().getMnemonic() == '3') assetValues[i++] = "Equipped Tertiary";
+		if (buttonGroupStance.getSelection().getMnemonic() == '9') assetValues[i++] = "Pose Surrender";
 		if (checkBoxIsLeftHanded.isSelected()) assetValues[i++] = "Backwards True";
 		else assetValues[i++] = "Backwards False";
 		
+		assetValues[i++] = "Face " + ((FaceSelector) facePanel.getComponents()[0]).getFaceID();
+		String string = ((HairSelector) hairPanel.getComponents()[0]).getHairID();
+		if (!string.equals("0"))
+			assetValues[i++] = "Beard " + string;
+		string = ((HairSelector) hairPanel.getComponents()[0]).getHairID();
+		if (!string.equals("0"))
+			assetValues[i++] = "Hair " + string;
 		assetValues[i++] = "Color_Skin " + String.format("#%02X%02X%02X", sliderSkinRed.getValue(), sliderSkinGreen.getValue(), sliderSkinBlue.getValue());
 		assetValues[i++] = "Color_Hair " + String.format("#%02X%02X%02X", sliderHairRed.getValue(), sliderHairGreen.getValue(), sliderHairBlue.getValue());
+		
+		if (textFieldDialogID.getText().chars().allMatch(Character::isDigit) && textFieldDialogID.getText().length()>0)
+			assetValues[i++] = "Dialogue " + textFieldDialogID.getText();
 		
 		englishValues[0] = textFieldCharacterName.getText();
 		if (buttonGroupCharacterNameColor.getSelection().getMnemonic() == '1') englishValues[1] = "<color=common>" + textFieldCharacterName.getText() + "</color>";
@@ -1681,14 +1715,6 @@ public class CharacterPanel extends JPanel {
 		if (buttonGroupCharacterNameColor.getSelection().getMnemonic() == '5') englishValues[1] = "<color=legendary>" + textFieldCharacterName.getText() + "</color>";
 		if (buttonGroupCharacterNameColor.getSelection().getMnemonic() == '6') englishValues[1] = "<color=mythical>" + textFieldCharacterName.getText() + "</color>";
 		if (buttonGroupCharacterNameColor.getSelection().getMnemonic() == '7') englishValues[1] = textFieldCharacterName.getText();
-		
-		assetValues[i++] = "Face " + ((FaceSelector) facePanel.getComponents()[0]).getFaceID();
-		String string = ((HairSelector) hairPanel.getComponents()[0]).getHairID();
-		if (!string.equals("0"))
-			assetValues[i++] = "Beard " + string;
-		string = ((HairSelector) hairPanel.getComponents()[0]).getHairID();
-		if (!string.equals("0"))
-			assetValues[i++] = "Hair " + string;
 		
 		String[][] output = new String[2][256];
 		output[0] = assetValues;
@@ -1735,6 +1761,8 @@ public class CharacterPanel extends JPanel {
 			putValue(SHORT_DESCRIPTION, "Open the face selector.");
 		}
 		public void actionPerformed(ActionEvent e) {
+			if(facePanel.getComponents().length<1)
+				facePanel.add(new FaceSelector());
 			facePanel.setVisible(!facePanel.isVisible());
 			facePanel.setEnabled(!facePanel.isEnabled());
 			panel.revalidate();
@@ -1751,6 +1779,8 @@ public class CharacterPanel extends JPanel {
 			putValue(SHORT_DESCRIPTION, "Open the beard selector.");
 		}
 		public void actionPerformed(ActionEvent e) {
+			if(beardPanel.getComponents().length<1)
+				beardPanel.add(new BeardSelector());
 			beardPanel.setVisible(!beardPanel.isVisible());
 			beardPanel.setEnabled(!beardPanel.isEnabled());
 			panel.revalidate();
@@ -1767,6 +1797,8 @@ public class CharacterPanel extends JPanel {
 			putValue(SHORT_DESCRIPTION, "Open the hair selector.");
 		}
 		public void actionPerformed(ActionEvent e) {
+			if(hairPanel.getComponents().length<1)
+				hairPanel.add(new HairSelector());
 			hairPanel.setVisible(!hairPanel.isVisible());
 			hairPanel.setEnabled(!hairPanel.isEnabled());
 			panel.revalidate();

@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import panels.FaceSelector;
 import windows.Window;
 
 public class Init 
@@ -21,7 +22,7 @@ public class Init
 //			e.printStackTrace();
 //		}
 		try {
-			icon = ImageIO.read(new File(Window.runningPath + ("/res/Images/computer.png")));
+			icon = ImageIO.read(Init.class.getResource("/Icons/UIIcons/BTWIcon.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -28,6 +28,9 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 import util.FileManager;
+import javax.swing.border.LineBorder;
+import java.awt.Color;
+import javax.swing.border.EtchedBorder;
 
 public class VendorPanel extends JPanel {
 	/**
@@ -52,9 +55,6 @@ public class VendorPanel extends JPanel {
 	private final Action actionAddBuyItem = new SwingActionAddBuyItem();
 	private final Action actionAddSellItem = new SwingActionAddSellItem();
 	private final Action actionSaveVendor = new SwingActionSaveVendor();
-	private final Action actionAddBuyItemCondition = new SwingActionAddBuyItemCondition();
-	private final Action actionSellBuyItemCondition = new SwingActionAddSellItemCondition();
-
 	public VendorPanel() {
 		setLayout(new BorderLayout(0, 0));
 		
@@ -67,9 +67,9 @@ public class VendorPanel extends JPanel {
 		scrollPane.setViewportView(panel);
 		GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWidths = new int[]{155, 155, 0};
-		gbl_panel.rowHeights = new int[]{76, 0, 0, 0, 0, 0, 60, 0, 0, 0, 0};
+		gbl_panel.rowHeights = new int[]{76, 0, 0, 0, 0, 0, 60, 0, 0, 0};
 		gbl_panel.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel.setLayout(gbl_panel);
 		
 		JPanel panelStaticInfo = new JPanel();
@@ -221,6 +221,7 @@ public class VendorPanel extends JPanel {
 		lblSelling.setFont(new Font("Tahoma", Font.BOLD, 11));
 		
 		panelBuying = new JPanel();
+		panelBuying.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		panelBuying.addContainerListener(new ContainerAdapter() {
 			public void componentAdded(ContainerEvent e) {
 				BuyingPanelNumber = panelBuying.getComponentCount();
@@ -236,8 +237,8 @@ public class VendorPanel extends JPanel {
 			}
 		});
 		GridBagConstraints gbc_panelBuying = new GridBagConstraints();
-		gbc_panelBuying.fill = GridBagConstraints.HORIZONTAL;
 		gbc_panelBuying.anchor = GridBagConstraints.NORTH;
+		gbc_panelBuying.fill = GridBagConstraints.HORIZONTAL;
 		gbc_panelBuying.insets = new Insets(0, 0, 5, 5);
 		gbc_panelBuying.gridx = 0;
 		gbc_panelBuying.gridy = 6;
@@ -245,6 +246,7 @@ public class VendorPanel extends JPanel {
 		panelBuying.setLayout(new GridLayout(0, 1, 0, 0));
 		
 		panelSelling = new JPanel();
+		panelSelling.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		panelSelling.addContainerListener(new ContainerAdapter() {
 			public void componentAdded(ContainerEvent e) {
 				SellingPanelNumber = panelSelling.getComponentCount();
@@ -261,8 +263,8 @@ public class VendorPanel extends JPanel {
 		});
 		panelSelling.setMaximumSize(new Dimension(150,150));
 		GridBagConstraints gbc_panelSelling = new GridBagConstraints();
-		gbc_panelSelling.fill = GridBagConstraints.HORIZONTAL;
 		gbc_panelSelling.anchor = GridBagConstraints.NORTH;
+		gbc_panelSelling.fill = GridBagConstraints.HORIZONTAL;
 		gbc_panelSelling.insets = new Insets(0, 0, 5, 0);
 		gbc_panelSelling.gridx = 1;
 		gbc_panelSelling.gridy = 6;
@@ -287,31 +289,13 @@ public class VendorPanel extends JPanel {
 		gbc_buttonAddSellingItem.gridy = 7;
 		panel.add(buttonAddSellingItem, gbc_buttonAddSellingItem);
 		
-		JButton buttonAddBuyItemConditions = new JButton("New button");
-		buttonAddBuyItemConditions.setAction(actionAddBuyItemCondition);
-		GridBagConstraints gbc_buttonAddBuyItemConditions = new GridBagConstraints();
-		gbc_buttonAddBuyItemConditions.fill = GridBagConstraints.HORIZONTAL;
-		gbc_buttonAddBuyItemConditions.insets = new Insets(0, 0, 5, 5);
-		gbc_buttonAddBuyItemConditions.gridx = 0;
-		gbc_buttonAddBuyItemConditions.gridy = 8;
-		panel.add(buttonAddBuyItemConditions, gbc_buttonAddBuyItemConditions);
-		
-		JButton buttonAddSellItemConditions = new JButton("New button");
-		buttonAddSellItemConditions.setAction(actionSellBuyItemCondition);
-		GridBagConstraints gbc_buttonAddSellItemConditions = new GridBagConstraints();
-		gbc_buttonAddSellItemConditions.fill = GridBagConstraints.HORIZONTAL;
-		gbc_buttonAddSellItemConditions.insets = new Insets(0, 0, 5, 0);
-		gbc_buttonAddSellItemConditions.gridx = 1;
-		gbc_buttonAddSellItemConditions.gridy = 8;
-		panel.add(buttonAddSellItemConditions, gbc_buttonAddSellItemConditions);
-		
-		JButton btnNewButton = new JButton("New button");
-		btnNewButton.setAction(actionSaveVendor);
-		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-		gbc_btnNewButton.gridwidth = 2;
-		gbc_btnNewButton.gridx = 0;
-		gbc_btnNewButton.gridy = 9;
-		panel.add(btnNewButton, gbc_btnNewButton);
+		JButton buttonSaveVendor = new JButton("New button");
+		buttonSaveVendor.setAction(actionSaveVendor);
+		GridBagConstraints gbc_buttonSaveVendor = new GridBagConstraints();
+		gbc_buttonSaveVendor.gridwidth = 2;
+		gbc_buttonSaveVendor.gridx = 0;
+		gbc_buttonSaveVendor.gridy = 8;
+		panel.add(buttonSaveVendor, gbc_buttonSaveVendor);
 		
 	}
 	
@@ -321,22 +305,14 @@ public class VendorPanel extends JPanel {
 		{
 			for(int i = 0; i < panelSelling.getComponentCount(); i++)
 			{
-				try {
-					((VendorSelling) panelSelling.getComponent(i)).ChangeIndex(i+1);
-				} catch (Exception e) {
-					((VendorSellingCondition) panelSelling.getComponent(i)).ChangeIndex(i+1);
-				}
+				((VendorSelling) panelSelling.getComponent(i)).ChangeIndex(i+1);
 			}
 		}
 		if (type.equalsIgnoreCase("buy"))
 		{
 			for(int i = 0; i < panelBuying.getComponentCount(); i++)
 			{
-				try {
 					((VendorBuying) panelBuying.getComponent(i)).ChangeIndex(i+1);
-				} catch (Exception e) {
-					((VendorBuyingCondition) panelBuying.getComponent(i)).ChangeIndex(i+1);
-				}
 			}
 		}
 	}
@@ -416,6 +392,7 @@ public class VendorPanel extends JPanel {
 			{
 				output[i++] = "Buying_" + (index) + "_ID " + string[0];
 				output[i++] = "Buying_" + (index++) + "_Cost " + string[1];
+				output[i++] = string[2];
 			}
 		}
 		
@@ -453,34 +430,48 @@ public class VendorPanel extends JPanel {
 		String[] selling = new String[values.length];
 		int buyingIndex = 0;
 		int sellingIndex = 0;
-		for(String string : values)
+		for(int i = 0; i < values.length; i++)
 		{
-			if(string.contains("ID") && !string.contains("_ID") && !string.contains("GUID"))
-				textFieldID.setText(string.split(" ")[1]);
-			if(string.contains("GUID"))
-				textFieldGUID.setText(string.split(" ")[1]);
-			if(string.contains("Buying "))
+			if(values[i].contains("ID") && !values[i].contains("_ID") && !values[i].contains("GUID"))
+				textFieldID.setText(values[i].split(" ")[1]);
+			if(values[i].contains("GUID"))
+				textFieldGUID.setText(values[i].split(" ")[1]);
+			if(values[i].contains("Buying "))
 			{
-				for(int i = 0; i < Integer.valueOf(string.split(" ")[1]); i++)
-					panelBuying.add(new VendorBuying(i));
+				for(int ii = 0; ii < Integer.valueOf(values[ii].split(" ")[1]); ii++)
+					panelBuying.add(new VendorBuying(ii));
 			}
-			if(string.contains("Selling "))
+			if(values[i].contains("Selling "))
 			{
-				for(int i = 0; i < Integer.valueOf(string.split(" ")[1]); i++)
-					panelSelling.add(new VendorSelling(i));
+				for(int ii = 0; ii < Integer.valueOf(values[ii].split(" ")[1]); ii++)
+					panelSelling.add(new VendorSelling(ii));
 			}
-			if(string.contains("Buying_") && string.contains("_ID"))
-				buying[buyingIndex++] = string.split(" ")[1];
-			if(string.contains("Buying_") && string.contains("_Cost"))
-				buying[buyingIndex++] = string.split(" ")[1];
-			if(string.contains("Selling_") && string.contains("_ID"))
-				selling[sellingIndex++] = string.split(" ")[1];
-			if(string.contains("Selling_") && string.contains("_Cost"))
-				selling[sellingIndex++] = string.split(" ")[1];	
-			if(string.contains("Description "))
-				textAreaDescription.setText(string.replace("<br>", "\n").substring(12));
-			if(string.contains("Name "))
-				textFieldStoreName.setText(string.substring(5));
+			if(values[i].contains("Buying_") && values[i].contains("_ID"))
+				buying[buyingIndex++] = values[i].split(" ")[1];
+			if(values[i].contains("Buying_") && values[i].contains("_Cost"))
+				buying[buyingIndex++] = values[i].split(" ")[1];
+			if(values[i].contains("Conditions "))
+			{
+				String nextLine = values[i];
+				String conditions = "";
+				int ii = 0;
+				while(nextLine.toLowerCase().contains("condition"))
+				{
+					conditions += nextLine + "\n";
+					nextLine = values[i+ii++];
+					while(nextLine.substring(0,3).contains("//"))
+						nextLine = values[i+ii++];
+				}
+				FoundCondition(conditions);
+			}
+			if(values[i].contains("Selling_") && values[i].contains("_ID"))
+				selling[sellingIndex++] = values[i].split(" ")[1];
+			if(values[i].contains("Selling_") && values[i].contains("_Cost"))
+				selling[sellingIndex++] = values[i].split(" ")[1];	
+			if(values[i].contains("Description "))
+				textAreaDescription.setText(values[i].replace("<br>", "\n").substring(12));
+			if(values[i].contains("Name "))
+				textFieldStoreName.setText(values[i].substring(5));
 		}
 		buyingIndex = 0;
 		sellingIndex = 0;
@@ -496,23 +487,9 @@ public class VendorPanel extends JPanel {
 		}
 		
 	}
-	
-	private class SwingActionAddBuyItemCondition extends AbstractAction {
-		public SwingActionAddBuyItemCondition() {
-			putValue(NAME, "Add item to buy with condition");
-			putValue(SHORT_DESCRIPTION, "Some short description");
-		}
-		public void actionPerformed(ActionEvent e) {
-			panelBuying.add(new VendorBuyingCondition(++BuyingPanelNumber));
-		}
-	}
-	private class SwingActionAddSellItemCondition extends AbstractAction {
-		public SwingActionAddSellItemCondition() {
-			putValue(NAME, "Add item to sell with condition");
-			putValue(SHORT_DESCRIPTION, "Some short description");
-		}
-		public void actionPerformed(ActionEvent e) {
-			panelSelling.add(new VendorSellingCondition(++SellingPanelNumber));
-		}
+
+	private static void FoundCondition(String conditions) {
+		// TODO Auto-generated method stub
+		
 	}
 }

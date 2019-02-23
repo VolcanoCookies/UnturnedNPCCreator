@@ -1,0 +1,23 @@
+GUID f19bc396c0c44c799963e862aca41f45
+Type Dialogue
+ID 92
+
+Messages 1
+Message_0_Pages 1
+
+Responses 3
+Response_0_Dialogue 93
+
+// Evidence?
+// Chef_Sous_Len_Evidence
+Response_1_Dialogue 188
+Response_1_Conditions 1
+Response_1_Condition_0_Type Flag_Bool
+Response_1_Condition_0_Logic Equal
+Response_1_Condition_0_ID 184
+Response_1_Condition_0_Value False
+Response_1_Rewards 1
+Response_1_Reward_0_Type Flag_Bool
+Response_1_Reward_0_ID 184
+Response_1_Reward_0_Value True
+Response_1_Reward_0_Modification Assign

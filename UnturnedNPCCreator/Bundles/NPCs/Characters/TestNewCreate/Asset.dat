@@ -1,0 +1,14 @@
+Type NPC
+ID 123
+
+Hat 34
+Mask 2
+
+Face 1
+Beard 2
+Hair 34
+Color_Skin #AF4B4B
+Color_Hair #4B1956
+
+Backward false
+Pose Stand

@@ -40,7 +40,7 @@ public class FaceSelector extends JPanel {
 	private JToggleButton button21;
 	private JToggleButton button22;
 	private JToggleButton button23;
-	private JToggleButton button24;
+	private JToggleButton button24; 
 	private JToggleButton button25;
 	private JToggleButton button26;
 	private JToggleButton button27;

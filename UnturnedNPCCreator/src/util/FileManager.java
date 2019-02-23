@@ -19,42 +19,96 @@ public class FileManager
 {
 	public static void SaveCharacter(String[] assets, String[][] values, String fileName)
 	{
-		assets = LoadTemplate("CharacterTemplate.txt");
+//		assets = LoadTemplate("CharacterTemplate.txt");
 		String assetOutput = "";
 		String englishOutput = "";
-		String[] assetsLine;
-		String[] valuesLine;
-		String lastLine = null;
-		//int x = 0;
-		int y = 0;
-		for(String assetsString : assets)
+//		String[] assetsLine;
+//		String[] valuesLine;
+//		String lastLine = null;
+//		int x = 0;
+//		int y = 0;
+		for(String string : values[0])
 		{
-			//x++;
-			y = 0;
-			for(String valuesString : values[0])
-			{
-				y++;
-				if(valuesString!=null && assetsString!=null)
-				{
-					assetsLine = assetsString.split(" ");
-					valuesLine = valuesString.split(" ");
-					if(assetsLine[0].equalsIgnoreCase(valuesLine[0]) && valuesLine.length > 1)
-					{
-						if(values[0][y]!=null)
-						{
-							//assets[x] = values[y];
-						}
-						assetsString = valuesString;
-					}	
-				}
+			if(string!=null) {
+				if(string.toLowerCase().contains("guid"))
+					assetOutput += string + "\n";
+				if(string.toLowerCase().contains("type"))
+					assetOutput += string + "\n";
+				if(string.toLowerCase().contains("id") && !string.toLowerCase().contains("guid"))
+					assetOutput += string + "\n";
+				if(string.toLowerCase().contains("shirt"))
+					assetOutput += string + "\n";
+				if(string.toLowerCase().contains("pants"))
+					assetOutput += string + "\n";
+				if(string.toLowerCase().contains("vest"))
+					assetOutput += string + "\n";
+				if(string.toLowerCase().contains("mask"))
+					assetOutput += string + "\n";
+				if(string.toLowerCase().contains("glasses"))
+					assetOutput += string + "\n";
+				if(string.toLowerCase().contains("hat"))
+					assetOutput += string + "\n";
+				if(string.toLowerCase().contains("backpack"))
+					assetOutput += string + "\n";
+				if(string.toLowerCase().contains("primary"))
+					assetOutput += string + "\n";
+				if(string.toLowerCase().contains("secondary"))
+					assetOutput += string + "\n";
+				if(string.toLowerCase().contains("tertiary") && !string.toLowerCase().contains("primary") && !string.toLowerCase().contains("secondary") && !string.toLowerCase().contains("tertiary"))
+					assetOutput += string + "\n";
+				if(string.toLowerCase().contains("equipped"))
+					assetOutput += string + "\n";
+				
+				if(string.toLowerCase().contains("pose"))
+					assetOutput += string + "\n";
+				if(string.toLowerCase().contains("backwards true"))
+					assetOutput += string + "\n";
+				
+				if(string.toLowerCase().contains("face"))
+					assetOutput += string + "\n";
+				if(string.toLowerCase().contains("hair") && !string.toLowerCase().contains("color"))
+					assetOutput += string + "\n";
+				if(string.toLowerCase().contains("beard") && !string.toLowerCase().contains("color"))
+					assetOutput += string + "\n";
+				if(string.toLowerCase().contains("color_skin"))
+					assetOutput += string + "\n";
+				if(string.toLowerCase().contains("color_hair"))
+					assetOutput += string + "\n";
+				if(string.toLowerCase().contains("color_beard"))
+					assetOutput += string + "\n";
+				if(string.toLowerCase().contains("dialogue"))
+					assetOutput += string + "\n";
 			}
-			if(assetsString.split(" ").length>1 || assetsString.equals("") || assetsString.equalsIgnoreCase("\n"))
-				if(!assetsString.equals("") || !(lastLine.length()<2))
-				{
-					lastLine = assetsString;
-					assetOutput += assetsString + "\n";
-				}
 		}
+		
+//		for(String assetsString : assets)
+//		{
+//			//x++;
+//			y = 0;
+//			for(String valuesString : values[0])
+//			{
+//				y++;
+//				if(valuesString!=null && assetsString!=null)
+//				{
+//					assetsLine = assetsString.split(" ");
+//					valuesLine = valuesString.split(" ");
+//					if(assetsLine[0].equalsIgnoreCase(valuesLine[0]) && valuesLine.length > 1)
+//					{
+//						if(values[0][y]!=null)
+//						{
+//							//assets[x] = values[y];
+//						}
+//						assetsString = valuesString;
+//					}	
+//				}
+//			}
+//			if(assetsString.split(" ").length>1 || assetsString.equals("") || assetsString.equalsIgnoreCase("\n"))
+//				if(!assetsString.equals("") || !(lastLine.length()<2))
+//				{
+//					lastLine = assetsString;
+//					assetOutput += assetsString + "\n";
+//				}
+//		}
 		if(values[1][0] == null)
 			englishOutput = "Name " + fileName + "\n";
 		else
@@ -64,6 +118,7 @@ public class FileManager
 		else
 			englishOutput += "Character " + values[1][1];
 		assetOutput = assetOutput.substring(0, assetOutput.lastIndexOf("\n"));
+		
 		int reply = JOptionPane.showConfirmDialog(null, assetOutput, "Confirm", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (reply == JOptionPane.OK_OPTION) {
         	BufferedWriter assetWriter;

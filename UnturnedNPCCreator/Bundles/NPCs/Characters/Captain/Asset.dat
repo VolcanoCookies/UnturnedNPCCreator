@@ -1,0 +1,25 @@
+GUID 000ff5a98946400c8c93c5f936754395
+Type NPC
+ID 752
+
+Shirt 1424
+Pants 1419
+Hat 1429
+
+Has_Halloween_Outfit True
+Halloween_Backpack 732
+Halloween_Vest 733
+Halloween_Shirt 734
+Halloween_Pants 23
+Halloween_Hat 1429
+
+Has_Christmas_Outfit True
+Christmas_Shirt 279
+Christmas_Pants 280
+Christmas_Hat 1429
+
+Face 24
+Color_Skin #9D886B
+
+// Captain_Welcome
+Dialogue 1
