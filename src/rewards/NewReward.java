@@ -92,7 +92,7 @@ public class NewReward extends JPanel {
 	private JTextPane textPane;
 	private JTextPane txtpnAssignSetsA;
 	
-	public NewReward(String conditions) {
+	public NewReward(String rewards) {
 		new JPanel();
 		setVisible(true);
 		setEnabled(true);
@@ -677,6 +677,9 @@ public class NewReward extends JPanel {
 		gbc_txtpnAssignSetsA.gridx = 0;
 		gbc_txtpnAssignSetsA.gridy = 3;
 		panelFlagMath.add(txtpnAssignSetsA, gbc_txtpnAssignSetsA);
+		
+		if(rewards!=null)
+			FillFields(rewards);
 		
 	}
 	

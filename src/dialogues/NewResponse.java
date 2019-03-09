@@ -2,8 +2,6 @@ package dialogues;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dialog;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -11,14 +9,12 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -26,17 +22,11 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
-import conditions.Conditions;
 import conditions.conditionsDialog;
 import objects.TextPrompt;
 import rewards.RewardsDialog;
-
-import javax.swing.text.JTextComponent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
+import javax.swing.JSeparator;
 
 public class NewResponse extends JPanel {
 
@@ -56,13 +46,14 @@ public class NewResponse extends JPanel {
 	private JTextField textFieldVendorID;
 	private TextPrompt textPrompt;
 	private final Action actionOpenRewards = new SwingActionOpenRewards();
+	private final Action actionClearRewards = new SwingActionClearRewards();
 	private String rewards;
-	private int thisIndex;
 	private int globalIndex;
 	/**
 	 * Create the panel.
+	 * @param response 
 	 */
-	public NewResponse() {
+	public NewResponse(String responseAsset, String responseEnglish) {
 		comp = this;
 		
 		JPopupMenu popupMenu = new JPopupMenu();
@@ -71,6 +62,9 @@ public class NewResponse extends JPanel {
 		JMenuItem menuItemRemove = new JMenuItem("Remove");
 		menuItemRemove.setAction(actionRemove);
 		popupMenu.add(menuItemRemove);
+		
+		JSeparator separator = new JSeparator();
+		popupMenu.add(separator);
 		JMenuItem menuItemNewCondition = new JMenuItem("Condition");
 		menuItemNewCondition.setAction(actionOpenConditions);
 		popupMenu.add(menuItemNewCondition);
@@ -170,30 +164,113 @@ public class NewResponse extends JPanel {
 		menuItemClearConditions.setAction(actionClearCondition);
 		popupMenu.add(menuItemClearConditions);
 		
+		JSeparator separator_1 = new JSeparator();
+		popupMenu.add(separator_1);
+		
+		JMenuItem menuItemOpenRewards = new JMenuItem("Condition");
+		menuItemOpenRewards.setAction(actionOpenRewards);
+		popupMenu.add(menuItemOpenRewards);
+		
+		JMenuItem menuItemClearRewards = new JMenuItem("Condition");
+		menuItemClearRewards.setAction(actionClearRewards);
+		popupMenu.add(menuItemClearRewards);
+		
 		addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent arg0) {
 				panelOnClick.setBackground(getBackground());
 			}
 		});
 
+		if(responseAsset!=null&&responseEnglish!=null) {
+			FillFields(responseAsset, responseEnglish);
+		}
+		
 	}
 	
+	private void FillFields(String responseAsset, String responseEnglish) {
+		
+		System.out.println(responseEnglish + "\n-------------\n");
+
+		//Get response conditions, rewards and other info in assets
+		for(String string : responseAsset.split("\n")) {
+			if(string.toLowerCase().contains("response_[0-9]+_condition")) {
+				if(conditions!=null)
+					conditions = "";
+				conditions += string;
+			}
+			if(string.toLowerCase().contains("response_[0-9]+_reward")) {
+				if(rewards!=null)
+					rewards = "";
+				rewards += string;
+			}
+			if(string.toLowerCase().contains("reponse_[0-9]+_dialogue")) {
+				textFieldDialogueID.setText(string.split(" ")[1]);
+			}
+			if(string.toLowerCase().contains("reponse_[0-9]+_quest")) {
+				textFieldQuestID.setText(string.split(" ")[1]);
+			}
+			if(string.toLowerCase().contains("reponse_[0-9]+_vendor")) {
+				textFieldVendorID.setText(string.split(" ")[1]);
+			}
+		}
+		
+		//Change appropriate color
+		if(conditions!=null) {
+			ConditionsPresent(true);
+		}
+		if(rewards!=null) {
+			RewardsPresent(true);
+		}
+		
+		//Get English values
+		for(String string : responseEnglish.split("\n")) {
+			if(string.contains("Response_[0-9]+"))
+				textAreaReply.setText(string.split(" ")[1]);
+		}
+		
+	}
+
 	public String[] getValues(int messageIndex)
 	{
 		//Index 0 is Asset.dat, Index 1 is English.dat
 		String[] output = new String[2];
+		output[0] = "";
 		
 		//Temporary strings
-		String rewardsOutput;
+		String rewardsOutput = null;
+		String conditionsOutput = null;
 		
-		output[0] = "Response_ " + globalIndex + " " + textAreaReply.getText();
+		//Add lines if conditions exist
+		if(conditions!=null) {
+			conditionsOutput = "";
+			for(String string : conditions.split("\n")) {
+				conditionsOutput += "Response_" + globalIndex + "_" + string + "\n";
+			}
+		}
+		//Add lines if rewards exist
 		if(rewards!=null) {
 			rewardsOutput = "";
 			for(String string : rewards.split("\n")) {
-				rewardsOutput += "Response_" + globalIndex + "_" + string;
+				rewardsOutput += "Response_" + globalIndex + "_" + string + "\n";
 			}
 		}
-		output[1] = "Response_" + globalIndex + " " + textAreaReply.getText();
+		
+		//Save onClick
+		if(textFieldDialogueID.getText().length()>0)
+			output[0] += "Response_" + globalIndex + "_Dialogue " + textFieldDialogueID.getText() + "\n";
+		if(textFieldQuestID.getText().length()>0)
+			output[0] += "Response_" + globalIndex + "_Quest " + textFieldQuestID.getText() + "\n";
+		if(textFieldVendorID.getText().length()>0)
+			output[0] += "Response_" + globalIndex + "_Vendor " + textFieldVendorID.getText() + "\n";
+		
+		//Save rewards and conditions
+		if(conditions!=null)
+			output[0] += conditionsOutput;
+		if(rewards!=null)
+			output[0] += rewardsOutput;
+		
+		//Get English.dat
+		output[1] = "Response_" + globalIndex + " " + textAreaReply.getText().replaceAll("\n", "") + "\n";
 		
 		return output;
 	}
@@ -232,9 +309,38 @@ public class NewResponse extends JPanel {
 
 	public void ChangeIndex(int index) {
 		lblResponseIndex.setText(" Response #" + index + " ");
-		thisIndex = index;
 	}
+	
+	public int getGlobalIndex() {
+		return globalIndex;
+	}
+	public void setGlobalIndex(int index) {
+		globalIndex = index;
+	}
+	
+	public void ConditionsPresent(boolean isPresent) {
+		
+		if(isPresent)
+			comp.setBackground(new Color(comp.getBackground().getRed(), comp.getBackground().getGreen() - 30, comp.getBackground().getBlue() - 30));
+		else
+			comp.setBackground(new Color(comp.getBackground().getRed(), comp.getBackground().getGreen() + 30, comp.getBackground().getBlue() + 30));
+		comp.revalidate();
+		comp.repaint();
+		System.out.println("Conditions present: " + isPresent);
+	}
+	public void RewardsPresent(boolean isPresent) {
+		if(isPresent)
+			comp.setBackground(new Color(comp.getBackground().getRed() - 30, comp.getBackground().getGreen(), comp.getBackground().getBlue() - 30));
+		else
+			comp.setBackground(new Color(comp.getBackground().getRed() + 30, comp.getBackground().getGreen(), comp.getBackground().getBlue() + 30));
+		comp.revalidate();
+		comp.repaint();
+		System.out.println("Rewards present: " + isPresent);
+	}
+	
+	//Conditions and rewards actions.
 	private class SwingActionOpenConditions extends AbstractAction {
+
 		/**
 		 * 
 		 */
@@ -244,48 +350,79 @@ public class NewResponse extends JPanel {
 			putValue(SHORT_DESCRIPTION, "Add conditions to this response");
 		}
 		public void actionPerformed(ActionEvent e) {
-			OpenConditions();
-		}
-	}
-	private void OpenConditions()
-	{
-		conditions = conditionsDialog.ConditionsDialog(conditions);
-		if(conditions!=null) {
-			setBackground(new Color(255,206,213));
-		} else {
-			setBackground(getParent().getBackground());
+			//Change color to less red
+			if(conditions!=null)
+				ConditionsPresent(false);
+			
+			conditions = conditionsDialog.ConditionsDialog(conditions);
+				
+			//Change color to more red
+			if(conditions!=null)
+				ConditionsPresent(true);
 		}
 	}
 	private class SwingActionClearCondition extends AbstractAction {
+
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = -31330229355713318L;
+		private static final long serialVersionUID = -6129364339935782679L;
 		public SwingActionClearCondition() {
 			putValue(NAME, "Clear conditions");
 			putValue(SHORT_DESCRIPTION, "Clear current conditions for this response");
 		}
 		public void actionPerformed(ActionEvent e) {
 			String ObjButtons[] = {"Yes","No"};
-	        int PromptResult = JOptionPane.showOptionDialog(null,"Are you sure?","Are you sure?",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE,null,ObjButtons,ObjButtons[0]);
+	        int PromptResult = JOptionPane.showOptionDialog(null,"Are you sure?","Are you sure you want to clear conditions?",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE,null,ObjButtons,ObjButtons[0]);
 	        if(PromptResult==0)
 	        {
-	        	conditions = null;
-	        	setBackground(getParent().getBackground());
+	        	//Change color to less red
+				if(conditions!=null)
+					ConditionsPresent(false);
+				conditions = null;
 	        } 
 		}
 	}
 	private class SwingActionOpenRewards extends AbstractAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -476946929815141209L;
 		public SwingActionOpenRewards() {
 			putValue(NAME, "Open rewards");
-			putValue(SHORT_DESCRIPTION, "Open the rewards editor.");
+			putValue(SHORT_DESCRIPTION, "Open the rewards window.");
 		}
 		public void actionPerformed(ActionEvent e) {
+			//Change color to less green
+			if(rewards!=null)
+				RewardsPresent(false);
+			
 			rewards = RewardsDialog.Dialog(rewards);
+				
+			//Change color to more green
+			if(rewards!=null)
+				RewardsPresent(true);
 		}
 	}
-	public void setGlobalIndex(int index) {
-		globalIndex = index;
-		System.out.println(globalIndex + "\t" + this.getName());
+	private class SwingActionClearRewards extends AbstractAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -8640629465484831938L;
+		public SwingActionClearRewards() {
+			putValue(NAME, "Clear rewards");
+			putValue(SHORT_DESCRIPTION, "Clear the rewards for this message.");
+		}
+		public void actionPerformed(ActionEvent e) {
+			String ObjButtons[] = {"Yes","No"};
+	        int PromptResult = JOptionPane.showOptionDialog(null,"Are you sure you want to clear rewards?","",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE,null,ObjButtons,ObjButtons[0]);
+	        if(PromptResult==0)
+	        {
+				//Change color to less green
+				if(rewards!=null)
+					RewardsPresent(false);
+				rewards = null;
+	        }
+		}
 	}
 }

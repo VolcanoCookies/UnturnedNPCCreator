@@ -168,29 +168,23 @@ public class FileManager
 				outputEnglish += string + "\n";
 		}
 		
-		int reply = JOptionPane.showConfirmDialog(null, outputAsset, "Confirm", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-        if (reply == JOptionPane.OK_OPTION) {
-        	int reply2 = JOptionPane.showConfirmDialog(null, outputEnglish, "Confirm", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-            if (reply2 == JOptionPane.OK_OPTION) {
-		    	BufferedWriter assetWriter;
-		    	BufferedWriter englishWriter;
-				try {
-					assetWriter = new BufferedWriter(new FileWriter(new File(Window.runningPath + "/Bundles/NPCs/Vendors/" + fileName + "/Asset.dat")));
-					assetWriter.write(outputAsset);
-		        	assetWriter.close();
-		        	englishWriter = new BufferedWriter(new FileWriter(new File(Window.runningPath + "/Bundles/NPCs/Vendors/" + fileName + "/English.dat")));
-		        	englishWriter.write(outputEnglish);
-		        	englishWriter.close();
-				} catch (IOException e) {
-					int reply3 = JOptionPane.showConfirmDialog(null, "Failed to find file, would you like to create a new character?", "File not found.", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-					if (reply3 == JOptionPane.OK_OPTION)
-					{
-						CreateEmpty(fileName, "Vendors");
-						SaveVendor(assets, basic, buying, selling, fileName);
-					}
-				}
-            }
-        }
+		BufferedWriter assetWriter;
+    	BufferedWriter englishWriter;
+    	try {
+			assetWriter = new BufferedWriter(new FileWriter(new File(Window.runningPath + "/Bundles/NPCs/Vendors/" + fileName + "/Asset.dat")));
+			assetWriter.write(outputAsset);
+        	assetWriter.close();
+        	englishWriter = new BufferedWriter(new FileWriter(new File(Window.runningPath + "/Bundles/NPCs/Vendors/" + fileName + "/English.dat")));
+        	englishWriter.write(outputEnglish);
+        	englishWriter.close();
+		} catch (IOException e) {
+			int reply3 = JOptionPane.showConfirmDialog(null, "Failed to find file, would you like to create a new vendor?", "File not found.", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+			if (reply3 == JOptionPane.OK_OPTION)
+			{
+				CreateEmpty(fileName, "Vendors");
+				SaveVendor(assets, basic, buying, selling, fileName);
+			}
+		}
 	}
 	public static void CreateEmpty(String name, String type) 
 	{

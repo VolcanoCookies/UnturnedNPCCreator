@@ -24,6 +24,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 
 import conditions.conditionsDialog;
+import objects.TextPrompt;
 
 public class VendorSelling extends JPanel {
 	/**
@@ -50,13 +51,28 @@ public class VendorSelling extends JPanel {
 	private JMenuItem menuItemVehicle;
 	//True for item, false for vehicle
 	private boolean type;
-	private JLabel lblSpawnpointName;
 	private JTextField textFieldSpawnpoint;
+	private TextPrompt textPrompt;
+	private JTextField textFieldAmount;
+	private String itemAmountOrSpawnpoint;
+	private TextPrompt textPromptID;
+	private TextPrompt textPromptPrice;
 	
-	public VendorSelling(int panelIndex, String itemPrice, String itemID, String spawnpointName, String cond, boolean panelType) {
+	public VendorSelling(int panelIndex, String itemID, String itemPrice, String itemAmountOrSpawnpoint, String cond) {
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		comp = this;
-		type = panelType;
+		this.itemAmountOrSpawnpoint = itemAmountOrSpawnpoint;
+		if(itemAmountOrSpawnpoint!=null) {
+			if(this.itemAmountOrSpawnpoint.contains(":spawnpoint")) {
+				type = false;
+			} else {
+				type = true;
+			}
+		} else {
+			type = true;
+			this.itemAmountOrSpawnpoint = "";
+		}
+		
 		conditions = cond;
 		
 		popupMenu = new JPopupMenu();
@@ -90,9 +106,9 @@ public class VendorSelling extends JPanel {
 		menuItemClearConditions.setAction(actionClearConditions);
 		popupMenu.add(menuItemClearConditions);
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{20, 40, 20, 40, 0};
+		gridBagLayout.columnWidths = new int[]{40, 20, 40, 0};
 		gridBagLayout.rowHeights = new int[]{0, 22, 0, 0};
-		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+		gridBagLayout.columnWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
@@ -101,64 +117,58 @@ public class VendorSelling extends JPanel {
 		GridBagConstraints gbc_lblBuyIndex = new GridBagConstraints();
 		gbc_lblBuyIndex.gridwidth = 3;
 		gbc_lblBuyIndex.insets = new Insets(0, 0, 5, 0);
-		gbc_lblBuyIndex.gridx = 1;
+		gbc_lblBuyIndex.gridx = 0;
 		gbc_lblBuyIndex.gridy = 0;
 		add(lblSellIndex, gbc_lblBuyIndex);
 		
 		lblSellIndex.setText("Item number " + panelIndex);
 		
-		JLabel lblID = new JLabel("ID");
-		GridBagConstraints gbc_lblID = new GridBagConstraints();
-		gbc_lblID.insets = new Insets(0, 0, 5, 5);
-		gbc_lblID.gridx = 0;
-		gbc_lblID.gridy = 1;
-		add(lblID, gbc_lblID);
-		
 		textFieldID = new JTextField();
-		textFieldID.setToolTipText("Item ID");
+		textPromptID = new TextPrompt("Item ID", textFieldID);
+		textPromptID.changeAlpha(128);
 		textFieldID.setMinimumSize(new Dimension(45, 22));
 		textFieldID.setText(itemID);
 		GridBagConstraints gbc_textFieldID = new GridBagConstraints();
 		gbc_textFieldID.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textFieldID.insets = new Insets(0, 0, 5, 5);
-		gbc_textFieldID.gridx = 1;
+		gbc_textFieldID.gridx = 0;
 		gbc_textFieldID.gridy = 1;
 		add(textFieldID, gbc_textFieldID);
 		textFieldID.setColumns(5);
 		
-		JLabel lblPrice = new JLabel("Price");
-		GridBagConstraints gbc_lblPrice = new GridBagConstraints();
-		gbc_lblPrice.insets = new Insets(0, 0, 5, 5);
-		gbc_lblPrice.gridx = 2;
-		gbc_lblPrice.gridy = 1;
-		add(lblPrice, gbc_lblPrice);
+		textFieldSpawnpoint = new JTextField();
+		textPrompt = new TextPrompt("Spawnpoint Name", textFieldSpawnpoint);
+		textPrompt.changeAlpha(128);
 		
 		textFieldPrice = new JTextField();
-		textFieldPrice.setToolTipText("Item price");
+		textPromptPrice = new TextPrompt("Price", textFieldPrice);
+		textPromptPrice.changeAlpha(128);
 		textFieldPrice.setMinimumSize(new Dimension(45, 22));
 		textFieldPrice.setColumns(5);
 		textFieldPrice.setText(itemPrice);
 		GridBagConstraints gbc_textFieldPrice = new GridBagConstraints();
-		gbc_textFieldPrice.insets = new Insets(0, 0, 5, 0);
+		gbc_textFieldPrice.insets = new Insets(0, 0, 5, 5);
 		gbc_textFieldPrice.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textFieldPrice.gridx = 3;
+		gbc_textFieldPrice.gridx = 1;
 		gbc_textFieldPrice.gridy = 1;
 		add(textFieldPrice, gbc_textFieldPrice);
 		
-		lblSpawnpointName = new JLabel("Spawnpoint Name");
-		GridBagConstraints gbc_lblSpawnpointName = new GridBagConstraints();
-		gbc_lblSpawnpointName.gridwidth = 2;
-		gbc_lblSpawnpointName.insets = new Insets(0, 0, 0, 5);
-		gbc_lblSpawnpointName.gridx = 0;
-		gbc_lblSpawnpointName.gridy = 2;
-		add(lblSpawnpointName, gbc_lblSpawnpointName);
-		
-		textFieldSpawnpoint = new JTextField();
+		textFieldAmount = new JTextField();
+		textPrompt = new TextPrompt("Amount", textFieldAmount);
+		textPrompt.changeAlpha(128);
+		textFieldAmount.setText(this.itemAmountOrSpawnpoint.split(":")[0]);
+		GridBagConstraints gbc_textFieldAmount = new GridBagConstraints();
+		gbc_textFieldAmount.insets = new Insets(0, 0, 5, 0);
+		gbc_textFieldAmount.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldAmount.gridx = 2;
+		gbc_textFieldAmount.gridy = 1;
+		add(textFieldAmount, gbc_textFieldAmount);
+		textFieldAmount.setColumns(5);
 		textFieldSpawnpoint.setToolTipText("Devkit spawnpoint name for where to spawn the vehicle when purchased");
 		GridBagConstraints gbc_textFieldSpawnpoint = new GridBagConstraints();
-		gbc_textFieldSpawnpoint.gridwidth = 2;
+		gbc_textFieldSpawnpoint.gridwidth = 3;
 		gbc_textFieldSpawnpoint.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textFieldSpawnpoint.gridx = 2;
+		gbc_textFieldSpawnpoint.gridx = 0;
 		gbc_textFieldSpawnpoint.gridy = 2;
 		add(textFieldSpawnpoint, gbc_textFieldSpawnpoint);
 		textFieldSpawnpoint.setColumns(10);
@@ -171,18 +181,18 @@ public class VendorSelling extends JPanel {
 	public String[] getValues()
 	{
 		String[] output;
+		output = new String[4];
 		if(type) {
-			output = new String[3];
+			output[2] = textFieldAmount.getText();
 		} else {
-			output = new String[4];
-			output[3] = textFieldSpawnpoint.getText();
+			output[2] = textFieldSpawnpoint.getText() + ":spawnpoint";
 		}
 		
 		output[0] = textFieldID.getText();
 		output[1] = textFieldPrice.getText();
 		if(conditions!=null)
 		{
-			output[2] = conditions;
+			output[3] = conditions;
 			System.out.println("Conditions not null");
 		} else {
 			System.out.println("Conditions null");
@@ -302,21 +312,24 @@ public class VendorSelling extends JPanel {
 		}
 		public void actionPerformed(ActionEvent e) {
 			morph(false);
-			
 		}
 	}
 	public void morph(boolean bool) {
 		type = bool;
 		if(type) {
-			textFieldID.setToolTipText("Item ID");
-			textFieldPrice.setToolTipText("Item price");
-			lblSpawnpointName.setVisible(false);
+			textPromptID.setText("Item ID");
+			textPromptPrice.setText("Item price");
 			textFieldSpawnpoint.setVisible(false);
+			textFieldAmount.setEnabled(true);
+			comp.revalidate();
 		} else {
-			textFieldID.setToolTipText("Vehicle ID");
-			textFieldPrice.setToolTipText("Vehicle price");
-			lblSpawnpointName.setVisible(true);
+			textPromptID.setText("Vehicle ID");
+			textPromptPrice.setText("Vehicle price");
 			textFieldSpawnpoint.setVisible(true);
+			textFieldSpawnpoint.setText(itemAmountOrSpawnpoint.split(":")[0]);
+			textFieldAmount.setText("");
+			textFieldAmount.setEnabled(false);
+			comp.revalidate();
 		}
 	}
 }
