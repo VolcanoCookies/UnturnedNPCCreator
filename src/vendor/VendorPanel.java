@@ -337,7 +337,7 @@ public class VendorPanel extends JPanel {
 			putValue(SHORT_DESCRIPTION, "Add an item the NPC will buy.");
 		}
 		public void actionPerformed(ActionEvent e) {
-			panelBuying.add(new VendorBuying(++BuyingPanelNumber, null, null, null));
+			panelBuying.add(new VendorBuying(++BuyingPanelNumber, null, null, null, null));
 		}
 	}
 	private class SwingActionAddSellItem extends AbstractAction {
@@ -350,7 +350,7 @@ public class VendorPanel extends JPanel {
 			putValue(SHORT_DESCRIPTION, "Add an item the NPC will sell.");
 		}
 		public void actionPerformed(ActionEvent e) {
-			panelSelling.add(new VendorSelling(++SellingPanelNumber, null, null, null, null, true));
+			panelSelling.add(new VendorSelling(++SellingPanelNumber, null, null, null, null));
 		}
 	}
 	private class SwingActionSaveVendor extends AbstractAction {
@@ -378,53 +378,57 @@ public class VendorPanel extends JPanel {
 	}
 	private static String[] getBuying()
 	{
-		String[] output = new String[1024];
-		int i = 0;
+		String output = null;
 		int index = 0;
 		String[] string;
-		output[i++] = "Buying " + panelBuying.getComponentCount();
+		output = "Buying " + panelBuying.getComponentCount() + "\n";
 		for(Component comp : panelBuying.getComponents())
 		{
 			string = ((VendorBuying) comp).getValues();
 			if(string!=null)
 			{
-				output[i++] = "Buying_" + index + "_ID " + string[0];
-				output[i++] = "Buying_" + index + "_Cost " + string[1];
-				if(string[2]!=null) {
-					output[i++] = string[2];
+				output += "Buying_" + index + "_ID " + string[0] + "\n";
+				if(string[2].length()<1)
+					output += "Buying_" + index + "_Amount 1\n";
+				else
+					output += "Buying_" + index + "_Amount " + string[2] + "\n";
+				output += "Buying_" + index + "_Cost " + string[1] + "\n";
+				if(string[3]!=null) {
+					output += string[3];
 				}
 				index++;
 			}
 		}
 		
-		return output;
+		return output.split("\n");
 	}
 	private static String[] getSelling()
 	{
-		String[] output = new String[512];
-		int i = 0;
+		String output = null;
 		int index = 0;
 		String[] string;
-		output[i++] = "Selling " + panelSelling.getComponentCount();
+		output = "Selling " + panelSelling.getComponentCount() + "\n";
 		for(Component comp : panelSelling.getComponents())
 		{
 			string = ((VendorSelling) comp).getValues();
 			if(string!=null)
 			{
-				if(string.length==4)
-					output[i++] = "Selling_" + index + "_Type Vehicle";
-				output[i++] = "Selling_" + index + "_ID " + string[0];
-				if(string.length==4)
-					output[i++] = "Selling_" + index + "_Spawnpoint " + string[3];
-				output[i++] = "Selling_" + index + "_Cost " + string[1];
+				if(string[2].contains(":spawnpoint"))
+					output += "Selling_" + index + "_Type Vehicle\n";
+				output += "Selling_" + index + "_ID " + string[0] + "\n";
+				if(string[2].contains(":spawnpoint"))
+					output += "Selling_" + index + "_Spawnpoint " + string[2].split(":")[0] + "\n";
+				else
+					output += "Selling_" + index + "_Amount " + string[2] + "\n";
+				output += "Selling_" + index + "_Cost " + string[1] + "\n";
 			}
-			if(string[2]!=null) {
-				output[i++] = string[2];
+			if(string[3]!=null) {
+				output += string[3];
 			}
 			index++;
 		}
 		
-		return output;
+		return output.split("\n");
 	}
 
 	public static void clearFields() {
@@ -474,7 +478,7 @@ public class VendorPanel extends JPanel {
 		}
 		//Set array sizes
 		sellingItems = new String[sellingPanels][4];
-		buyingItems = new String[buyingPanels][3];
+		buyingItems = new String[buyingPanels][4];
 		
 		//For amount of sellingPanels, search and find lines with correct index
 		for(int i = 0; i < sellingPanels; i++) {
@@ -490,7 +494,10 @@ public class VendorPanel extends JPanel {
 							sellingItems[i][1] = string.split(" ")[1];
 						}
 						if(string.toLowerCase().contains("selling_" + i + "_spawnpoint")) {
-							sellingItems[i][3] = string.split(" ")[1];
+							sellingItems[i][2] = string.split(" ")[1] + ":spawnpoint";
+						}
+						if(string.toLowerCase().contains("selling_" + i + "_amount")) {
+							sellingItems[i][2] = string.split(" ")[1];
 						}
 						if(string.toLowerCase().contains("selling_" + i + "_conditions")) {
 							int currentIndex = 0;
@@ -513,7 +520,7 @@ public class VendorPanel extends JPanel {
 								while(nextLine.substring(0,3).contains("//"))
 									nextLine = values[currentIndex++];
 							}
-							sellingItems[i][2] = conditions;
+							sellingItems[i][3] = conditions;
 						}
 					}
 				}
@@ -531,6 +538,9 @@ public class VendorPanel extends JPanel {
 						}
 						if(string.toLowerCase().contains("buying_" + i + "_cost")) {
 							buyingItems[i][1] = string.split(" ")[1];
+						}
+						if(string.toLowerCase().contains("buying_" + i + "_amount")) {
+							buyingItems[i][2] = string.split(" ")[1];
 						}
 						if(string.toLowerCase().contains("buying_" + i + "_conditions")) {
 							int currentIndex = 0;
@@ -553,7 +563,7 @@ public class VendorPanel extends JPanel {
 								while(nextLine.substring(0,3).contains("//"))
 									nextLine = values[currentIndex++];
 							}
-							buyingItems[i][2] = conditions;
+							buyingItems[i][3] = conditions;
 						}
 					}
 				}
@@ -562,15 +572,11 @@ public class VendorPanel extends JPanel {
 		
 		//Generate buying panels
 		for(int i = 0; i < buyingPanels; i++) {
-			panelBuying.add(new VendorBuying(i, buyingItems[i][0], buyingItems[i][1], buyingItems[i][2]));
+			panelBuying.add(new VendorBuying(i, buyingItems[i][0], buyingItems[i][1], buyingItems[i][2], buyingItems[i][3]));
 		}
 		//Generate selling panels
 		for(int i = 0; i < sellingPanels; i++) {
-			if(sellingItems[i][3]==null) {
-				panelSelling.add(new VendorSelling(i, sellingItems[i][0], sellingItems[i][1], null, sellingItems[i][2], true));
-			} else {
-				panelSelling.add(new VendorSelling(i, sellingItems[i][0], sellingItems[i][1], sellingItems[i][3], sellingItems[i][2], false));
-			}
+			panelSelling.add(new VendorSelling(i, sellingItems[i][0], sellingItems[i][1], sellingItems[i][2], sellingItems[i][3]));
 		}
 	}
 }

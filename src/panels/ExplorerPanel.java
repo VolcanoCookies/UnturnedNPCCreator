@@ -256,6 +256,16 @@ public class ExplorerPanel extends JPanel {
 					Window.panelCharacters.setVisible(true);
 					Window.panelCharacters.setEnabled(true);
 				}
+				if(path.getPathComponent(path.getPathCount()-2).toString().toLowerCase().contains("vendor")) {
+					FileManager.LoadVendor(fileRoot.getAbsolutePath().toString() + finalPath);
+					for(Component panel : Window.panelEditors.getComponents())
+					{
+						panel.setVisible(false);
+						panel.setEnabled(false);
+					}
+					Window.panelVendors.setVisible(true);
+					Window.panelVendors.setEnabled(true);
+				}
 			}
 		}
 	}

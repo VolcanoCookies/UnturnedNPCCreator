@@ -1692,13 +1692,22 @@ public class CharacterPanel extends JPanel {
 		if (buttonGroupStance.getSelection().getMnemonic() == '8') assetValues[i++] = "Pose Crouch";
 		if (buttonGroupStance.getSelection().getMnemonic() == '9') assetValues[i++] = "Pose Surrender";
 		if (checkBoxIsLeftHanded.isSelected()) assetValues[i++] = "Backwards True";
-		else assetValues[i++] = "Backwards False";
 		
-		assetValues[i++] = "Face " + ((FaceSelector) facePanel.getComponents()[0]).getFaceID();
-		String string = ((BeardSelector) beardPanel.getComponents()[0]).getBeardID();
+		if(facePanel.getComponentCount()>0)
+			assetValues[i++] = "Face " + ((FaceSelector) facePanel.getComponents()[0]).getFaceID();
+		else
+			assetValues[i++] = "Face 0";
+		String string = null;
+		if(beardPanel.getComponentCount()>0)
+			string = ((BeardSelector) beardPanel.getComponents()[0]).getBeardID();
+		else
+			string = "0";
 		if (!string.equals("0"))
 			assetValues[i++] = "Beard " + string;
-		string = ((HairSelector) hairPanel.getComponents()[0]).getHairID();
+		if(hairPanel.getComponentCount()>0)
+			string = ((HairSelector) hairPanel.getComponents()[0]).getHairID();
+		else
+			string = "0";
 		if (!string.equals("0"))
 			assetValues[i++] = "Hair " + string;
 		assetValues[i++] = "Color_Skin " + String.format("#%02X%02X%02X", sliderSkinRed.getValue(), sliderSkinGreen.getValue(), sliderSkinBlue.getValue());

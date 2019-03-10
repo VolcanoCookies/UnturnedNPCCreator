@@ -48,8 +48,6 @@ import util.Init;
 import util.OpenURL;
 import vendor.VendorPanel;
 
-import javax.swing.JScrollPane;
-
 public class Window extends JFrame { 
 	
 	
@@ -79,7 +77,7 @@ public class Window extends JFrame {
 	public final static Color DARKERBACKGROUNDCOLOR = Color.decode("#1E1A1A");
 	public final static Color FONTCOLOR = Color.decode("#E5DFC5");
 	protected JComponent panelExplorer;
-	private JPanel panelVendors;
+	public static JPanel panelVendors;
 	private JPanel panelFindID;
 	private JPanel panelDialogues;
 	public static JPanel panelCharacters;
@@ -342,16 +340,8 @@ public class Window extends JFrame {
 		selectorPanel.add(buttonVendors, gbc_buttonVendors);
 		
 		JButton buttonDialogues = new JButton("Dialogues");
-//		buttonDialogues.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseEntered(MouseEvent arg0) {
-//				buttonDialogues.setBackground(BUTTONSELECTED);
-//			}
-//			@Override
-//			public void mouseExited(MouseEvent e) {
-//				buttonDialogues.setBackground(DARKERBACKGROUNDCOLOR);
-//			}
-//		});
+		buttonDialogues.setEnabled(false);
+		buttonDialogues.setVisible(false);
 		buttonDialogues.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				for(Component panel : panelEditors.getComponents())

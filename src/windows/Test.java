@@ -1,14 +1,12 @@
 package windows;
 
-import rewards.RewardsDialog;
+import dialogueobject.Dialogue;
 
 public class Test
 {
 
-	private static String rewards;
-
 	public static void main(String[] args)
 	{
-		rewards = RewardsDialog.Dialog(null);
+		new Dialogue("C:\\Users\\frane\\Desktop\\Bundles\\NPCs\\Dialogues\\Commander\\Commander_Welcome");
 	}
 }

@@ -1,4 +1,4 @@
-package Popups;
+package popups;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

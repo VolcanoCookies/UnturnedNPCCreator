@@ -141,7 +141,7 @@ public class RewardsPanel extends JPanel {
 		//Get each separate reward and merge
 		for(Component panel : tabbedPane.getComponents())
 		{
-			output += ((NewReward) panel).ReturnRewards(i++);
+			output += ((NewReward) panel).ReturnRewards(i++) + "\n";
 		}
 		
 		//Remove last "\n"

@@ -23,6 +23,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 
 import conditions.conditionsDialog;
+import objects.TextPrompt;
 
 public class VendorBuying extends JPanel {
 	/**
@@ -42,8 +43,10 @@ public class VendorBuying extends JPanel {
 	private JMenuItem mntmRemove;
 	private JMenuItem mntmOpenConditions;
 	private JMenuItem mntmClearConditions;
+	private JTextField textFieldAmount;
+	private TextPrompt textPrompt;
 	
-	public VendorBuying(int panelIndex, String itemPrice, String itemID, String cond) {
+	public VendorBuying(int panelIndex, String itemID, String itemPrice, String itemAmount, String cond) {
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		comp = this;
 		conditions = cond;
@@ -68,9 +71,9 @@ public class VendorBuying extends JPanel {
 		mntmClearConditions.setAction(actionClearConditions);
 		popupMenu.add(mntmClearConditions);
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{20, 40, 20, 40, 0};
+		gridBagLayout.columnWidths = new int[]{40, 20, 40, 0};
 		gridBagLayout.rowHeights = new int[]{0, 22, 0};
-		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+		gridBagLayout.columnWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
@@ -79,61 +82,63 @@ public class VendorBuying extends JPanel {
 		GridBagConstraints gbc_lblBuyIndex = new GridBagConstraints();
 		gbc_lblBuyIndex.gridwidth = 3;
 		gbc_lblBuyIndex.insets = new Insets(0, 0, 5, 0);
-		gbc_lblBuyIndex.gridx = 1;
+		gbc_lblBuyIndex.gridx = 0;
 		gbc_lblBuyIndex.gridy = 0;
 		add(lblBuyIndex, gbc_lblBuyIndex);
 		
 		lblBuyIndex.setText("Item number " + panelIndex);
 		
-		JLabel lblID = new JLabel("ID");
-		GridBagConstraints gbc_lblID = new GridBagConstraints();
-		gbc_lblID.insets = new Insets(0, 0, 0, 5);
-		gbc_lblID.gridx = 0;
-		gbc_lblID.gridy = 1;
-		add(lblID, gbc_lblID);
-		
 		textFieldID = new JTextField();
+		textPrompt = new TextPrompt("Item ID", textFieldID);
+		textPrompt.changeAlpha(128);
 		textFieldID.setMinimumSize(new Dimension(45, 22));
-		textFieldID.setToolTipText("Item ID");
 		textFieldID.setText(itemID);
 		GridBagConstraints gbc_textFieldID = new GridBagConstraints();
 		gbc_textFieldID.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textFieldID.insets = new Insets(0, 0, 0, 5);
-		gbc_textFieldID.gridx = 1;
+		gbc_textFieldID.gridx = 0;
 		gbc_textFieldID.gridy = 1;
 		add(textFieldID, gbc_textFieldID);
 		textFieldID.setColumns(5);
 		
-		JLabel lblPrice = new JLabel("Price");
-		GridBagConstraints gbc_lblPrice = new GridBagConstraints();
-		gbc_lblPrice.insets = new Insets(0, 0, 0, 5);
-		gbc_lblPrice.gridx = 2;
-		gbc_lblPrice.gridy = 1;
-		add(lblPrice, gbc_lblPrice);
-		
 		textFieldPrice = new JTextField();
+		textPrompt = new TextPrompt("Price", textFieldPrice);
+		textPrompt.changeAlpha(128);
 		textFieldPrice.setMinimumSize(new Dimension(45, 22));
-		textFieldPrice.setToolTipText("Item cost");
 		textFieldPrice.setText(itemPrice);
 		textFieldPrice.setColumns(5);
 		GridBagConstraints gbc_textFieldPrice = new GridBagConstraints();
+		gbc_textFieldPrice.insets = new Insets(0, 0, 0, 5);
 		gbc_textFieldPrice.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textFieldPrice.gridx = 3;
+		gbc_textFieldPrice.gridx = 1;
 		gbc_textFieldPrice.gridy = 1;
 		add(textFieldPrice, gbc_textFieldPrice);
+		
+		textFieldAmount = new JTextField();
+		textPrompt = new TextPrompt("Amount", textFieldAmount);
+		textPrompt.changeAlpha(128);
+		textFieldAmount.setMinimumSize(new Dimension(45, 22));
+		textFieldAmount.setText(itemAmount);
+		textFieldAmount.setColumns(5);
+		GridBagConstraints gbc_textFieldAmount = new GridBagConstraints();
+		gbc_textFieldAmount.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldAmount.gridx = 2;
+		gbc_textFieldAmount.gridy = 1;
+		add(textFieldAmount, gbc_textFieldAmount);
 		
 		if(conditions!=null)
 			setBackground(new Color(255,206,213));
 	}
 	public String[] getValues()
 	{
-		String[] output = new String[3];
+		String[] output = new String[4];
 		
 		output[0] = textFieldID.getText();
 		output[1] = textFieldPrice.getText();
+		output[2] = textFieldAmount.getText();
 		if(conditions!=null)
 		{
-			output[2] = conditions;
+			output[3] = conditions;
 			System.out.println("Conditions not null");
 		} else {
 			System.out.println("Conditions null");
