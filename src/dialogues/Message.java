@@ -224,10 +224,6 @@ public class Message extends JPanel {
 		});
 	}
 	
-	int getResponseCount() {
-		return panelResponses.getComponentCount();
-	}
-	
 	private class SwingActionRemove extends AbstractAction {
 		
 		
@@ -403,6 +399,9 @@ public class Message extends JPanel {
 	public void addResponseIndex(int index) {
 		this.responseIndexes.add(index);
 	}
+	public int getResponseCount() {
+		return panelResponses.getComponentCount();
+	}
 
 	public String[] CompileMessage() {
 		//Asset.dat is 0, English.dat is 1
@@ -439,8 +438,8 @@ public class Message extends JPanel {
 		}
 		
 		//Get English text
-		for(int i = 0; i < text.size(); i++) {
-			output[1] += "Message_" + this.index + "_Page_" + i + " " + text.get(i);
+		for(int i = 0; i < textArea.getText().split("<p>").length; i++) {
+			output[1] += "Message_" + this.index + "_Page_" + i + " " +textArea.getText().split("<p>")[i];
 		}
 				
 		return output;

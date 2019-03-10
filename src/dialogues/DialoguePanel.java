@@ -1,12 +1,15 @@
 package dialogues;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ContainerAdapter;
 import java.awt.event.ContainerEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,9 +37,9 @@ public class DialoguePanel extends JPanel {
 	int numberOfResponses;
 	
 	//Messages in this dialogue
-	Message[] messages;
+	List<Message> messages = new ArrayList<Message>();
 	//Responses in this dialogue
-	Response[] responses;
+	List<Response> responses = new ArrayList<Response>();
 	
 	//Path where this dialogue was loaded from
 	String path;
@@ -171,7 +174,10 @@ public class DialoguePanel extends JPanel {
 			putValue(SHORT_DESCRIPTION, "Add a new message.");
 		}
 		public void actionPerformed(ActionEvent e) {
-			tabbedPane.addTab("Mes#" + 0, null, new Message());
+			Message mes = new Message();
+			messages.add(mes);
+			mes.setIndex(Integer.toString(messages.size() - 1));
+			tabbedPane.addTab("Mes#" + 0, null, mes);
 		}
 	}
 	private class SwingActionSaveDialogue extends AbstractAction {
@@ -220,17 +226,31 @@ public class DialoguePanel extends JPanel {
 		output[0] += "ID " + this.dialogueID + "\n";
 		output[0] += "Type Dialogue\n";
 		
+		this.messages.clear();
+		for(Component mes : tabbedPane.getComponents()) {
+			this.messages.add((Message) mes);
+			for(Component res : ((Message) mes).getResponses()) {
+				responses.add((Response) res);
+			}
+		}
+		this.numberOfMessages = this.messages.size();
+		this.numberOfResponses = this.responses.size();
+		
+		for(int i = 0; i < responses.size(); i++)
+			responses.get(i).setIndex(Integer.toString(i));
 		
 		//Get messages and responses
-		output[0] += "\n" + "Messages " + this.numberOfMessages + "\n\n";
-		for(Message mes : messages) {
+		if(this.numberOfMessages>0)
+			output[0] += "\n" + "Messages " + this.numberOfMessages + "\n\n";
+		for(Message mes : this.messages) {
 			String[] compiled = mes.CompileMessage();
 			output[0] += compiled[0] + "\n";
 			output[1] += compiled[1] + "\n";
 		}
 		output[1] += "\n";
-		output[0] += "\n" + "Responses " + this.numberOfResponses + "\n\n";
-		for(Response res : responses) {
+		if(this.numberOfResponses>0)
+			output[0] += "\n" + "Responses " + this.numberOfResponses + "\n\n";
+		for(Response res : this.responses) {
 			String[] compiled = res.CompileResponse();
 			output[0] += compiled[0] + "\n";
 			output[1] += compiled[1] + "\n";
@@ -261,54 +281,52 @@ public class DialoguePanel extends JPanel {
 		matcher.usePattern(Pattern.compile("[^_]+Messages ([0-9]+)"));
 		if(matcher.find()) {
 			numberOfMessages = Integer.valueOf(matcher.group(1));
-			messages = new Message[numberOfMessages];
 		}
 		matcher.reset();
 		matcher.usePattern(Pattern.compile("[^_]+Responses ([0-9]+)"));
 		if(matcher.find()) {
 			numberOfResponses = Integer.valueOf(matcher.group(1));
-			responses = new Response[numberOfResponses];
 		}
 			
 		//Generate messages
 		for(int i = 0; i < numberOfMessages; i++) {
-			messages[i] = new Message();
-			messages[i].setIndex(Integer.toString(i));
+			messages.set(i, new Message());
+			messages.get(i).setIndex(Integer.toString(i));
 		}
 		//Generate responses
 		for(int i = 0; i < numberOfResponses; i++) {
-			responses[i] = new Response();
-			responses[i].setIndex(Integer.toString(i));
+			responses.set(i, new Response());
+			responses.get(i).setIndex(Integer.toString(i));
 		}
 		
 		//Get message conditions
 		matcher.reset();
 		matcher.usePattern(Pattern.compile("Message_([0-9]+)_(Condition.*)"));
 		while(matcher.find()) {
-			if(messages[Integer.valueOf(matcher.group(1))].getConditions()==null)
-				messages[Integer.valueOf(matcher.group(1))].setConditions("");
-			messages[Integer.valueOf(matcher.group(1))].setConditions(messages[Integer.valueOf(matcher.group(1))].getConditions() + matcher.group(2) + "\n");
+			if(messages.get(Integer.valueOf(matcher.group(1))).getConditions()==null)
+				messages.get(Integer.valueOf(matcher.group(1))).setConditions("");
+			messages.get(Integer.valueOf(matcher.group(1))).setConditions(messages.get(Integer.valueOf(matcher.group(1))).getConditions() + matcher.group(2) + "\n");
 		}
 		//Get message rewards
 		matcher.reset();
 		matcher.usePattern(Pattern.compile("Message_([0-9]+)_(Reward.*)"));
 		while(matcher.find()) {
-			if(messages[Integer.valueOf(matcher.group(1))].getRewards()==null)
-				messages[Integer.valueOf(matcher.group(1))].setRewards("");
-			messages[Integer.valueOf(matcher.group(1))].setRewards(messages[Integer.valueOf(matcher.group(1))].getRewards() + matcher.group(2) + "\n");
+			if(messages.get(Integer.valueOf(matcher.group(1))).getRewards()==null)
+				messages.get(Integer.valueOf(matcher.group(1))).setRewards("");
+			messages.get(Integer.valueOf(matcher.group(1))).setRewards(messages.get(Integer.valueOf(matcher.group(1))).getRewards() + matcher.group(2) + "\n");
 		}
 		//Get message response indexes
 		matcher.reset();
 		matcher.usePattern(Pattern.compile("Message_([0-9]+)_Response_[0-9]+ ([0-9]+)"));
 		while(matcher.find()) {
-			messages[Integer.valueOf(matcher.group(1))].addResponseIndex(Integer.valueOf(matcher.group(2)));
+			messages.get(Integer.valueOf(matcher.group(1))).addResponseIndex(Integer.valueOf(matcher.group(2)));
 		}
 		
 		//Get message English section
 		englishMatcher.reset();
 		englishMatcher.usePattern(Pattern.compile("Message_([0-9]+)_Page_[0-9]+ (.*)"));
 		while(englishMatcher.find()) {
-			messages[Integer.valueOf(englishMatcher.group(1))].addText(englishMatcher.group(2));
+			messages.get(Integer.valueOf(matcher.group(1))).addText(englishMatcher.group(2));
 		}
 		
 		/*
@@ -319,23 +337,23 @@ public class DialoguePanel extends JPanel {
 		matcher.reset();
 		matcher.usePattern(Pattern.compile("Response_([0-9]+)_(Condition.*)"));
 		while(matcher.find()) {
-			if(responses[Integer.valueOf(matcher.group(1))].getConditions()==null)
-				responses[Integer.valueOf(matcher.group(1))].setConditions("");
-			responses[Integer.valueOf(matcher.group(1))].setConditions(responses[Integer.valueOf(matcher.group(1))].getConditions() + matcher.group(2) + "\n");
+			if(responses.get(Integer.valueOf(matcher.group(1))).getConditions()==null)
+				responses.get(Integer.valueOf(matcher.group(1))).setConditions("");
+			responses.get(Integer.valueOf(matcher.group(1))).setConditions(responses.get(Integer.valueOf(matcher.group(1))).getConditions() + matcher.group(2) + "\n");
 		}
 		//Get response rewards
 		matcher.reset();
 		matcher.usePattern(Pattern.compile("Response_([0-9]+)_(Reward.*)"));
 		while(matcher.find()) {
-			if(responses[Integer.valueOf(matcher.group(1))].getRewards()==null)
-				responses[Integer.valueOf(matcher.group(1))].setRewards("");
-			responses[Integer.valueOf(matcher.group(1))].setRewards(responses[Integer.valueOf(matcher.group(1))].getRewards() + matcher.group(2) + "\n");
+			if(responses.get(Integer.valueOf(matcher.group(1))).getRewards()==null)
+				responses.get(Integer.valueOf(matcher.group(1))).setRewards("");
+			responses.get(Integer.valueOf(matcher.group(1))).setRewards(responses.get(Integer.valueOf(matcher.group(1))).getRewards() + matcher.group(2) + "\n");
 		}
 		//Get messages to show this response for
 		matcher.reset();
 		matcher.usePattern(Pattern.compile("Response_([0-9]+)_Message_[0-9]+ ([0-9]+)"));
 		while(matcher.find()) {
-			responses[Integer.valueOf(matcher.group(1))].addMessageIndexes(Integer.valueOf(matcher.group(2)));;
+			responses.get(Integer.valueOf(matcher.group(1))).addMessageIndexes(Integer.valueOf(matcher.group(2)));;
 		}
 		
 		//Get onClick
@@ -343,25 +361,25 @@ public class DialoguePanel extends JPanel {
 		matcher.usePattern(Pattern.compile("Response_([0-9]+)_(Quest|Dialogue|Vendor) ([0-9]+)"));
 		while(matcher.find()) {
 			if(matcher.group(2).equals("Dialogue"))
-				responses[Integer.valueOf(matcher.group(1))].setDialogueID(matcher.group(3));
+				responses.get(Integer.valueOf(matcher.group(1))).setDialogueID(matcher.group(3));
 			if(matcher.group(2).equals("Quest"))
-				responses[Integer.valueOf(matcher.group(1))].setQuestID(matcher.group(3));
+				responses.get(Integer.valueOf(matcher.group(1))).setQuestID(matcher.group(3));
 			if(matcher.group(2).equals("Vendor"))
-				responses[Integer.valueOf(matcher.group(1))].setVendorID(matcher.group(3));	
+				responses.get(Integer.valueOf(matcher.group(1))).setVendorID(matcher.group(3));	
 		}
 		
 		//Get response English section
 		englishMatcher.reset();
 		englishMatcher.usePattern(Pattern.compile("Response_([0-9]+) (.*)"));
 		while(englishMatcher.find()) {
-			responses[Integer.valueOf(englishMatcher.group(1))].setText(englishMatcher.group(2));
+			responses.get(Integer.valueOf(matcher.group(1))).setText(englishMatcher.group(2));
 		}
 		
 		//Add messages to message panel
-		for(int i = 0; i < messages.length; i++) {
-			tabbedPane.addTab("Mes#" + i, messages[i]);
-			for(int ii = 0; ii < messages[i].getResponseIndexes().size(); ii++) {
-				messages[i].addResponse(responses[messages[i].getResponseIndexes().get(ii)]);
+		for(int i = 0; i < messages.size(); i++) {
+			tabbedPane.addTab("Mes#" + i, messages.get(i));
+			for(int ii = 0; ii < messages.get(i).getResponseIndexes().size(); ii++) {
+				messages.get(i).addResponse(responses.get(messages.get(i).getResponseIndexes().get(ii)));
 			}
 		}
 	}

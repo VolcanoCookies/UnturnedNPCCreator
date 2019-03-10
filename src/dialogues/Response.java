@@ -430,12 +430,12 @@ public class Response extends JPanel {
 		}
 		
 		//Get on click
-		if(this.dialogueID!=null)
-			output[0] += "Response_" + this.index + "_Dialogue " + this.dialogueID + "\n";
-		if(this.questID!=null)
-			output[0] += "Response_" + this.index + "_Quest " + this.questID + "\n";
-		if(this.vendorID!=null)
-			output[0] += "Response_" + this.index + "_Vendor " + this.vendorID + "\n";
+		if(textFieldDialogueID.getText().length()>0)
+			output[0] += "Response_" + this.index + "_Dialogue " + textFieldDialogueID.getText() + "\n";
+		if(textFieldQuestID.getText().length()>0)
+			output[0] += "Response_" + this.index + "_Quest " + textFieldQuestID.getText() + "\n";
+		if(textFieldVendorID.getText().length()>0)
+			output[0] += "Response_" + this.index + "_Vendor " + textFieldVendorID.getText() + "\n";
 		
 		//Get conditions and rewards
 		if(this.conditions!=null) {
