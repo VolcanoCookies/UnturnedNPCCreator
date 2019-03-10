@@ -11,8 +11,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -22,15 +22,32 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.LineBorder;
 
 import conditions.conditionsDialog;
 import objects.TextPrompt;
 import rewards.RewardsDialog;
-import javax.swing.JSeparator;
 
-public class NewResponse extends JPanel {
+public class Response extends JPanel {
+	
+	String index;
+	String conditions;
+	String rewards;
+	
+	//On click actions
+	String dialogueID;
+	String vendorID;
+	String questID;
+	
+	//Text to show on the button
+	String text;
+	
+	//Messages to only show this response for
+	List<Integer> messageIndexes = new ArrayList<Integer>();
 
 	/**
 	 * 
@@ -41,7 +58,6 @@ public class NewResponse extends JPanel {
 	private JLabel lblResponseIndex;
 	private final Action actionRemove = new SwingActionRemove();
 	private final Action actionOpenConditions = new SwingActionOpenConditions();
-	private String conditions;
 	private final Action actionClearCondition = new SwingActionClearCondition();
 	private JTextField textFieldDialogueID;
 	private JTextField textFieldQuestID;
@@ -49,13 +65,15 @@ public class NewResponse extends JPanel {
 	private TextPrompt textPrompt;
 	private final Action actionOpenRewards = new SwingActionOpenRewards();
 	private final Action actionClearRewards = new SwingActionClearRewards();
-	private String rewards;
 	private int globalIndex;
+	private boolean hasConditionColor = false;
+	private boolean hasRewardColor = false;
 	/**
 	 * Create the panel.
 	 * @param response 
 	 */
-	public NewResponse(String responseAsset, String responseEnglish) {
+	public Response() {
+		setBorder(new LineBorder(new Color(0, 0, 0)));
 		comp = this;
 		
 		JPopupMenu popupMenu = new JPopupMenu();
@@ -73,9 +91,9 @@ public class NewResponse extends JPanel {
 		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0};
-		gridBagLayout.rowHeights = new int[]{0, 11, 85, 0};
+		gridBagLayout.rowHeights = new int[]{0, 11, 30, 0};
 		gridBagLayout.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
 		lblResponseIndex = new JLabel("Response #");
@@ -154,6 +172,7 @@ public class NewResponse extends JPanel {
 		textAreaReply = new JTextArea();
 		textPrompt = new TextPrompt("Text shown for this button.", textAreaReply);
 		textPrompt.changeAlpha(128);
+		textAreaReply.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		textAreaReply.setToolTipText("Separate pages with <p>");
 		GridBagConstraints gbc_textAreaReply = new GridBagConstraints();
 		gbc_textAreaReply.fill = GridBagConstraints.BOTH;
@@ -181,104 +200,9 @@ public class NewResponse extends JPanel {
 			public void propertyChange(PropertyChangeEvent arg0) {
 				panelOnClick.setBackground(getBackground());
 			}
-		});
-		
-		if(responseAsset!=null && responseEnglish!=null) {
-			FillFields(responseAsset, responseEnglish);
-		}
-		
+		});		
 	}
 	
-	private void FillFields(String responseAsset, String responseEnglish) {
-		//Matcher
-		Matcher matcher;
-		
-		//Get response conditions, rewards and other info in assets
-		for(String string : responseAsset.split("\n")) {
-			if(Pattern.compile("response_[0-9]+_condition.*", Pattern.DOTALL).matcher(string.toLowerCase()).matches()) {
-				if(conditions==null)
-					conditions = "";
-				conditions += string + "\n";
-			}
-			if(Pattern.compile("response_[0-9]+_reward.*", Pattern.DOTALL).matcher(string.toLowerCase()).matches()) {
-				if(rewards==null)
-					rewards = "";
-				rewards += string + "\n";
-			}
-			if(string.toLowerCase().contains("reponse_[0-9]+_dialogue")) {
-				textFieldDialogueID.setText(string.split(" ")[1]);
-			}
-			if(string.toLowerCase().contains("reponse_[0-9]+_quest")) {
-				textFieldQuestID.setText(string.split(" ")[1]);
-			}
-			if(string.toLowerCase().contains("reponse_[0-9]+_vendor")) {
-				textFieldVendorID.setText(string.split(" ")[1]);
-			}
-		}
-		
-		//Change appropriate color
-		if(conditions!=null) {
-			ConditionsPresent(true);
-		}
-		if(rewards!=null) {
-			RewardsPresent(true);
-		}
-		
-		//Get English values
-		for(String string : responseEnglish.split("\n")) {
-			if(string.toLowerCase().contains("response_")) {
-				matcher = Pattern.compile("Response_[0-9]+ ").matcher(string);
-				textAreaReply.setText(matcher.replaceAll(""));
-			}
-		}
-		
-	}
-
-	public String[] getValues(int messageIndex)
-	{
-		//Index 0 is Asset.dat, Index 1 is English.dat
-		String[] output = new String[2];
-		output[0] = "";
-		
-		//Temporary strings
-		String rewardsOutput = null;
-		String conditionsOutput = null;
-		
-		//Add lines if conditions exist
-		if(conditions!=null) {
-			conditionsOutput = "";
-			for(String string : conditions.split("\n")) {
-				conditionsOutput += "Response_" + globalIndex + "_" + string + "\n";
-			}
-		}
-		//Add lines if rewards exist
-		if(rewards!=null) {
-			rewardsOutput = "";
-			for(String string : rewards.split("\n")) {
-				rewardsOutput += "Response_" + globalIndex + "_" + string + "\n";
-			}
-		}
-		
-		//Save onClick
-		if(textFieldDialogueID.getText().length()>0)
-			output[0] += "Response_" + globalIndex + "_Dialogue " + textFieldDialogueID.getText() + "\n";
-		if(textFieldQuestID.getText().length()>0)
-			output[0] += "Response_" + globalIndex + "_Quest " + textFieldQuestID.getText() + "\n";
-		if(textFieldVendorID.getText().length()>0)
-			output[0] += "Response_" + globalIndex + "_Vendor " + textFieldVendorID.getText() + "\n";
-		
-		//Save rewards and conditions
-		if(conditions!=null)
-			output[0] += conditionsOutput + "\n";
-		if(rewards!=null)
-			output[0] += rewardsOutput + "\n";
-		
-		//Get English.dat
-		output[1] = "Response_" + globalIndex + " " + textAreaReply.getText().replaceAll("\n", "") + "\n";
-		
-		return output;
-	}
-
 	private class SwingActionRemove extends AbstractAction {
 		private static final long serialVersionUID = -1993521655404817699L;
 		public SwingActionRemove() {
@@ -322,20 +246,29 @@ public class NewResponse extends JPanel {
 		globalIndex = index;
 	}
 	
-	public void ConditionsPresent(boolean isPresent) {
+	public void ConditionsPresent() {
 		
-		if(isPresent)
-			comp.setBackground(new Color(comp.getBackground().getRed(), comp.getBackground().getGreen() - 30, comp.getBackground().getBlue() - 30));
-		else
-			comp.setBackground(new Color(comp.getBackground().getRed(), comp.getBackground().getGreen() + 30, comp.getBackground().getBlue() + 30));
+		if(this.conditions!=null && !hasConditionColor) {
+			comp.setBackground(new Color(comp.getBackground().getRed() - 30, comp.getBackground().getGreen(), comp.getBackground().getBlue() - 30));
+			hasConditionColor = true;
+		}
+		else if (this.conditions==null && hasConditionColor){
+			comp.setBackground(new Color(comp.getBackground().getRed() + 30, comp.getBackground().getGreen(), comp.getBackground().getBlue() + 30));
+			hasConditionColor = false;
+		}
 		comp.revalidate();
 		comp.repaint();
 	}
-	public void RewardsPresent(boolean isPresent) {
-		if(isPresent)
+	public void RewardsPresent() {
+		if(this.rewards!=null && !hasRewardColor) {
 			comp.setBackground(new Color(comp.getBackground().getRed() - 30, comp.getBackground().getGreen(), comp.getBackground().getBlue() - 30));
-		else
+			hasRewardColor = true;
+		}
+		else if (this.rewards==null && hasRewardColor){
 			comp.setBackground(new Color(comp.getBackground().getRed() + 30, comp.getBackground().getGreen(), comp.getBackground().getBlue() + 30));
+			hasRewardColor = false;
+		}
+			
 		comp.revalidate();
 		comp.repaint();
 	}
@@ -354,13 +287,13 @@ public class NewResponse extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			//Change color to less red
 			if(conditions!=null)
-				ConditionsPresent(false);
+				ConditionsPresent();
 			
 			conditions = conditionsDialog.ConditionsDialog(conditions);
 				
 			//Change color to more red
 			if(conditions!=null)
-				ConditionsPresent(true);
+				ConditionsPresent();
 		}
 	}
 	private class SwingActionClearCondition extends AbstractAction {
@@ -380,7 +313,7 @@ public class NewResponse extends JPanel {
 	        {
 	        	//Change color to less red
 				if(conditions!=null)
-					ConditionsPresent(false);
+					ConditionsPresent();
 				conditions = null;
 	        } 
 		}
@@ -397,13 +330,13 @@ public class NewResponse extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			//Change color to less green
 			if(rewards!=null)
-				RewardsPresent(false);
+				RewardsPresent();
 			
 			rewards = RewardsDialog.Dialog(rewards);
 				
 			//Change color to more green
 			if(rewards!=null)
-				RewardsPresent(true);
+				RewardsPresent();
 		}
 	}
 	private class SwingActionClearRewards extends AbstractAction {
@@ -422,9 +355,103 @@ public class NewResponse extends JPanel {
 	        {
 				//Change color to less green
 				if(rewards!=null)
-					RewardsPresent(false);
+					RewardsPresent();
 				rewards = null;
 	        }
 		}
+	}
+	public String getIndex() {
+		return index;
+	}
+	public void setIndex(String index) {
+		this.index = index;
+	}
+	public String getConditions() {
+		return conditions;
+	}
+	public void setConditions(String conditions) {
+		ConditionsPresent();
+		this.conditions = conditions;
+	}
+	public String getRewards() {
+		return rewards;
+	}
+	public void setRewards(String rewards) {
+		RewardsPresent();
+		this.rewards = rewards;
+	}
+	public String getDialogueID() {
+		return dialogueID;
+	}
+	public void setDialogueID(String dialogueID) {
+		textFieldDialogueID.setText(dialogueID);
+		this.dialogueID = dialogueID;
+	}
+	public String getVendorID() {
+		return vendorID;
+	}
+	public void setVendorID(String vendorID) {
+		textFieldVendorID.setText(vendorID);
+		this.vendorID = vendorID;
+	}
+	public String getQuestID() {
+		return questID;
+	}
+	public void setQuestID(String questID) {
+		textFieldQuestID.setText(questID);
+		this.questID = questID;
+	}
+	public String getText() {
+		return text;
+	}
+	public void setText(String text) {
+		textAreaReply.setText(text);
+		this.text = text;
+	}
+	public List<Integer> getMessageIndexes() {
+		return messageIndexes;
+	}
+	public void addMessageIndexes(int index) {
+		this.messageIndexes.add(index);
+	}
+
+	public String[] CompileResponse() {
+		//Asset.dat is 0, English.dat is 1
+		String output[] = new String[2];
+		output[0] = "";
+		output[1] = "";
+		
+		//Get messages to show response for
+		if(this.messageIndexes.size()>0) {
+			output[0] += "Response_" + this.index + "_Messages " + this.messageIndexes.size() + "\n";
+			for(int i = 0; i < this.messageIndexes.size(); i++) {
+				output[0] += "Response_" + this.index + "_Message_" + i + " " + this.messageIndexes.get(i) + "\n";
+			}
+		}
+		
+		//Get on click
+		if(this.dialogueID!=null)
+			output[0] += "Response_" + this.index + "_Dialogue " + this.dialogueID + "\n";
+		if(this.questID!=null)
+			output[0] += "Response_" + this.index + "_Quest " + this.questID + "\n";
+		if(this.vendorID!=null)
+			output[0] += "Response_" + this.index + "_Vendor " + this.vendorID + "\n";
+		
+		//Get conditions and rewards
+		if(this.conditions!=null) {
+			for(String string : this.conditions.split("\n")) {
+				output[0] += "Response_" + this.index + "_" + string + "\n";
+			}
+		}
+		if(this.rewards!=null) {
+			for(String string : this.rewards.split("\n")) {
+				output[0] += "Response_" + this.index + "_" + string + "\n";
+			}
+		}
+		
+		//Get response button text
+		output[1] += "Reponse_" + this.index + " " + textAreaReply.getText();
+		
+		return output;
 	}
 }

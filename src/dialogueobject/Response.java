@@ -3,7 +3,7 @@ package dialogueobject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Response {
+class Response {
 	
 	String index;
 	String conditions;
@@ -21,7 +21,7 @@ public class Response {
 	List<Integer> messageIndexes = new ArrayList<Integer>();
 
 
-	Response() {
+	public Response() {
 		
 	}
 	
@@ -72,5 +72,42 @@ public class Response {
 	}
 	public void addMessageIndexes(int index) {
 		this.messageIndexes.add(index);
+	}
+
+	public String[] CompileResponse() {
+		//Asset.dat is 0, English.dat is 1
+		String output[] = new String[2];
+		output[0] = "";
+		output[1] = "";
+		
+		//Get messages to show response for
+		if(this.messageIndexes.size()>0) {
+			output[0] += "Response_" + this.index + "_Messages " + this.messageIndexes.size() + "\n";
+			for(int i = 0; i < this.messageIndexes.size(); i++) {
+				output[0] += "Response_" + this.index + "_Message_" + i + " " + this.messageIndexes.get(i) + "\n";
+			}
+		}
+		
+		//Get on click
+		if(this.dialogueID!=null)
+			output[0] += "Response_" + this.index + "_Dialogue " + this.dialogueID + "\n";
+		if(this.questID!=null)
+			output[0] += "Response_" + this.index + "_Quest " + this.questID + "\n";
+		if(this.vendorID!=null)
+			output[0] += "Response_" + this.index + "_Vendor " + this.vendorID + "\n";
+		
+		//Get conditions and rewards
+		if(this.conditions!=null) {
+			for(String string : this.conditions.split("\n")) {
+				output[0] += "Response_" + this.index + "_" + string + "\n";
+			}
+		}
+		if(this.rewards!=null) {
+			for(String string : this.rewards.split("\n")) {
+				output[0] += "Response_" + this.index + "_" + string + "\n";
+			}
+		}
+		
+		return output;
 	}
 }

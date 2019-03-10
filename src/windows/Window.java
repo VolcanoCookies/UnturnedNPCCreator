@@ -223,20 +223,10 @@ public class Window extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		setContentPane(contentPane);
-		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[]{116, 300, 0};
-		gbl_contentPane.rowHeights = new int[]{540, 0};
-		gbl_contentPane.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-		gbl_contentPane.rowWeights = new double[]{1.0, Double.MIN_VALUE};
-		contentPane.setLayout(gbl_contentPane);
+		contentPane.setLayout(new BorderLayout(0, 0));
 		
 		JPanel selectorPanel = new JPanel();
-		GridBagConstraints gbc_selectorPanel = new GridBagConstraints();
-		gbc_selectorPanel.insets = new Insets(0, 0, 0, 5);
-		gbc_selectorPanel.fill = GridBagConstraints.BOTH;
-		gbc_selectorPanel.gridx = 0;
-		gbc_selectorPanel.gridy = 0;
-		contentPane.add(selectorPanel, gbc_selectorPanel);
+		contentPane.add(selectorPanel, BorderLayout.WEST);
 		GridBagLayout gbl_selectorPanel = new GridBagLayout();
 		gbl_selectorPanel.columnWidths = new int[]{11, 0};
 		gbl_selectorPanel.rowHeights = new int[]{116, 35, 35, 0, 35, 35, 0};
@@ -340,8 +330,6 @@ public class Window extends JFrame {
 		selectorPanel.add(buttonVendors, gbc_buttonVendors);
 		
 		JButton buttonDialogues = new JButton("Dialogues");
-		buttonDialogues.setEnabled(false);
-		buttonDialogues.setVisible(false);
 		buttonDialogues.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				for(Component panel : panelEditors.getComponents())
@@ -404,11 +392,7 @@ public class Window extends JFrame {
 //		selectorPanel.add(buttonQuests, gbc_buttonQuests);
 //		
 		panelEditors = new JPanel();
-		GridBagConstraints gbc_editorsPanel = new GridBagConstraints();
-		gbc_editorsPanel.fill = GridBagConstraints.BOTH;
-		gbc_editorsPanel.gridx = 1;
-		gbc_editorsPanel.gridy = 0;
-		contentPane.add(panelEditors, gbc_editorsPanel);
+		contentPane.add(panelEditors);
 		panelEditors.setLayout(new CardLayout(0, 0));
 		
 		panelExplorer = new JPanel();

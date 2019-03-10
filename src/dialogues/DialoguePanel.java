@@ -1,10 +1,8 @@
 package dialogues;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ContainerAdapter;
@@ -18,12 +16,31 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 import filemanagement.LoadDialogue;
+import filemanagement.SaveDialogue;
+import popups.fileChooser;
 
 public class DialoguePanel extends JPanel {
+	
+	String GUID;
+	String dialogueID;
+	
+	//Number of messages and responses
+	int numberOfMessages;
+	int numberOfResponses;
+	
+	//Messages in this dialogue
+	Message[] messages;
+	//Responses in this dialogue
+	Response[] responses;
+	
+	//Path where this dialogue was loaded from
+	String path;
+	
 	/**
 	 * 
 	 */
@@ -32,9 +49,10 @@ public class DialoguePanel extends JPanel {
 	private final Action actionLoad = new SwingActionLoad();
 	private final Action actionAddMessage = new SwingActionAddMessage();
 	private static JTextField textFieldDialogueID;
-	private static JPanel panelMessages;
+	static int index;
 	private final Action actionSaveDialogue = new SwingActionSaveDialogue();
-
+	private static JTabbedPane tabbedPane;
+	
 	/**
 	 * Create the panel.
 	 */
@@ -42,26 +60,18 @@ public class DialoguePanel extends JPanel {
 		setLayout(new BorderLayout(0, 0));
 		
 		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setViewportBorder(null);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		add(scrollPane);
 		
 		JPanel panel = new JPanel();
-		scrollPane.setViewportView(panel);
-		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[]{61, 0};
-		gbl_panel.rowHeights = new int[]{43, 160, 0, 0, 0, 0};
-		gbl_panel.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
-		panel.setLayout(gbl_panel);
+		add(panel, BorderLayout.CENTER);
+		panel.setLayout(new BorderLayout(0, 0));
 		
 		JPanel panelBasic = new JPanel();
-		GridBagConstraints gbc_panelBasic = new GridBagConstraints();
-		gbc_panelBasic.insets = new Insets(0, 0, 5, 0);
-		gbc_panelBasic.fill = GridBagConstraints.BOTH;
-		gbc_panelBasic.gridx = 0;
-		gbc_panelBasic.gridy = 0;
-		panel.add(panelBasic, gbc_panelBasic);
+		panel.add(panelBasic, BorderLayout.NORTH);
 		GridBagLayout gbl_panelBasic = new GridBagLayout();
 		gbl_panelBasic.columnWidths = new int[]{91, 0, 0, 0};
 		gbl_panelBasic.rowHeights = new int[]{0, 0, 0};
@@ -69,12 +79,12 @@ public class DialoguePanel extends JPanel {
 		gbl_panelBasic.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
 		panelBasic.setLayout(gbl_panelBasic);
 		
-		JLabel lblFolderName = new JLabel("Folder name");
-		GridBagConstraints gbc_lblFolderName = new GridBagConstraints();
-		gbc_lblFolderName.insets = new Insets(0, 0, 5, 5);
-		gbc_lblFolderName.gridx = 0;
-		gbc_lblFolderName.gridy = 0;
-		panelBasic.add(lblFolderName, gbc_lblFolderName);
+		JLabel lblDialoguePath = new JLabel("Dialogue path");
+		GridBagConstraints gbc_lblDialoguePath = new GridBagConstraints();
+		gbc_lblDialoguePath.insets = new Insets(0, 0, 5, 5);
+		gbc_lblDialoguePath.gridx = 0;
+		gbc_lblDialoguePath.gridy = 0;
+		panelBasic.add(lblDialoguePath, gbc_lblDialoguePath);
 		
 		textFieldFolderName = new JTextField();
 		GridBagConstraints gbc_textFieldFolderName = new GridBagConstraints();
@@ -96,7 +106,6 @@ public class DialoguePanel extends JPanel {
 		
 		JLabel lblDialogueId = new JLabel("Dialogue ID");
 		GridBagConstraints gbc_lblDialogueId = new GridBagConstraints();
-		gbc_lblDialogueId.anchor = GridBagConstraints.EAST;
 		gbc_lblDialogueId.insets = new Insets(0, 0, 0, 5);
 		gbc_lblDialogueId.gridx = 0;
 		gbc_lblDialogueId.gridy = 1;
@@ -111,70 +120,32 @@ public class DialoguePanel extends JPanel {
 		gbc_textFieldDialogueID.gridy = 1;
 		panelBasic.add(textFieldDialogueID, gbc_textFieldDialogueID);
 		
-		panelMessages = new JPanel();
-		panelMessages.addContainerListener(new ContainerAdapter() {
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.addContainerListener(new ContainerAdapter() {
 			@Override
-			public void componentAdded(ContainerEvent arg0) {
-				for(int i = 0; i < panelMessages.getComponentCount(); i++)
-				{
-					((NewMessage) panelMessages.getComponent(i)).ChangeIndex(i);
-				}
-				panelMessages.repaint();
-				panelMessages.revalidate();
+			public void componentAdded(ContainerEvent e) {
+				tabbedPane.revalidate();
+				tabbedPane.repaint();
 			}
-			@Override
 			public void componentRemoved(ContainerEvent e) {
-				for(int i = 0; i < panelMessages.getComponentCount(); i++)
-				{
-					((NewMessage) panelMessages.getComponent(i)).ChangeIndex(i);
-				}
-				panelMessages.repaint();
-				panelMessages.revalidate();
+				tabbedPane.revalidate();
+				tabbedPane.repaint();
 			}
 		});
-		GridBagConstraints gbc_panelMessages = new GridBagConstraints();
-		gbc_panelMessages.insets = new Insets(0, 0, 5, 0);
-		gbc_panelMessages.fill = GridBagConstraints.BOTH;
-		gbc_panelMessages.gridx = 0;
-		gbc_panelMessages.gridy = 1;
-		panel.add(panelMessages, gbc_panelMessages);
-		panelMessages.setLayout(new GridLayout(0, 1, 0, 10));
+		panel.add(tabbedPane, BorderLayout.CENTER);
+		
+		JPanel panelButtons = new JPanel();
+		panel.add(panelButtons, BorderLayout.SOUTH);
+		panelButtons.setLayout(new BorderLayout(0, 0));
 		
 		JButton buttonAddReply = new JButton("New button");
+		panelButtons.add(buttonAddReply);
 		buttonAddReply.setAction(actionAddMessage);
-		GridBagConstraints gbc_buttonAddReply = new GridBagConstraints();
-		gbc_buttonAddReply.insets = new Insets(0, 0, 5, 0);
-		gbc_buttonAddReply.anchor = GridBagConstraints.NORTH;
-		gbc_buttonAddReply.gridx = 0;
-		gbc_buttonAddReply.gridy = 2;
-		panel.add(buttonAddReply, gbc_buttonAddReply);
 		
 		JButton button = new JButton("New button");
+		panelButtons.add(button, BorderLayout.SOUTH);
 		button.setAction(actionSaveDialogue);
-		GridBagConstraints gbc_button = new GridBagConstraints();
-		gbc_button.insets = new Insets(0, 0, 5, 0);
-		gbc_button.gridx = 0;
-		gbc_button.gridy = 3;
-		panel.add(button, gbc_button);
-		
-		reorganizeGlobalIndex();
 
-	}
-	
-	static void reorganizeGlobalIndex() {
-		
-		int indexResponses = 0;
-		int indexMessages = 0;
-		
-		//Redistribute global index
-		for(Component message : panelMessages.getComponents()) {
-			((NewMessage) message).ChangeIndex(indexMessages++);
-			if(((NewMessage) message).getResponses()!=null) {
-				for(Component response : ((NewMessage) message).getResponses()) {
-					((NewResponse) response).setGlobalIndex(indexResponses++);
-				}
-			}
-		}
 	}
 
 	private class SwingActionLoad extends AbstractAction {
@@ -187,7 +158,7 @@ public class DialoguePanel extends JPanel {
 			putValue(SHORT_DESCRIPTION, "Load dialogues");
 		}
 		public void actionPerformed(ActionEvent e) {
-			FillFields(LoadDialogue.loadDialogue(textFieldFolderName.getText()));
+			LoadDialogue(LoadDialogue.loadDialogue(textFieldFolderName.getText()));
 		}
 	}
 	private class SwingActionAddMessage extends AbstractAction {
@@ -200,8 +171,7 @@ public class DialoguePanel extends JPanel {
 			putValue(SHORT_DESCRIPTION, "Add a new message.");
 		}
 		public void actionPerformed(ActionEvent e) {
-			panelMessages.add(new NewMessage(0, null));
-			reorganizeGlobalIndex();
+			tabbedPane.addTab("Mes#" + 0, null, new Message());
 		}
 	}
 	private class SwingActionSaveDialogue extends AbstractAction {
@@ -214,39 +184,18 @@ public class DialoguePanel extends JPanel {
 			putValue(SHORT_DESCRIPTION, "Save the dialogue.");
 		}
 		public void actionPerformed(ActionEvent e) {
-			Save();
+			String path = fileChooser.FileChooser();
+			if(path!=null)
+				SaveDialogue.Save(CompileDialogue(), path);
 		}
 	}
-	public static void Save() {
-		//Index 0 is for Asset.dat, Index 1 is for English.dat
-		String[] output = new String[2];
-		
-		output[1] = "";
-		
-		//Assign type and ID
-		output[0] = "Type Dialogue\n";
-		output[0] += "ID " + textFieldDialogueID.getText() + "\n\n";
-		
-		//Number of messages
-		output[0] += "Messages " + panelMessages.getComponentCount() + "\n";
-		
-		//Get all message windows
-		for(Component comp : panelMessages.getComponents()) {
-			output[0] += ((NewMessage) comp).getValues()[0] + "\n";
-			output[1] += ((NewMessage) comp).getValues()[1] + "\n";
-		}
-		
-		System.out.println(output[0]);
-		System.out.println(output[1]);
-		
-	}
-
+	
 	public void FillFields(String[] values) {
 		
 		//Remove any existing messages etc
-		panelMessages.removeAll();
+		tabbedPane.removeAll();
 		
-		//Temp values
+		//Temporary values
 		int noMessages = 0;
 		
 		//Get number of messages
@@ -256,86 +205,164 @@ public class DialoguePanel extends JPanel {
 		
 		//Create new messages
 		for(int i = 0; i < noMessages; i++) {
-			panelMessages.add(new NewMessage(i, values));
+			tabbedPane.add(new Message());
 		}
 	}
 	
-	public void OldFillFields(String[][] values) {
+	private String[] CompileDialogue() {
+		//Asset.dat is 0, English.dat is 1
+		String output[] = new String[2];
+		output[0] = "";
+		output[1] = "";
 		
-		//Temporary values
-		String[][] messages = null;
-		String[][] responses = null;
-		String[] messageResponses = new String[2];
+		//Get ID, GUID and set type
+		output[0] += "GUID " + this.GUID + "\n";
+		output[0] += "ID " + this.dialogueID + "\n";
+		output[0] += "Type Dialogue\n";
+		
+		
+		//Get messages and responses
+		output[0] += "\n" + "Messages " + this.numberOfMessages + "\n\n";
+		for(Message mes : messages) {
+			String[] compiled = mes.CompileMessage();
+			output[0] += compiled[0] + "\n";
+			output[1] += compiled[1] + "\n";
+		}
+		output[1] += "\n";
+		output[0] += "\n" + "Responses " + this.numberOfResponses + "\n\n";
+		for(Response res : responses) {
+			String[] compiled = res.CompileResponse();
+			output[0] += compiled[0] + "\n";
+			output[1] += compiled[1] + "\n";
+		}
+		
+		return output;
+	}
+	private void LoadDialogue(String values[]) {
+		
+		//Matchers to use for everything
+		Matcher matcher = Pattern.compile("").matcher(values[0]);
+		Matcher englishMatcher = Pattern.compile("").matcher(values[1]);
+
+		//Get ID and GUID
+		matcher.reset();
+		matcher.usePattern(Pattern.compile("ID ([0-9]+)"));
+		if(matcher.find()) {
+			this.dialogueID = matcher.group(1);
+			textFieldDialogueID.setText(this.dialogueID);
+		}
+		matcher.reset();
+		matcher.usePattern(Pattern.compile("GUID (.+)"));
+		if(matcher.find())
+			this.GUID = matcher.group(1);
 		
 		//Get number of messages and responses
-		for(String string : values[0]) {
-			if(string.toLowerCase().contains("messages ") && !string.toLowerCase().contains("_messages")) {
-				messages = new String[2][Integer.valueOf(string.split(" ")[1])];
-			}
-			if(string.toLowerCase().contains("responses ") && !string.toLowerCase().contains("_responses")) {
-				responses = new String[2][Integer.valueOf(string.split(" ")[1])];
-			}
+		matcher.reset();
+		matcher.usePattern(Pattern.compile("[^_]+Messages ([0-9]+)"));
+		if(matcher.find()) {
+			numberOfMessages = Integer.valueOf(matcher.group(1));
+			messages = new Message[numberOfMessages];
 		}
-		
-		//Replace all content with "" so you can use +=
-		for(int i = 0; i < messages[0].length; i++) {
-			for(int ii = 0; ii < 2; ii++) {
-				messages[ii][i] = "";
-			}
+		matcher.reset();
+		matcher.usePattern(Pattern.compile("[^_]+Responses ([0-9]+)"));
+		if(matcher.find()) {
+			numberOfResponses = Integer.valueOf(matcher.group(1));
+			responses = new Response[numberOfResponses];
 		}
-		//Replace all content with "" so you can use +=
-		for(int i = 0; i < responses[0].length; i++) {
-			for(int ii = 0; ii < 2; ii++) {
-				responses[ii][i] = "";
-			}
-		}
-		
-		//Iterate Asset data
-		for(String string : values[0]) {
-			if(string.toLowerCase().matches("message_[0-9]+_.*")) {
-				messages[0][Integer.valueOf(string.toLowerCase().split("_")[1])] += string + "\n";
-			}
-			if(string.toLowerCase().matches("response_[0-9]+_.*")) {
-				responses[0][Integer.valueOf(string.toLowerCase().split("_")[1])] += string + "\n";
-			}
-		}
-		//Iterate English data
-		for(String string : values[1]) {
-			if(string.toLowerCase().matches("message_[0-9]+_page_[0-9]+.*")) {
-				messages[1][Integer.valueOf(string.toLowerCase().split("_")[1])] += string + "\n";
-			}
-			if(string.toLowerCase().matches("response_[0-9]+.*")) {
-				responses[1][Integer.valueOf(string.toLowerCase().split("_")[1].split(" ")[0])] = string;
-			}
-		}
-		
-		//Assign responses to messages then create the message.
-		for(int ii = 0; ii < messages[0].length; ii++) {
-			Matcher matcher = Pattern.compile(".*message_" + ii + "_responses ([0-9]+).*").matcher(messages[0][ii].toLowerCase().replaceAll("\n", "").replaceAll("\r", ""));
-			if(matcher.matches()) {
-				messageResponses[0] = "";
-				messageResponses[1] = "";
-			}
-			if(matcher.groupCount()>1) {
-				for(int i = 0; i < Integer.valueOf(matcher.group(1)); i++) {
-					matcher = Pattern.compile(".*message_" + ii + "_response_" + i + " ([0-9]+).*").matcher(messages[0][i].toLowerCase().replaceAll("\n", "").replaceAll("\r", ""));
-					if(matcher.matches()) {
-						messageResponses[0] += responses[0][Integer.valueOf(matcher.group(1))] + ":::";
-						messageResponses[1] += responses[1][Integer.valueOf(matcher.group(1))] + ":::";
-					}
-				}
-			}
 			
-			panelMessages.add(new NewMessage(messages[0][ii], messages[1][ii], messageResponses));
+		//Generate messages
+		for(int i = 0; i < numberOfMessages; i++) {
+			messages[i] = new Message();
+			messages[i].setIndex(Integer.toString(i));
+		}
+		//Generate responses
+		for(int i = 0; i < numberOfResponses; i++) {
+			responses[i] = new Response();
+			responses[i].setIndex(Integer.toString(i));
 		}
 		
-//		for(String string : messages[0]) {
-//			System.out.println(string);
-//			System.out.println("____________________________");
-//		}
-//		for(String string : messages[1]) {
-//			System.out.println(string);
-//			System.out.println("____________________________");
-//		}
+		//Get message conditions
+		matcher.reset();
+		matcher.usePattern(Pattern.compile("Message_([0-9]+)_(Condition.*)"));
+		while(matcher.find()) {
+			if(messages[Integer.valueOf(matcher.group(1))].getConditions()==null)
+				messages[Integer.valueOf(matcher.group(1))].setConditions("");
+			messages[Integer.valueOf(matcher.group(1))].setConditions(messages[Integer.valueOf(matcher.group(1))].getConditions() + matcher.group(2) + "\n");
+		}
+		//Get message rewards
+		matcher.reset();
+		matcher.usePattern(Pattern.compile("Message_([0-9]+)_(Reward.*)"));
+		while(matcher.find()) {
+			if(messages[Integer.valueOf(matcher.group(1))].getRewards()==null)
+				messages[Integer.valueOf(matcher.group(1))].setRewards("");
+			messages[Integer.valueOf(matcher.group(1))].setRewards(messages[Integer.valueOf(matcher.group(1))].getRewards() + matcher.group(2) + "\n");
+		}
+		//Get message response indexes
+		matcher.reset();
+		matcher.usePattern(Pattern.compile("Message_([0-9]+)_Response_[0-9]+ ([0-9]+)"));
+		while(matcher.find()) {
+			messages[Integer.valueOf(matcher.group(1))].addResponseIndex(Integer.valueOf(matcher.group(2)));
+		}
+		
+		//Get message English section
+		englishMatcher.reset();
+		englishMatcher.usePattern(Pattern.compile("Message_([0-9]+)_Page_[0-9]+ (.*)"));
+		while(englishMatcher.find()) {
+			messages[Integer.valueOf(englishMatcher.group(1))].addText(englishMatcher.group(2));
+		}
+		
+		/*
+		 * RESPONSE SECTION
+		 */
+		
+		//Get response conditions
+		matcher.reset();
+		matcher.usePattern(Pattern.compile("Response_([0-9]+)_(Condition.*)"));
+		while(matcher.find()) {
+			if(responses[Integer.valueOf(matcher.group(1))].getConditions()==null)
+				responses[Integer.valueOf(matcher.group(1))].setConditions("");
+			responses[Integer.valueOf(matcher.group(1))].setConditions(responses[Integer.valueOf(matcher.group(1))].getConditions() + matcher.group(2) + "\n");
+		}
+		//Get response rewards
+		matcher.reset();
+		matcher.usePattern(Pattern.compile("Response_([0-9]+)_(Reward.*)"));
+		while(matcher.find()) {
+			if(responses[Integer.valueOf(matcher.group(1))].getRewards()==null)
+				responses[Integer.valueOf(matcher.group(1))].setRewards("");
+			responses[Integer.valueOf(matcher.group(1))].setRewards(responses[Integer.valueOf(matcher.group(1))].getRewards() + matcher.group(2) + "\n");
+		}
+		//Get messages to show this response for
+		matcher.reset();
+		matcher.usePattern(Pattern.compile("Response_([0-9]+)_Message_[0-9]+ ([0-9]+)"));
+		while(matcher.find()) {
+			responses[Integer.valueOf(matcher.group(1))].addMessageIndexes(Integer.valueOf(matcher.group(2)));;
+		}
+		
+		//Get onClick
+		matcher.reset();
+		matcher.usePattern(Pattern.compile("Response_([0-9]+)_(Quest|Dialogue|Vendor) ([0-9]+)"));
+		while(matcher.find()) {
+			if(matcher.group(2).equals("Dialogue"))
+				responses[Integer.valueOf(matcher.group(1))].setDialogueID(matcher.group(3));
+			if(matcher.group(2).equals("Quest"))
+				responses[Integer.valueOf(matcher.group(1))].setQuestID(matcher.group(3));
+			if(matcher.group(2).equals("Vendor"))
+				responses[Integer.valueOf(matcher.group(1))].setVendorID(matcher.group(3));	
+		}
+		
+		//Get response English section
+		englishMatcher.reset();
+		englishMatcher.usePattern(Pattern.compile("Response_([0-9]+) (.*)"));
+		while(englishMatcher.find()) {
+			responses[Integer.valueOf(englishMatcher.group(1))].setText(englishMatcher.group(2));
+		}
+		
+		//Add messages to message panel
+		for(int i = 0; i < messages.length; i++) {
+			tabbedPane.addTab("Mes#" + i, messages[i]);
+			for(int ii = 0; ii < messages[i].getResponseIndexes().size(); ii++) {
+				messages[i].addResponse(responses[messages[i].getResponseIndexes().get(ii)]);
+			}
+		}
 	}
 }

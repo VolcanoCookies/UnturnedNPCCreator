@@ -3,7 +3,7 @@ package dialogueobject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Message {
+class Message {
 
 	String index;
 	String conditions;
@@ -13,12 +13,12 @@ public class Message {
 	List<Integer> responseIndexes = new ArrayList<Integer>();
 	
 	//Array is for pages.
-	String[] text;
+	List<String> text = new ArrayList<String>();
 	
 	//Index of message to go back to
-	int returnMessageIndex;
+	int returnMessageIndex = 0;
 	
-	Message() {
+	public Message() {
 		
 	}
 	
@@ -46,11 +46,11 @@ public class Message {
 	public void setResponseIndexes(List<Integer> responseIndexes) {
 		this.responseIndexes = responseIndexes;
 	}
-	public String[] getText() {
+	public List<String> getText() {
 		return text;
 	}
-	public void setText(String[] text) {
-		this.text = text;
+	public void addText(String text) {
+		this.text.add(text);
 	}
 	public int getReturnMessageIndex() {
 		return returnMessageIndex;
@@ -61,5 +61,44 @@ public class Message {
 	}
 	public void addResponseIndex(int index) {
 		this.responseIndexes.add(index);
+	}
+
+	public String[] CompileMessage() {
+		//Asset.dat is 0, English.dat is 1
+		String output[] = new String[2];
+		output[0] = "";
+		output[1] = "";
+		
+		//Get responses
+		if(this.responseIndexes.size()>0) {
+			output[0] += "Message_" + this.index + "_Responses " + this.responseIndexes.size() + "\n";
+			for(int i = 0; i < this.responseIndexes.size(); i++) {
+				output[0] += "Message_" + this.index + "_Response_" + i + " " + this.responseIndexes.get(i) + "\n";
+			}
+		}
+		
+		//Get previous dialogue to go back to
+		if(this.returnMessageIndex!=0)
+			output[0] += "Message_" + this.index + "_Prev " + this.returnMessageIndex + "\n";
+		
+		//Get message conditions and rewards
+		if(this.conditions!=null) {
+			for(String string : this.conditions.split("\n")) {
+				output[0] += "Message_" + this.index + "_" + string + "\n";
+			}
+		}
+		if(this.rewards!=null) {
+			for(String string : this.rewards.split("\n")) {
+				output[0] += "Message_" + this.index + "_" + string + "\n";
+			}
+		}
+		
+		//Get English text
+		for(int i = 0; i < text.size(); i++) {
+			output[1] += "Message_" + this.index + "_Page_" + text.get(i);
+		}
+		
+				
+		return output;
 	}
 }

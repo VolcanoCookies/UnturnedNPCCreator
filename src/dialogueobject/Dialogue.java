@@ -8,7 +8,7 @@ import filemanagement.LoadDialogue;
 public class Dialogue {
 
 	String GUID;
-	String diualogueID;
+	String dialogueID;
 	
 	//Number of messages and responses
 	int numberOfMessages;
@@ -25,14 +25,47 @@ public class Dialogue {
 	public Dialogue(String path) {
 		
 		this.path = path;
-		LoadDialogue(LoadDialogue.loadDialogue(path));
+		if(path!=null)
+			LoadDialogue(LoadDialogue.loadDialogue(path));
+		CompileDialogue();
+	}
+	private String[] CompileDialogue() {
+		//Asset.dat is 0, English.dat is 1
+		String output[] = new String[2];
+		output[0] = "";
+		output[1] = "";
+		
+		//Get ID, GUID and set type
+		output[0] += "GUID " + this.GUID + "\n";
+		output[0] += "ID " + this.dialogueID + "\n";
+		output[0] += "Type Dialogue\n";
 		
 		
+		//Get messages and responses
+		output[0] += "\n" + "Messages " + this.numberOfMessages + "\n\n";
+		for(Message mes : messages) {
+			String[] compiled = mes.CompileMessage();
+			output[0] += compiled[0] + "\n";
+			output[1] += compiled[1] + "\n";
+		}
+		output[0] += "\n" + "Responses " + this.numberOfResponses + "\n\n";
+		for(Response res : responses) {
+			String[] compiled = res.CompileResponse();
+			output[0] += compiled[0] + "\n";
+			output[1] += compiled[1] + "\n";
+		}
+		
+		System.out.println(output[0]);
+		System.out.println("##############\n##############\n");
+		System.out.println(output[1]);
+		
+		return output;
 	}
 	private void LoadDialogue(String values[]) {
 		
 		//Matcher to use for everything
 		Matcher matcher = Pattern.compile("").matcher(values[0]);
+		Matcher englishMatcher = Pattern.compile("").matcher(values[1]);
 
 		//Get number of messages and responses
 		matcher.reset();
@@ -77,9 +110,16 @@ public class Dialogue {
 		}
 		//Get message response indexes
 		matcher.reset();
-		matcher.usePattern(Pattern.compile("Message_([0-9]+)_Responses ([0-9]+)"));
+		matcher.usePattern(Pattern.compile("Message_([0-9]+)_Response_[0-9]+ ([0-9]+)"));
 		while(matcher.find()) {
 			messages[Integer.valueOf(matcher.group(1))].addResponseIndex(Integer.valueOf(matcher.group(2)));
+		}
+		
+		//Get message English section
+		englishMatcher.reset();
+		englishMatcher.usePattern(Pattern.compile("Message_([0-9]+)_Page_[0-9]+ (.*)"));
+		while(englishMatcher.find()) {
+			messages[Integer.valueOf(englishMatcher.group(1))].addText(englishMatcher.group(2));
 		}
 		
 		/*
@@ -113,7 +153,6 @@ public class Dialogue {
 		matcher.reset();
 		matcher.usePattern(Pattern.compile("Response_([0-9]+)_(Quest|Dialogue|Vendor) ([0-9]+)"));
 		while(matcher.find()) {
-			System.out.println(matcher.group());
 			if(matcher.group(2).equals("Dialogue"))
 				responses[Integer.valueOf(matcher.group(1))].setDialogueID(matcher.group(3));
 			if(matcher.group(2).equals("Quest"))
@@ -122,18 +161,11 @@ public class Dialogue {
 				responses[Integer.valueOf(matcher.group(1))].setVendorID(matcher.group(3));	
 		}
 		
-		
-		for(Message mes : messages) {
-			System.out.println("Index: " + mes.getIndex());
-			System.out.println(mes.getConditions());
-			System.out.println(mes.getRewards());
+		//Get response English section
+		englishMatcher.reset();
+		englishMatcher.usePattern(Pattern.compile("Response_([0-9]+) (.*)"));
+		while(englishMatcher.find()) {
+			responses[Integer.valueOf(englishMatcher.group(1))].setText(englishMatcher.group(2));
 		}
-		for(Response res : responses) {
-			System.out.println("Index: " + res.getIndex());
-			System.out.println(res.getConditions());
-			System.out.println(res.getRewards());
-			System.out.println(res.getDialogueID());
-		}
-		
 	}
 }
