@@ -23,12 +23,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.border.BevelBorder;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import filemanagement.LoadDialogue;
 import util.FileManager;
 import windows.Window;
 
@@ -38,7 +40,6 @@ public class ExplorerPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 6161205750176973769L;
-	private final Action actionLoadNode = new SwingActionLoadNode();
 	private JTree tree;
 	private File fileRoot;
 	private JTextField textFieldDirectoryPath;
@@ -53,9 +54,9 @@ public class ExplorerPanel extends JPanel {
 	public ExplorerPanel() {
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{223, 0, 0, 0};
-		gridBagLayout.rowHeights = new int[]{0, 373, 32, 0};
+		gridBagLayout.rowHeights = new int[]{0, 373, 0};
 		gridBagLayout.columnWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
 		JLabel lblDirectory = new JLabel("Directory");
@@ -85,7 +86,7 @@ public class ExplorerPanel extends JPanel {
 		panelTree = new JPanel();
 		panelTree.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		GridBagConstraints gbc_panelTree = new GridBagConstraints();
-		gbc_panelTree.insets = new Insets(0, 0, 5, 5);
+		gbc_panelTree.insets = new Insets(0, 0, 0, 5);
 		gbc_panelTree.fill = GridBagConstraints.BOTH;
 		gbc_panelTree.gridx = 0;
 		gbc_panelTree.gridy = 1;
@@ -96,33 +97,31 @@ public class ExplorerPanel extends JPanel {
 		JScrollPane scrollPane = new JScrollPane();
 		panelTree.add(scrollPane);
 		
-//		fileRoot = new File(Window.runningPath);
-//        root = new DefaultMutableTreeNode(new FileNode(fileRoot));
-//        treeModel = new DefaultTreeModel(root);
-//        CreateChildNodes ccn = 
-//                new CreateChildNodes(fileRoot, root);
-//        new Thread(ccn).start();
-		
 		tree = new JTree(treeModel);
+		tree.addTreeSelectionListener(new TreeSelectionListener() {
+			public void valueChanged(TreeSelectionEvent e) {
+				LoadDirectory();
+			}
+		});
 		tree.getSelectionModel().setSelectionMode(
                 TreeSelectionModel.SINGLE_TREE_SELECTION);
 
 		tree.setCellRenderer(new MyTreeCellRenderer());
 		scrollPane.setViewportView(tree);
-		
-		JButton buttonLoadNode = new JButton("New button");
-		buttonLoadNode.setAction(actionLoadNode);
-		GridBagConstraints gbc_buttonLoadNode = new GridBagConstraints();
-		gbc_buttonLoadNode.insets = new Insets(0, 0, 0, 5);
-		gbc_buttonLoadNode.gridx = 0;
-		gbc_buttonLoadNode.gridy = 2;
-		add(buttonLoadNode, gbc_buttonLoadNode);
 	}
 	public class CreateChildNodes implements Runnable {
 
         private DefaultMutableTreeNode root;
 
         private File fileRoot;
+
+		private DefaultMutableTreeNode characterNode;
+
+		private DefaultMutableTreeNode dialogueNode;
+
+		private DefaultMutableTreeNode vendorNode;
+
+		private DefaultMutableTreeNode questNode;
 
         public CreateChildNodes(File fileRoot, 
                 DefaultMutableTreeNode root) {
@@ -132,24 +131,56 @@ public class ExplorerPanel extends JPanel {
 
         @Override
         public void run() {
-            createChildren(fileRoot, root);
+        	characterNode = 
+                    new DefaultMutableTreeNode("Characters");
+        	root.add(characterNode);
+        	vendorNode = 
+                    new DefaultMutableTreeNode("Vendors");
+        	root.add(vendorNode);
+        	dialogueNode = 
+                    new DefaultMutableTreeNode("Dialogues");
+        	root.add(dialogueNode);
+        	questNode = 
+                    new DefaultMutableTreeNode("Quests");
+        	root.add(questNode);
+            createChildren(fileRoot);
         }
 
-        private void createChildren(File fileRoot, 
-                DefaultMutableTreeNode node) {
+        private void createChildren(File fileRoot) {
             File[] files = fileRoot.listFiles();
             if (files == null) return;
 
             for (File file : files) {
-            	DefaultMutableTreeNode childNode = 
-                        new DefaultMutableTreeNode(new FileNode(file));
-                node.add(childNode);
                 File assetFile = new File(file.getAbsolutePath()+"/Asset.dat");
                 if (file.isDirectory()) {
                 	if (!assetFile.exists()) {
-                		createChildren(file, childNode);
+                		createChildren(file);
                 	} else {
-                		childNode.setUserObject(new CustomNode(childNode.getUserObject().toString(), getType(assetFile)));
+                		String type = getType(assetFile);
+                		if(type.equals("character")) {
+                			characterNode.add(new DefaultMutableTreeNode(new FileNode(file)) {
+								private static final long serialVersionUID = -6791298804723351685L; {
+                				setUserObject(new CustomNode(getUserObject().toString(), type, file.getAbsolutePath()));
+                			}});
+                		}
+                		else if(type.equals("vendor")) {
+                			vendorNode.add(new DefaultMutableTreeNode(new FileNode(file)) {
+								private static final long serialVersionUID = -8364253211540347277L; {
+                				setUserObject(new CustomNode(getUserObject().toString(), type, file.getAbsolutePath()));
+                			}});
+                		}
+                		else if(type.equals("dialogue")) {
+                			dialogueNode.add(new DefaultMutableTreeNode(new FileNode(file)) {
+								private static final long serialVersionUID = 8459274802455662792L; {
+                				setUserObject(new CustomNode(getUserObject().toString(), type, file.getAbsolutePath()));
+                			}});
+                		}
+                		else if(type.equals("quest")) {
+                			questNode.add(new DefaultMutableTreeNode(new FileNode(file)) {
+                				private static final long serialVersionUID = 8229355329604894899L; {
+                				setUserObject(new CustomNode(getUserObject().toString(), type, file.getAbsolutePath()));
+                			}});
+                		}
                 	}
                 }
             }
@@ -178,9 +209,11 @@ public class ExplorerPanel extends JPanel {
 	class CustomNode extends Object {
 		private String Name;
 		private String Type;
-		public CustomNode(String name, String type) {
+		private String Path;
+		public CustomNode(String name, String type, String path) {
 			this.Name = name;
 			this.Type = type;
+			this.Path = path;
 		}
 		public String getName() {
 			return this.Name;
@@ -190,6 +223,9 @@ public class ExplorerPanel extends JPanel {
 		}
 		public String toString() {
 			return this.Name;
+		}
+		public String getPath() {
+			return this.Path;
 		}
 	}
 	public class MyTreeCellRenderer extends DefaultTreeCellRenderer {
@@ -211,61 +247,57 @@ public class ExplorerPanel extends JPanel {
             	//Get node type
             	String type = ((CustomNode) nodeObject).getType();
             	
-            	if (type.equals("npc")) {
+            	if (type.equals("character")) {
             		setIcon(new ImageIcon(ExplorerPanel.class.getResource("/Icons/ExplorerPanel/characterIcon.png")));
             	} else if (type.equals("vendor")) {
             		setIcon(new ImageIcon(ExplorerPanel.class.getResource("/Icons/ExplorerPanel/vendorIcon.png")));
             	} else if (type.equals("quest")) {
             		setIcon(new ImageIcon(ExplorerPanel.class.getResource("/Icons/ExplorerPanel/questIcon.png")));
-            	} else if (type.equals("dialog")) {
+            	} else if (type.equals("dialogue")) {
             		setIcon(new ImageIcon(ExplorerPanel.class.getResource("/Icons/ExplorerPanel/dialogIcon.png")));
             	}
             }
             
             return n;
-	        
-//	        setForeground(Window.FONTCOLOR);
-//	        setBackground(Window.BACKGROUNDCOLOR);
-//	        setOpaque(true);
 	    }
 	}
-	private class SwingActionLoadNode extends AbstractAction {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 9214689290829011201L;
-		public SwingActionLoadNode() {
-			putValue(NAME, "Load selected");
-			putValue(SHORT_DESCRIPTION, "Load the selected file");
-		}
-		public void actionPerformed(ActionEvent e) {
-			if(tree.getSelectionCount()==1) {
-				String finalPath = "";
-				TreePath path = tree.getSelectionPath();
-				for(int i = 1; i < path.getPath().length; i++) {
-					finalPath += "\\" + path.getPathComponent(i).toString();
+	private void LoadDirectory() {
+		DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+		if(selectedNode.getChildCount()>0)
+			return;
+		
+		CustomNode node = (CustomNode) ((DefaultMutableTreeNode) tree.getLastSelectedPathComponent()).getUserObject();
+		
+		if(tree.getSelectionCount()==1) {
+			if(node.getType().equals("character")) {
+				FileManager.LoadCharacter(node.getPath());
+				for(Component panel : Window.panelEditors.getComponents())
+				{
+					panel.setVisible(false);
+					panel.setEnabled(false);
 				}
-				System.out.println(finalPath);
-				if(path.getPathComponent(path.getPathCount()-2).toString().toLowerCase().contains("characters")) {
-					FileManager.LoadCharacter(fileRoot.getAbsolutePath().toString() + finalPath);
-					for(Component panel : Window.panelEditors.getComponents())
-					{
-						panel.setVisible(false);
-						panel.setEnabled(false);
-					}
-					Window.panelCharacters.setVisible(true);
-					Window.panelCharacters.setEnabled(true);
+				Window.panelCharacters.setVisible(true);
+				Window.panelCharacters.setEnabled(true);
+			}
+			if(node.getType().equals("vendor")) {
+				FileManager.LoadVendor(node.getPath());
+				for(Component panel : Window.panelEditors.getComponents())
+				{
+					panel.setVisible(false);
+					panel.setEnabled(false);
 				}
-				if(path.getPathComponent(path.getPathCount()-2).toString().toLowerCase().contains("vendor")) {
-					FileManager.LoadVendor(fileRoot.getAbsolutePath().toString() + finalPath);
-					for(Component panel : Window.panelEditors.getComponents())
-					{
-						panel.setVisible(false);
-						panel.setEnabled(false);
-					}
-					Window.panelVendors.setVisible(true);
-					Window.panelVendors.setEnabled(true);
+				Window.panelVendors.setVisible(true);
+				Window.panelVendors.setEnabled(true);
+			}
+			if(node.getType().equals("dialogue")) {
+				LoadDialogue.loadDialogue(node.getPath());
+				for(Component panel : Window.panelEditors.getComponents())
+				{
+					panel.setVisible(false);
+					panel.setEnabled(false);
 				}
+				Window.panelDialogues.setVisible(true);
+				Window.panelDialogues.setEnabled(true);
 			}
 		}
 	}
@@ -280,7 +312,7 @@ public class ExplorerPanel extends JPanel {
 				if(line.toLowerCase().contains("type")) {
 					if(line.toLowerCase().contains("npc")) {
 						reader.close();
-						return "npc";
+						return "character";
 					}
 					if(line.toLowerCase().contains("vendor")) {
 						reader.close();
@@ -290,9 +322,9 @@ public class ExplorerPanel extends JPanel {
 						reader.close();
 						return "quest";
 					}
-					if(line.toLowerCase().contains("dialogue")) {
+					if(line.toLowerCase().contains("dialog")) {
 						reader.close();
-						return "dialog";
+						return "dialogue";
 					}
 				}
 				line = reader.readLine();
@@ -322,15 +354,19 @@ public class ExplorerPanel extends JPanel {
 			        treeModel = new DefaultTreeModel(root);
 			        CreateChildNodes ccn = 
 			                new CreateChildNodes(fileRoot, root);
-			        new Thread(ccn).start();
-			        
+			        Thread thread = new Thread(ccn);
+			        thread.start();
 			        tree.setModel(treeModel);
-			        
-			        treeModel.reload();
-			        
-			        tree.revalidate();
-			        tree.repaint();
-			        
+			        new Thread(new Runnable(){
+			            public void run(){
+			            try{thread.join();}
+			            catch(Exception e){;}
+			            finally{
+			            	treeModel.reload();
+					        tree.revalidate();
+					        tree.repaint(); 
+			            }
+			        }}).start();
 				} else {
 					JOptionPane.showMessageDialog(new JFrame(), "This path leads to a file, not a directory.", "",
 							JOptionPane.INFORMATION_MESSAGE);
@@ -339,9 +375,6 @@ public class ExplorerPanel extends JPanel {
 				JOptionPane.showMessageDialog(new JFrame(), "This directory doesn't exist.", "",
 						JOptionPane.INFORMATION_MESSAGE);
 			}
-	        
-			
-			
 		}
 	}
 }

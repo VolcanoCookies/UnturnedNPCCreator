@@ -29,17 +29,17 @@ import popups.fileChooser;
 
 public class DialoguePanel extends JPanel {
 	
-	String GUID;
-	String dialogueID;
+	static String GUID;
+	static String dialogueID;
 	
 	//Number of messages and responses
-	int numberOfMessages;
-	int numberOfResponses;
+	static int numberOfMessages;
+	static int numberOfResponses;
 	
 	//Messages in this dialogue
-	List<Message> messages = new ArrayList<Message>();
+	static List<Message> messages = new ArrayList<Message>();
 	//Responses in this dialogue
-	List<Response> responses = new ArrayList<Response>();
+	static List<Response> responses = new ArrayList<Response>();
 	
 	//Path where this dialogue was loaded from
 	String path;
@@ -161,7 +161,7 @@ public class DialoguePanel extends JPanel {
 			putValue(SHORT_DESCRIPTION, "Load dialogues");
 		}
 		public void actionPerformed(ActionEvent e) {
-			LoadDialogue(LoadDialogue.loadDialogue(textFieldFolderName.getText()));
+			LoadDialogue.loadDialogue(textFieldFolderName.getText());
 		}
 	}
 	private class SwingActionAddMessage extends AbstractAction {
@@ -222,35 +222,35 @@ public class DialoguePanel extends JPanel {
 		output[1] = "";
 		
 		//Get ID, GUID and set type
-		output[0] += "GUID " + this.GUID + "\n";
-		output[0] += "ID " + this.dialogueID + "\n";
+		output[0] += "GUID " + GUID + "\n";
+		output[0] += "ID " + dialogueID + "\n";
 		output[0] += "Type Dialogue\n";
 		
-		this.messages.clear();
+		messages.clear();
 		for(Component mes : tabbedPane.getComponents()) {
-			this.messages.add((Message) mes);
+			messages.add((Message) mes);
 			for(Component res : ((Message) mes).getResponses()) {
 				responses.add((Response) res);
 			}
 		}
-		this.numberOfMessages = this.messages.size();
-		this.numberOfResponses = this.responses.size();
+		numberOfMessages = messages.size();
+		numberOfResponses = responses.size();
 		
 		for(int i = 0; i < responses.size(); i++)
 			responses.get(i).setIndex(Integer.toString(i));
 		
 		//Get messages and responses
-		if(this.numberOfMessages>0)
-			output[0] += "\n" + "Messages " + this.numberOfMessages + "\n\n";
-		for(Message mes : this.messages) {
+		if(numberOfMessages>0)
+			output[0] += "\n" + "Messages " + numberOfMessages + "\n\n";
+		for(Message mes : messages) {
 			String[] compiled = mes.CompileMessage();
 			output[0] += compiled[0] + "\n";
 			output[1] += compiled[1] + "\n";
 		}
 		output[1] += "\n";
-		if(this.numberOfResponses>0)
-			output[0] += "\n" + "Responses " + this.numberOfResponses + "\n\n";
-		for(Response res : this.responses) {
+		if(numberOfResponses>0)
+			output[0] += "\n" + "Responses " + numberOfResponses + "\n\n";
+		for(Response res : responses) {
 			String[] compiled = res.CompileResponse();
 			output[0] += compiled[0] + "\n";
 			output[1] += compiled[1] + "\n";
@@ -258,23 +258,32 @@ public class DialoguePanel extends JPanel {
 		
 		return output;
 	}
-	private void LoadDialogue(String values[]) {
+	public static void LoadDialogue(String values[]) {
+		
+		//Remove any existing messages etc
+		tabbedPane.removeAll();
+		messages.removeAll(messages);
+		responses.removeAll(responses);
+		GUID = null;
+		dialogueID = null;
+		numberOfResponses = 0;
+		numberOfMessages = 0;
 		
 		//Matchers to use for everything
 		Matcher matcher = Pattern.compile("").matcher(values[0]);
 		Matcher englishMatcher = Pattern.compile("").matcher(values[1]);
-
+		
 		//Get ID and GUID
 		matcher.reset();
-		matcher.usePattern(Pattern.compile("ID ([0-9]+)"));
+		matcher.usePattern(Pattern.compile("[^A-Z]ID ([0-9]+)"));
 		if(matcher.find()) {
-			this.dialogueID = matcher.group(1);
-			textFieldDialogueID.setText(this.dialogueID);
+			dialogueID = matcher.group(1);
+			textFieldDialogueID.setText(dialogueID);
 		}
 		matcher.reset();
 		matcher.usePattern(Pattern.compile("GUID (.+)"));
 		if(matcher.find())
-			this.GUID = matcher.group(1);
+			GUID = matcher.group(1);
 		
 		//Get number of messages and responses
 		matcher.reset();
@@ -290,12 +299,18 @@ public class DialoguePanel extends JPanel {
 			
 		//Generate messages
 		for(int i = 0; i < numberOfMessages; i++) {
-			messages.set(i, new Message());
+			if(messages.size()<=i)
+				messages.add(new Message());
+			else
+				messages.set(i, new Message());
 			messages.get(i).setIndex(Integer.toString(i));
 		}
 		//Generate responses
 		for(int i = 0; i < numberOfResponses; i++) {
-			responses.set(i, new Response());
+			if(responses.size()<=i)
+				responses.add(new Response());
+			else
+				responses.set(i, new Response());
 			responses.get(i).setIndex(Integer.toString(i));
 		}
 		
@@ -326,7 +341,7 @@ public class DialoguePanel extends JPanel {
 		englishMatcher.reset();
 		englishMatcher.usePattern(Pattern.compile("Message_([0-9]+)_Page_[0-9]+ (.*)"));
 		while(englishMatcher.find()) {
-			messages.get(Integer.valueOf(matcher.group(1))).addText(englishMatcher.group(2));
+			messages.get(Integer.valueOf(englishMatcher.group(1))).addText(englishMatcher.group(2));
 		}
 		
 		/*
@@ -372,7 +387,7 @@ public class DialoguePanel extends JPanel {
 		englishMatcher.reset();
 		englishMatcher.usePattern(Pattern.compile("Response_([0-9]+) (.*)"));
 		while(englishMatcher.find()) {
-			responses.get(Integer.valueOf(matcher.group(1))).setText(englishMatcher.group(2));
+			responses.get(Integer.valueOf(englishMatcher.group(1))).setText(englishMatcher.group(2));
 		}
 		
 		//Add messages to message panel

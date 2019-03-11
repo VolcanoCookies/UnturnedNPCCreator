@@ -7,7 +7,7 @@ import javax.swing.JOptionPane;
 
 public class OpenURL 
 {
-	public static void OpenURL(String url)
+	public static void openURL(String url)
 	{
 		String os = System.getProperty("os.name").toLowerCase();
 		if(os.indexOf("win") >= 0)

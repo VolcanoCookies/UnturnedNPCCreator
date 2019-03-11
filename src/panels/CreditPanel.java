@@ -67,7 +67,7 @@ public class CreditPanel extends JPanel {
 		textAppIcon.addHyperlinkListener(new HyperlinkListener() {
 		    public void hyperlinkUpdate(HyperlinkEvent e) {
 		        if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-		           OpenURL.OpenURL(e.getURL().toString());
+		           OpenURL.openURL(e.getURL().toString());
 		        }
 		    }
 		});

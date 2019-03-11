@@ -11,6 +11,7 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
@@ -28,11 +29,9 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JSlider;
 import javax.swing.JTextField;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
+import colorchooser.colorChooser;
 import util.FileManager;
 import windows.Window;
 
@@ -59,18 +58,6 @@ public class CharacterPanel extends JPanel {
 	private static JTextField textFieldPrimary;
 	private static JTextField textFieldSecondary;
 	private static JTextField textFieldTertiary;
-	private static JTextField textFieldR2;
-	private static JTextField textFieldG2;
-	private static JTextField textFieldB2;
-	private static JTextField textFieldR1;
-	private static JTextField textFieldG1;
-	private static JTextField textFieldB1;
-	private static JTextField textFieldHex2;
-	private static JTextField textFieldHex1;
-	private JTextField textFieldHex3;
-	private JTextField textFieldR3;
-	private JTextField textFieldG3;
-	private JTextField textFieldB3;
 	//Actions
 	private final Action actionLoad = new SwingActionLoad();
 	private final Action actionSaveCharacter = new SwingActionSaveCharacter();
@@ -82,13 +69,6 @@ public class CharacterPanel extends JPanel {
 	private static Canvas skinColor;
 	private static Canvas hairColor;
 	private Canvas characterColor;
-	//Sliders
-	private static JSlider sliderSkinRed;
-	private static JSlider sliderSkinGreen;
-	private static JSlider sliderSkinBlue;
-	private static JSlider sliderHairRed;
-	private static JSlider sliderHairGreen;
-	private static JSlider sliderHairBlue;
 	//Button groups
 	private static ButtonGroup buttonGroupStance = new ButtonGroup();
 	private static ButtonGroup buttonGroupEquipped = new ButtonGroup();
@@ -123,19 +103,13 @@ public class CharacterPanel extends JPanel {
 	private JButton buttonToggleFaceSelector;
 	private JButton buttonToggleBeardSelector;
 	private JButton buttonToggleHairSelector;
-	private JLabel lblHex2;
-	private JLabel lblHex1;
-	private JLabel lblHexColor;
-	private JLabel lblRed_1;
-	private JLabel lblGreen_1;
-	private JLabel lblBlue_1;
 	private static JPanel facePanel;
 	private static JPanel beardPanel;
 	private static JPanel hairPanel;
-	private JPanel panelCharacterCustomColor;
-	private JSlider sliderCharacterRed;
-	private JSlider sliderCharacterGreen;
-	private JSlider sliderCharacterBlue;
+	private JButton buttonEditCharacterColor;
+	private JLabel label;
+	private JButton buttonEditSkinColor;
+	private JButton buttonEditHairColor;
 	
 
 	/**
@@ -155,9 +129,9 @@ public class CharacterPanel extends JPanel {
 		scrollPane.setViewportView(panel);
 		GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWidths = new int[] {80, 100, 80};
-		gbl_panel.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 23, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		gbl_panel.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 23, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		gbl_panel.columnWeights = new double[] { 0.0, 0.0, 0.0 };
-		gbl_panel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
+		gbl_panel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 				0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };		
 		panel.setLayout(gbl_panel);
 
@@ -390,12 +364,12 @@ public class CharacterPanel extends JPanel {
 			public void itemStateChanged(ItemEvent arg0) {
 				if(arg0.getStateChange()==ItemEvent.SELECTED)
 				{
-					panelCharacterCustomColor.setVisible(true);
+					buttonEditCharacterColor.setVisible(true);
 					panel.revalidate();
 					panel.repaint();
 				} else
 				{
-					panelCharacterCustomColor.setVisible(false);
+					buttonEditCharacterColor.setVisible(false);
 					panel.revalidate();
 					panel.repaint();
 				}
@@ -404,6 +378,13 @@ public class CharacterPanel extends JPanel {
 		buttonGroupCharacterNameColor.add(radioButtonCustom);
 		radioButtonCustom.setMnemonic('7');
 		characterNameColorPanel.add(radioButtonCustom);
+		
+		label = new JLabel("Character Color");
+		GridBagConstraints gbc_label = new GridBagConstraints();
+		gbc_label.insets = new Insets(0, 0, 5, 5);
+		gbc_label.gridx = 0;
+		gbc_label.gridy = 8;
+		panel.add(label, gbc_label);
 		
 		characterColor = new Canvas();
 		characterColor.setBackground(Color.WHITE);
@@ -414,189 +395,18 @@ public class CharacterPanel extends JPanel {
 		gbc_characterColor.gridy = 8;
 		panel.add(characterColor, gbc_characterColor);
 		
-		panelCharacterCustomColor = new JPanel();
-		panelCharacterCustomColor.setVisible(false);
-		GridBagConstraints gbc_panelCharacterCustomColor = new GridBagConstraints();
-		gbc_panelCharacterCustomColor.gridwidth = 3;
-		gbc_panelCharacterCustomColor.insets = new Insets(0, 0, 5, 0);
-		gbc_panelCharacterCustomColor.fill = GridBagConstraints.BOTH;
-		gbc_panelCharacterCustomColor.gridx = 0;
-		gbc_panelCharacterCustomColor.gridy = 9;
-		panel.add(panelCharacterCustomColor, gbc_panelCharacterCustomColor);
-		GridBagLayout gbl_panelCharacterCustomColor = new GridBagLayout();
-		gbl_panelCharacterCustomColor.columnWidths = new int[]{58, 0, 0, 0};
-		gbl_panelCharacterCustomColor.rowHeights = new int[]{0, 0, 0, 0, 0};
-		gbl_panelCharacterCustomColor.columnWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
-		gbl_panelCharacterCustomColor.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		panelCharacterCustomColor.setLayout(gbl_panelCharacterCustomColor);
-		
-		lblRed_1 = new JLabel("Red");
-		GridBagConstraints gbc_lblRed_1 = new GridBagConstraints();
-		gbc_lblRed_1.insets = new Insets(0, 0, 5, 5);
-		gbc_lblRed_1.gridx = 0;
-		gbc_lblRed_1.gridy = 0;
-		panelCharacterCustomColor.add(lblRed_1, gbc_lblRed_1);
-		
-		sliderCharacterRed = new JSlider();
-		sliderCharacterRed.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				CharacterColorChanged();
+		buttonEditCharacterColor = new JButton("Edit character color");
+		buttonEditCharacterColor.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new colorChooser(characterColor.getBackground(), characterColor);
 			}
 		});
-		sliderCharacterRed.setMaximum(255);
-		GridBagConstraints gbc_sliderCharacterRed = new GridBagConstraints();
-		gbc_sliderCharacterRed.fill = GridBagConstraints.HORIZONTAL;
-		gbc_sliderCharacterRed.insets = new Insets(0, 0, 5, 5);
-		gbc_sliderCharacterRed.gridx = 1;
-		gbc_sliderCharacterRed.gridy = 0;
-		panelCharacterCustomColor.add(sliderCharacterRed, gbc_sliderCharacterRed);
-		
-		textFieldR3 = new JTextField();
-		textFieldR3.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent arg0) {
-				String string = textFieldR3.getText();
-				if(string.chars().allMatch(Character::isDigit)&&string.length()>0)
-				{
-					int val = Integer.valueOf(string);
-					if(val<0)
-						sliderCharacterRed.setValue(0);
-					else if(val>255)
-						sliderCharacterRed.setValue(255);
-					else
-						sliderCharacterRed.setValue(val);
-				}
-			}
-		});
-		GridBagConstraints gbc_textFieldR3 = new GridBagConstraints();
-		gbc_textFieldR3.anchor = GridBagConstraints.WEST;
-		gbc_textFieldR3.insets = new Insets(0, 0, 5, 0);
-		gbc_textFieldR3.gridx = 2;
-		gbc_textFieldR3.gridy = 0;
-		panelCharacterCustomColor.add(textFieldR3, gbc_textFieldR3);
-		textFieldR3.setColumns(4);
-		
-		lblGreen_1 = new JLabel("Green");
-		GridBagConstraints gbc_lblGreen_1 = new GridBagConstraints();
-		gbc_lblGreen_1.insets = new Insets(0, 0, 5, 5);
-		gbc_lblGreen_1.gridx = 0;
-		gbc_lblGreen_1.gridy = 1;
-		panelCharacterCustomColor.add(lblGreen_1, gbc_lblGreen_1);
-		
-		sliderCharacterGreen = new JSlider();
-		sliderCharacterGreen.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				CharacterColorChanged();
-			}
-		});
-		sliderCharacterGreen.setMaximum(255);
-		GridBagConstraints gbc_sliderCharacterGreen = new GridBagConstraints();
-		gbc_sliderCharacterGreen.fill = GridBagConstraints.HORIZONTAL;
-		gbc_sliderCharacterGreen.insets = new Insets(0, 0, 5, 5);
-		gbc_sliderCharacterGreen.gridx = 1;
-		gbc_sliderCharacterGreen.gridy = 1;
-		panelCharacterCustomColor.add(sliderCharacterGreen, gbc_sliderCharacterGreen);
-		
-		textFieldG3 = new JTextField();
-		textFieldG3.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent arg0) {
-				String string = textFieldG3.getText();
-				if(string.chars().allMatch(Character::isDigit)&&string.length()>0)
-				{
-					int val = Integer.valueOf(string);
-					if(val<0)
-						sliderCharacterGreen.setValue(0);
-					else if(val>255)
-						sliderCharacterGreen.setValue(255);
-					else
-						sliderCharacterGreen.setValue(val);
-				}
-			}
-		});
-		textFieldG3.setColumns(4);
-		GridBagConstraints gbc_textFieldG3 = new GridBagConstraints();
-		gbc_textFieldG3.anchor = GridBagConstraints.WEST;
-		gbc_textFieldG3.insets = new Insets(0, 0, 5, 0);
-		gbc_textFieldG3.gridx = 2;
-		gbc_textFieldG3.gridy = 1;
-		panelCharacterCustomColor.add(textFieldG3, gbc_textFieldG3);
-		
-		lblBlue_1 = new JLabel("Blue");
-		GridBagConstraints gbc_lblBlue_1 = new GridBagConstraints();
-		gbc_lblBlue_1.insets = new Insets(0, 0, 5, 5);
-		gbc_lblBlue_1.gridx = 0;
-		gbc_lblBlue_1.gridy = 2;
-		panelCharacterCustomColor.add(lblBlue_1, gbc_lblBlue_1);
-		
-		sliderCharacterBlue = new JSlider();
-		sliderCharacterBlue.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				CharacterColorChanged();
-			}
-		});
-		sliderCharacterBlue.setMaximum(255);
-		GridBagConstraints gbc_sliderCharacterBlue = new GridBagConstraints();
-		gbc_sliderCharacterBlue.fill = GridBagConstraints.HORIZONTAL;
-		gbc_sliderCharacterBlue.insets = new Insets(0, 0, 5, 5);
-		gbc_sliderCharacterBlue.gridx = 1;
-		gbc_sliderCharacterBlue.gridy = 2;
-		panelCharacterCustomColor.add(sliderCharacterBlue, gbc_sliderCharacterBlue);
-		
-		textFieldB3 = new JTextField();
-		textFieldB3.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent arg0) {
-				String string = textFieldB3.getText();
-				if(string.chars().allMatch(Character::isDigit)&&string.length()>0)
-				{
-					int val = Integer.valueOf(string);
-					if(val<0)
-						sliderCharacterBlue.setValue(0);
-					else if(val>255)
-						sliderCharacterBlue.setValue(255);
-					else
-						sliderCharacterBlue.setValue(val);
-				}
-			}
-		});
-		textFieldB3.setColumns(4);
-		GridBagConstraints gbc_textFieldB3 = new GridBagConstraints();
-		gbc_textFieldB3.insets = new Insets(0, 0, 5, 0);
-		gbc_textFieldB3.anchor = GridBagConstraints.WEST;
-		gbc_textFieldB3.gridx = 2;
-		gbc_textFieldB3.gridy = 2;
-		panelCharacterCustomColor.add(textFieldB3, gbc_textFieldB3);
-		
-		lblHexColor = new JLabel("HEX");
-		GridBagConstraints gbc_lblHexColor = new GridBagConstraints();
-		gbc_lblHexColor.insets = new Insets(0, 0, 0, 5);
-		gbc_lblHexColor.gridx = 0;
-		gbc_lblHexColor.gridy = 3;
-		panelCharacterCustomColor.add(lblHexColor, gbc_lblHexColor);
-		
-		textFieldHex3 = new JTextField();
-		textFieldHex3.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode()==KeyEvent.VK_ENTER)
-				{
-					try {
-						setCharacterColors(Color.decode(textFieldHex3.getText()));
-					} catch (NumberFormatException e1) {
-						JOptionPane.showMessageDialog(new JFrame(), "Incorrect formating, remember \"#\"", "Warning",
-								JOptionPane.WARNING_MESSAGE);
-					}
-				}
-			}
-		});
-		GridBagConstraints gbc_textFieldHex3 = new GridBagConstraints();
-		gbc_textFieldHex3.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textFieldHex3.insets = new Insets(0, 0, 0, 5);
-		gbc_textFieldHex3.gridx = 1;
-		gbc_textFieldHex3.gridy = 3;
-		panelCharacterCustomColor.add(textFieldHex3, gbc_textFieldHex3);
-		textFieldHex3.setColumns(10);
+		buttonEditCharacterColor.setVisible(false);
+		GridBagConstraints gbc_buttonEditCharacterColor = new GridBagConstraints();
+		gbc_buttonEditCharacterColor.insets = new Insets(0, 0, 5, 5);
+		gbc_buttonEditCharacterColor.gridx = 1;
+		gbc_buttonEditCharacterColor.gridy = 9;
+		panel.add(buttonEditCharacterColor, gbc_buttonEditCharacterColor);
 		
 		JLabel lblFace = new JLabel("Face");
 		GridBagConstraints gbc_lblFace = new GridBagConstraints();
@@ -676,12 +486,68 @@ public class CharacterPanel extends JPanel {
 		gbc_hairPanel.gridx = 0;
 		gbc_hairPanel.gridy = 15;
 		panel.add(hairPanel, gbc_hairPanel);
+
+		JLabel lblSkinColor = new JLabel("Skin Color");
+		GridBagConstraints gbc_lblSkinColor = new GridBagConstraints();
+		gbc_lblSkinColor.insets = new Insets(0, 0, 5, 5);
+		gbc_lblSkinColor.gridx = 0;
+		gbc_lblSkinColor.gridy = 16;
+		panel.add(lblSkinColor, gbc_lblSkinColor);
+
+		skinColor = new Canvas();
+		skinColor.setBackground(Color.WHITE);
+		GridBagConstraints gbc_skinColor = new GridBagConstraints();
+		gbc_skinColor.fill = GridBagConstraints.BOTH;
+		gbc_skinColor.insets = new Insets(0, 0, 5, 5);
+		gbc_skinColor.gridx = 1;
+		gbc_skinColor.gridy = 16;
+		panel.add(skinColor, gbc_skinColor);
+		
+		buttonEditSkinColor = new JButton("Edit skin color");
+		buttonEditSkinColor.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new colorChooser(characterColor.getBackground(), skinColor);
+			}
+		});
+		GridBagConstraints gbc_buttonEditSkinColor = new GridBagConstraints();
+		gbc_buttonEditSkinColor.insets = new Insets(0, 0, 5, 5);
+		gbc_buttonEditSkinColor.gridx = 1;
+		gbc_buttonEditSkinColor.gridy = 17;
+		panel.add(buttonEditSkinColor, gbc_buttonEditSkinColor);
+
+		JLabel lblHairColor = new JLabel("Hair Color");
+		GridBagConstraints gbc_lblHairColor = new GridBagConstraints();
+		gbc_lblHairColor.insets = new Insets(0, 0, 5, 5);
+		gbc_lblHairColor.gridx = 0;
+		gbc_lblHairColor.gridy = 18;
+		panel.add(lblHairColor, gbc_lblHairColor);
+		
+		hairColor = new Canvas();
+		hairColor.setBackground(Color.WHITE);
+		GridBagConstraints gbc_hairColor = new GridBagConstraints();
+		gbc_hairColor.fill = GridBagConstraints.BOTH;
+		gbc_hairColor.insets = new Insets(0, 0, 5, 5);
+		gbc_hairColor.gridx = 1;
+		gbc_hairColor.gridy = 18;
+		panel.add(hairColor, gbc_hairColor);
+		
+		buttonEditHairColor = new JButton("Edit hair color");
+		buttonEditHairColor.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new colorChooser(characterColor.getBackground(), hairColor);
+			}
+		});
+		GridBagConstraints gbc_buttonEditHairColor = new GridBagConstraints();
+		gbc_buttonEditHairColor.insets = new Insets(0, 0, 5, 5);
+		gbc_buttonEditHairColor.gridx = 1;
+		gbc_buttonEditHairColor.gridy = 19;
+		panel.add(buttonEditHairColor, gbc_buttonEditHairColor);
 		
 		JLabel lblDialogId = new JLabel("Dialog ID");
 		GridBagConstraints gbc_lblDialogId = new GridBagConstraints();
 		gbc_lblDialogId.insets = new Insets(0, 0, 5, 5);
 		gbc_lblDialogId.gridx = 0;
-		gbc_lblDialogId.gridy = 16;
+		gbc_lblDialogId.gridy = 20;
 		panel.add(lblDialogId, gbc_lblDialogId);
 		
 		textFieldDialogID = new JTextField();
@@ -691,382 +557,14 @@ public class CharacterPanel extends JPanel {
 		gbc_textFieldDialogID.insets = new Insets(0, 0, 5, 5);
 		gbc_textFieldDialogID.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textFieldDialogID.gridx = 1;
-		gbc_textFieldDialogID.gridy = 16;
+		gbc_textFieldDialogID.gridy = 20;
 		panel.add(textFieldDialogID, gbc_textFieldDialogID);
-
-		JLabel lblSkinColor = new JLabel("Skin Color");
-		GridBagConstraints gbc_lblSkinColor = new GridBagConstraints();
-		gbc_lblSkinColor.insets = new Insets(0, 0, 5, 5);
-		gbc_lblSkinColor.gridx = 0;
-		gbc_lblSkinColor.gridy = 17;
-		panel.add(lblSkinColor, gbc_lblSkinColor);
-
-		skinColor = new Canvas();
-		skinColor.setBackground(Color.WHITE);
-		GridBagConstraints gbc_skinColor = new GridBagConstraints();
-		gbc_skinColor.fill = GridBagConstraints.BOTH;
-		gbc_skinColor.insets = new Insets(0, 0, 5, 5);
-		gbc_skinColor.gridx = 1;
-		gbc_skinColor.gridy = 17;
-		panel.add(skinColor, gbc_skinColor);
-
-		sliderSkinRed = new JSlider();
-		sliderSkinRed.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				SkinColorChanged();
-			}
-		});
-		
-		JLabel lblRed = new JLabel("Red");
-		GridBagConstraints gbc_lblRed = new GridBagConstraints();
-		gbc_lblRed.insets = new Insets(0, 0, 5, 5);
-		gbc_lblRed.gridx = 0;
-		gbc_lblRed.gridy = 18;
-		panel.add(lblRed, gbc_lblRed);
-		sliderSkinRed.setSnapToTicks(true);
-		sliderSkinRed.setMaximum(255);
-		GridBagConstraints gbc_sliderSkinRed = new GridBagConstraints();
-		gbc_sliderSkinRed.fill = GridBagConstraints.HORIZONTAL;
-		gbc_sliderSkinRed.insets = new Insets(0, 0, 5, 5);
-		gbc_sliderSkinRed.gridx = 1;
-		gbc_sliderSkinRed.gridy = 18;
-		panel.add(sliderSkinRed, gbc_sliderSkinRed);
-
-		sliderSkinGreen = new JSlider();
-		sliderSkinGreen.setSnapToTicks(true);
-		sliderSkinGreen.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				SkinColorChanged();
-			}
-		});
-		
-		textFieldR1 = new JTextField();
-		GridBagConstraints gbc_textFieldR1 = new GridBagConstraints();
-		gbc_textFieldR1.insets = new Insets(0, 0, 5, 0);
-		gbc_textFieldR1.gridx = 2;
-		gbc_textFieldR1.gridy = 18;
-		panel.add(textFieldR1, gbc_textFieldR1);
-		textFieldR1.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent arg0) {
-				String string = textFieldR1.getText();
-				if(string.chars().allMatch(Character::isDigit)&&string.length()>0)
-				{
-					int val = Integer.valueOf(string);
-					if(val<0)
-						sliderSkinRed.setValue(0);
-					else if(val>255)
-						sliderSkinRed.setValue(255);
-					else
-						sliderSkinRed.setValue(val);
-				}
-			}
-		});
-		textFieldR1.setColumns(4);
-		
-		JLabel lblGreen = new JLabel("Green");
-		GridBagConstraints gbc_lblGreen = new GridBagConstraints();
-		gbc_lblGreen.insets = new Insets(0, 0, 5, 5);
-		gbc_lblGreen.gridx = 0;
-		gbc_lblGreen.gridy = 19;
-		panel.add(lblGreen, gbc_lblGreen);
-		sliderSkinGreen.setMaximum(255);
-		GridBagConstraints gbc_sliderSkinGreen = new GridBagConstraints();
-		gbc_sliderSkinGreen.fill = GridBagConstraints.HORIZONTAL;
-		gbc_sliderSkinGreen.insets = new Insets(0, 0, 5, 5);
-		gbc_sliderSkinGreen.gridx = 1;
-		gbc_sliderSkinGreen.gridy = 19;
-		panel.add(sliderSkinGreen, gbc_sliderSkinGreen);
-
-		sliderSkinBlue = new JSlider();
-		sliderSkinBlue.setSnapToTicks(true);
-		sliderSkinBlue.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				SkinColorChanged();
-			}
-		});
-		
-		textFieldG1 = new JTextField();
-		textFieldG1.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent arg0) {
-				String string = textFieldG1.getText();
-				if(string.chars().allMatch(Character::isDigit)&&string.length()>0)
-				{
-					int val = Integer.valueOf(string);
-					if(val<0)
-						sliderSkinGreen.setValue(0);
-					else if(val>255)
-						sliderSkinGreen.setValue(255);
-					else
-						sliderSkinGreen.setValue(val);
-				}
-			}
-		});
-		GridBagConstraints gbc_textFieldG1 = new GridBagConstraints();
-		gbc_textFieldG1.insets = new Insets(0, 0, 5, 0);
-		gbc_textFieldG1.gridx = 2;
-		gbc_textFieldG1.gridy = 19;
-		panel.add(textFieldG1, gbc_textFieldG1);
-		textFieldG1.setColumns(4);
-		
-		JLabel lblBlue = new JLabel("Blue");
-		GridBagConstraints gbc_lblBlue = new GridBagConstraints();
-		gbc_lblBlue.insets = new Insets(0, 0, 5, 5);
-		gbc_lblBlue.gridx = 0;
-		gbc_lblBlue.gridy = 20;
-		panel.add(lblBlue, gbc_lblBlue);
-		sliderSkinBlue.setMaximum(255);
-		GridBagConstraints gbc_sliderSkinBlue = new GridBagConstraints();
-		gbc_sliderSkinBlue.fill = GridBagConstraints.HORIZONTAL;
-		gbc_sliderSkinBlue.insets = new Insets(0, 0, 5, 5);
-		gbc_sliderSkinBlue.gridx = 1;
-		gbc_sliderSkinBlue.gridy = 20;
-		panel.add(sliderSkinBlue, gbc_sliderSkinBlue);
-		
-		textFieldB1 = new JTextField();
-		textFieldB1.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent arg0) {
-				String string = textFieldB1.getText();
-				if(string.chars().allMatch(Character::isDigit)&&string.length()>0)
-				{
-					int val = Integer.valueOf(string);
-					if(val<0)
-						sliderSkinBlue.setValue(0);
-					else if(val>255)
-						sliderSkinBlue.setValue(255);
-					else
-						sliderSkinBlue.setValue(val);
-				}
-			}
-		});
-		GridBagConstraints gbc_textFieldB1 = new GridBagConstraints();
-		gbc_textFieldB1.insets = new Insets(0, 0, 5, 0);
-		gbc_textFieldB1.gridx = 2;
-		gbc_textFieldB1.gridy = 20;
-		panel.add(textFieldB1, gbc_textFieldB1);
-		textFieldB1.setColumns(4);
-		
-		lblHex1 = new JLabel("HEX");
-		GridBagConstraints gbc_lblHex1 = new GridBagConstraints();
-		gbc_lblHex1.insets = new Insets(0, 0, 5, 5);
-		gbc_lblHex1.gridx = 0;
-		gbc_lblHex1.gridy = 21;
-		panel.add(lblHex1, gbc_lblHex1);
-		
-		textFieldHex1 = new JTextField();
-		textFieldHex1.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode()==KeyEvent.VK_ENTER)
-				{
-					try {
-						setSkinColors(Color.decode(textFieldHex1.getText()));
-					} catch (NumberFormatException e1) {
-						JOptionPane.showMessageDialog(new JFrame(), "Incorrect formating, remember \"#\"", "Warning",
-								JOptionPane.WARNING_MESSAGE);
-					}
-				}
-			}
-		});
-		textFieldHex1.setColumns(10);
-		GridBagConstraints gbc_textFieldHex1 = new GridBagConstraints();
-		gbc_textFieldHex1.insets = new Insets(0, 0, 5, 5);
-		gbc_textFieldHex1.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textFieldHex1.gridx = 1;
-		gbc_textFieldHex1.gridy = 21;
-		panel.add(textFieldHex1, gbc_textFieldHex1);
-
-		JLabel lblHairColor = new JLabel("Hair Color");
-		GridBagConstraints gbc_lblHairColor = new GridBagConstraints();
-		gbc_lblHairColor.insets = new Insets(0, 0, 5, 5);
-		gbc_lblHairColor.gridx = 0;
-		gbc_lblHairColor.gridy = 22;
-		panel.add(lblHairColor, gbc_lblHairColor);
-		
-		sliderHairRed = new JSlider();
-		sliderHairRed.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				HairColorChanged();
-			}
-		});
-		
-		hairColor = new Canvas();
-		hairColor.setBackground(Color.WHITE);
-		GridBagConstraints gbc_hairColor = new GridBagConstraints();
-		gbc_hairColor.fill = GridBagConstraints.BOTH;
-		gbc_hairColor.insets = new Insets(0, 0, 5, 5);
-		gbc_hairColor.gridx = 1;
-		gbc_hairColor.gridy = 22;
-		panel.add(hairColor, gbc_hairColor);
-		
-		JLabel lblRed2 = new JLabel("Red");
-		GridBagConstraints gbc_lblRed2 = new GridBagConstraints();
-		gbc_lblRed2.insets = new Insets(0, 0, 5, 5);
-		gbc_lblRed2.gridx = 0;
-		gbc_lblRed2.gridy = 23;
-		panel.add(lblRed2, gbc_lblRed2);
-		sliderHairRed.setSnapToTicks(true);
-		sliderHairRed.setMaximum(255);
-		GridBagConstraints gbc_sliderHairRed = new GridBagConstraints();
-		gbc_sliderHairRed.fill = GridBagConstraints.HORIZONTAL;
-		gbc_sliderHairRed.insets = new Insets(0, 0, 5, 5);
-		gbc_sliderHairRed.gridx = 1;
-		gbc_sliderHairRed.gridy = 23;
-		panel.add(sliderHairRed, gbc_sliderHairRed);
-		
-		sliderHairGreen = new JSlider();
-		sliderHairGreen.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				HairColorChanged();
-			}
-		});
-		
-		textFieldR2 = new JTextField();
-		textFieldR2.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				String string = textFieldR2.getText();
-				if(string.chars().allMatch(Character::isDigit)&&string.length()>0)
-				{
-					int val = Integer.valueOf(string);
-					if(val<0)
-						sliderHairRed.setValue(0);
-					else if(val>255)
-						sliderHairRed.setValue(255);
-					else
-						sliderHairRed.setValue(val);
-				}
-			}
-		});
-		GridBagConstraints gbc_textFieldR2 = new GridBagConstraints();
-		gbc_textFieldR2.insets = new Insets(0, 0, 5, 0);
-		gbc_textFieldR2.gridx = 2;
-		gbc_textFieldR2.gridy = 23;
-		panel.add(textFieldR2, gbc_textFieldR2);
-		textFieldR2.setColumns(4);
-		
-		JLabel lblGreen2 = new JLabel("Green");
-		GridBagConstraints gbc_lblGreen2 = new GridBagConstraints();
-		gbc_lblGreen2.insets = new Insets(0, 0, 5, 5);
-		gbc_lblGreen2.gridx = 0;
-		gbc_lblGreen2.gridy = 24;
-		panel.add(lblGreen2, gbc_lblGreen2);
-		sliderHairGreen.setSnapToTicks(true);
-		sliderHairGreen.setMaximum(255);
-		GridBagConstraints gbc_sliderHairGreen = new GridBagConstraints();
-		gbc_sliderHairGreen.fill = GridBagConstraints.HORIZONTAL;
-		gbc_sliderHairGreen.insets = new Insets(0, 0, 5, 5);
-		gbc_sliderHairGreen.gridx = 1;
-		gbc_sliderHairGreen.gridy = 24;
-		panel.add(sliderHairGreen, gbc_sliderHairGreen);
-		
-		sliderHairBlue = new JSlider();
-		sliderHairBlue.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				HairColorChanged();
-			}
-		});
-		
-		textFieldG2 = new JTextField();
-		textFieldG2.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				String string = textFieldG2.getText();
-				if(string.chars().allMatch(Character::isDigit)&&string.length()>0)
-				{
-					int val = Integer.valueOf(string);
-					if(val<0)
-						sliderHairGreen.setValue(0);
-					else if(val>255)
-						sliderHairGreen.setValue(255);
-					else
-						sliderHairGreen.setValue(val);
-				}
-			}
-		});
-		GridBagConstraints gbc_textFieldG2 = new GridBagConstraints();
-		gbc_textFieldG2.insets = new Insets(0, 0, 5, 0);
-		gbc_textFieldG2.gridx = 2;
-		gbc_textFieldG2.gridy = 24;
-		panel.add(textFieldG2, gbc_textFieldG2);
-		textFieldG2.setColumns(4);
-		
-		JLabel lblBlue2 = new JLabel("Blue");
-		GridBagConstraints gbc_lblBlue2 = new GridBagConstraints();
-		gbc_lblBlue2.insets = new Insets(0, 0, 5, 5);
-		gbc_lblBlue2.gridx = 0;
-		gbc_lblBlue2.gridy = 25;
-		panel.add(lblBlue2, gbc_lblBlue2);
-		sliderHairBlue.setSnapToTicks(true);
-		sliderHairBlue.setMaximum(255);
-		GridBagConstraints gbc_sliderHairBlue = new GridBagConstraints();
-		gbc_sliderHairBlue.fill = GridBagConstraints.HORIZONTAL;
-		gbc_sliderHairBlue.insets = new Insets(0, 0, 5, 5);
-		gbc_sliderHairBlue.gridx = 1;
-		gbc_sliderHairBlue.gridy = 25;
-		panel.add(sliderHairBlue, gbc_sliderHairBlue);
-		
-		textFieldB2 = new JTextField();
-		textFieldB2.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				String string = textFieldB2.getText();
-				if(string.chars().allMatch(Character::isDigit)&&string.length()>0)
-				{
-					int val = Integer.valueOf(string);
-					if(val<0)
-						sliderHairBlue.setValue(0);
-					else if(val>255)
-						sliderHairBlue.setValue(255);
-					else
-						sliderHairBlue.setValue(val);
-				}
-			}
-		});
-		GridBagConstraints gbc_textFieldB2 = new GridBagConstraints();
-		gbc_textFieldB2.insets = new Insets(0, 0, 5, 0);
-		gbc_textFieldB2.gridx = 2;
-		gbc_textFieldB2.gridy = 25;
-		panel.add(textFieldB2, gbc_textFieldB2);
-		textFieldB2.setColumns(4);
-		
-		lblHex2 = new JLabel("HEX");
-		GridBagConstraints gbc_lblHex2 = new GridBagConstraints();
-		gbc_lblHex2.insets = new Insets(0, 0, 5, 5);
-		gbc_lblHex2.gridx = 0;
-		gbc_lblHex2.gridy = 26;
-		panel.add(lblHex2, gbc_lblHex2);
-		
-		textFieldHex2 = new JTextField();
-		textFieldHex2.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode()==KeyEvent.VK_ENTER)
-				{
-					try {
-						setHairColors(Color.decode(textFieldHex2.getText()));
-					} catch (NumberFormatException e1) {
-						JOptionPane.showMessageDialog(new JFrame(), "Incorrect formating, remember \"#\"", "Warning",
-								JOptionPane.WARNING_MESSAGE);
-					}
-				}
-			}
-		});
-		GridBagConstraints gbc_textFieldHex2 = new GridBagConstraints();
-		gbc_textFieldHex2.insets = new Insets(0, 0, 5, 5);
-		gbc_textFieldHex2.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textFieldHex2.gridx = 1;
-		gbc_textFieldHex2.gridy = 26;
-		panel.add(textFieldHex2, gbc_textFieldHex2);
-		textFieldHex2.setColumns(10);
 		
 		JLabel lblPose = new JLabel("Pose");
 		GridBagConstraints gbc_lblPose = new GridBagConstraints();
 		gbc_lblPose.insets = new Insets(0, 0, 5, 5);
 		gbc_lblPose.gridx = 0;
-		gbc_lblPose.gridy = 27;
+		gbc_lblPose.gridy = 21;
 		panel.add(lblPose, gbc_lblPose);
 		
 		JPanel panelStance = new JPanel();
@@ -1074,7 +572,7 @@ public class CharacterPanel extends JPanel {
 		gbc_panelStance.insets = new Insets(0, 0, 5, 5);
 		gbc_panelStance.fill = GridBagConstraints.HORIZONTAL;
 		gbc_panelStance.gridx = 1;
-		gbc_panelStance.gridy = 27;
+		gbc_panelStance.gridy = 21;
 		panel.add(panelStance, gbc_panelStance);
 		panelStance.setLayout(new GridLayout(2, 5, 0, 0));
 		
@@ -1129,7 +627,7 @@ public class CharacterPanel extends JPanel {
 		gbc_checkBoxIsLeftHanded.fill = GridBagConstraints.HORIZONTAL;
 		gbc_checkBoxIsLeftHanded.insets = new Insets(0, 0, 5, 5);
 		gbc_checkBoxIsLeftHanded.gridx = 1;
-		gbc_checkBoxIsLeftHanded.gridy = 28;
+		gbc_checkBoxIsLeftHanded.gridy = 22;
 		panel.add(checkBoxIsLeftHanded, gbc_checkBoxIsLeftHanded);
 
 		JSeparator separator = new JSeparator();
@@ -1138,7 +636,7 @@ public class CharacterPanel extends JPanel {
 		gbc_separator.fill = GridBagConstraints.VERTICAL;
 		gbc_separator.insets = new Insets(0, 0, 5, 0);
 		gbc_separator.gridx = 0;
-		gbc_separator.gridy = 29;
+		gbc_separator.gridy = 23;
 		panel.add(separator, gbc_separator);
 
 		JLabel lblEquipment = new JLabel("Equipment");
@@ -1146,14 +644,14 @@ public class CharacterPanel extends JPanel {
 		GridBagConstraints gbc_lblEquipment = new GridBagConstraints();
 		gbc_lblEquipment.insets = new Insets(0, 0, 5, 5);
 		gbc_lblEquipment.gridx = 1;
-		gbc_lblEquipment.gridy = 30;
+		gbc_lblEquipment.gridy = 24;
 		panel.add(lblEquipment, gbc_lblEquipment);
 
 		JLabel lblShirt = new JLabel("Shirt");
 		GridBagConstraints gbc_lblShirt = new GridBagConstraints();
 		gbc_lblShirt.insets = new Insets(0, 0, 5, 5);
 		gbc_lblShirt.gridx = 0;
-		gbc_lblShirt.gridy = 31;
+		gbc_lblShirt.gridy = 25;
 		panel.add(lblShirt, gbc_lblShirt);
 
 		textFieldShirt = new JTextField();
@@ -1162,7 +660,7 @@ public class CharacterPanel extends JPanel {
 		gbc_textFieldShirt.insets = new Insets(0, 0, 5, 5);
 		gbc_textFieldShirt.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textFieldShirt.gridx = 1;
-		gbc_textFieldShirt.gridy = 31;
+		gbc_textFieldShirt.gridy = 25;
 		panel.add(textFieldShirt, gbc_textFieldShirt);
 		textFieldShirt.setColumns(10);
 
@@ -1170,7 +668,7 @@ public class CharacterPanel extends JPanel {
 		GridBagConstraints gbc_lblPants = new GridBagConstraints();
 		gbc_lblPants.insets = new Insets(0, 0, 5, 5);
 		gbc_lblPants.gridx = 0;
-		gbc_lblPants.gridy = 32;
+		gbc_lblPants.gridy = 26;
 		panel.add(lblPants, gbc_lblPants);
 
 		textFieldPants = new JTextField();
@@ -1180,14 +678,14 @@ public class CharacterPanel extends JPanel {
 		gbc_textFieldPants.insets = new Insets(0, 0, 5, 5);
 		gbc_textFieldPants.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textFieldPants.gridx = 1;
-		gbc_textFieldPants.gridy = 32;
+		gbc_textFieldPants.gridy = 26;
 		panel.add(textFieldPants, gbc_textFieldPants);
 
 		JLabel lblVest = new JLabel("Vest");
 		GridBagConstraints gbc_lblVest = new GridBagConstraints();
 		gbc_lblVest.insets = new Insets(0, 0, 5, 5);
 		gbc_lblVest.gridx = 0;
-		gbc_lblVest.gridy = 33;
+		gbc_lblVest.gridy = 27;
 		panel.add(lblVest, gbc_lblVest);
 
 		textFieldVest = new JTextField();
@@ -1197,14 +695,14 @@ public class CharacterPanel extends JPanel {
 		gbc_textFieldVest.insets = new Insets(0, 0, 5, 5);
 		gbc_textFieldVest.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textFieldVest.gridx = 1;
-		gbc_textFieldVest.gridy = 33;
+		gbc_textFieldVest.gridy = 27;
 		panel.add(textFieldVest, gbc_textFieldVest);
 
 		JLabel lblHat = new JLabel("Hat");
 		GridBagConstraints gbc_lblHat = new GridBagConstraints();
 		gbc_lblHat.insets = new Insets(0, 0, 5, 5);
 		gbc_lblHat.gridx = 0;
-		gbc_lblHat.gridy = 34;
+		gbc_lblHat.gridy = 28;
 		panel.add(lblHat, gbc_lblHat);
 
 		textFieldHat = new JTextField();
@@ -1214,14 +712,14 @@ public class CharacterPanel extends JPanel {
 		gbc_textFieldHat.insets = new Insets(0, 0, 5, 5);
 		gbc_textFieldHat.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textFieldHat.gridx = 1;
-		gbc_textFieldHat.gridy = 34;
+		gbc_textFieldHat.gridy = 28;
 		panel.add(textFieldHat, gbc_textFieldHat);
 
 		JLabel lblMask = new JLabel("Mask");
 		GridBagConstraints gbc_lblMask = new GridBagConstraints();
 		gbc_lblMask.insets = new Insets(0, 0, 5, 5);
 		gbc_lblMask.gridx = 0;
-		gbc_lblMask.gridy = 35;
+		gbc_lblMask.gridy = 29;
 		panel.add(lblMask, gbc_lblMask);
 
 		textFieldMask = new JTextField();
@@ -1231,14 +729,14 @@ public class CharacterPanel extends JPanel {
 		gbc_textFieldMask.insets = new Insets(0, 0, 5, 5);
 		gbc_textFieldMask.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textFieldMask.gridx = 1;
-		gbc_textFieldMask.gridy = 35;
+		gbc_textFieldMask.gridy = 29;
 		panel.add(textFieldMask, gbc_textFieldMask);
 
 		JLabel lblGlasses = new JLabel("Glasses");
 		GridBagConstraints gbc_lblGlasses = new GridBagConstraints();
 		gbc_lblGlasses.insets = new Insets(0, 0, 5, 5);
 		gbc_lblGlasses.gridx = 0;
-		gbc_lblGlasses.gridy = 36;
+		gbc_lblGlasses.gridy = 30;
 		panel.add(lblGlasses, gbc_lblGlasses);
 
 		textFieldGlasses = new JTextField();
@@ -1248,14 +746,14 @@ public class CharacterPanel extends JPanel {
 		gbc_textFieldGlasses.insets = new Insets(0, 0, 5, 5);
 		gbc_textFieldGlasses.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textFieldGlasses.gridx = 1;
-		gbc_textFieldGlasses.gridy = 36;
+		gbc_textFieldGlasses.gridy = 30;
 		panel.add(textFieldGlasses, gbc_textFieldGlasses);
 		
 		JLabel lblBackpack = new JLabel("Backpack");
 		GridBagConstraints gbc_lblBackpack = new GridBagConstraints();
 		gbc_lblBackpack.insets = new Insets(0, 0, 5, 5);
 		gbc_lblBackpack.gridx = 0;
-		gbc_lblBackpack.gridy = 37;
+		gbc_lblBackpack.gridy = 31;
 		panel.add(lblBackpack, gbc_lblBackpack);
 		
 		textFieldBackpack = new JTextField();
@@ -1265,14 +763,14 @@ public class CharacterPanel extends JPanel {
 		gbc_textFieldBackpack.insets = new Insets(0, 0, 5, 5);
 		gbc_textFieldBackpack.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textFieldBackpack.gridx = 1;
-		gbc_textFieldBackpack.gridy = 37;
+		gbc_textFieldBackpack.gridy = 31;
 		panel.add(textFieldBackpack, gbc_textFieldBackpack);
 		
 		JLabel lblPrimary = new JLabel("Primary");
 		GridBagConstraints gbc_lblPrimary = new GridBagConstraints();
 		gbc_lblPrimary.insets = new Insets(0, 0, 5, 5);
 		gbc_lblPrimary.gridx = 0;
-		gbc_lblPrimary.gridy = 38;
+		gbc_lblPrimary.gridy = 32;
 		panel.add(lblPrimary, gbc_lblPrimary);
 		
 		textFieldPrimary = new JTextField();
@@ -1300,14 +798,14 @@ public class CharacterPanel extends JPanel {
 		gbc_textFieldPrimary.insets = new Insets(0, 0, 5, 5);
 		gbc_textFieldPrimary.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textFieldPrimary.gridx = 1;
-		gbc_textFieldPrimary.gridy = 38;
+		gbc_textFieldPrimary.gridy = 32;
 		panel.add(textFieldPrimary, gbc_textFieldPrimary);
 		
 		JLabel lblSecondary = new JLabel("Secondary");
 		GridBagConstraints gbc_lblSecondary = new GridBagConstraints();
 		gbc_lblSecondary.insets = new Insets(0, 0, 5, 5);
 		gbc_lblSecondary.gridx = 0;
-		gbc_lblSecondary.gridy = 39;
+		gbc_lblSecondary.gridy = 33;
 		panel.add(lblSecondary, gbc_lblSecondary);
 		
 		textFieldSecondary = new JTextField();
@@ -1335,14 +833,14 @@ public class CharacterPanel extends JPanel {
 		gbc_textFieldSecondary.insets = new Insets(0, 0, 5, 5);
 		gbc_textFieldSecondary.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textFieldSecondary.gridx = 1;
-		gbc_textFieldSecondary.gridy = 39;
+		gbc_textFieldSecondary.gridy = 33;
 		panel.add(textFieldSecondary, gbc_textFieldSecondary);
 		
 		JLabel lblTertiary = new JLabel("Tertiary");
 		GridBagConstraints gbc_lblTertiary = new GridBagConstraints();
 		gbc_lblTertiary.insets = new Insets(0, 0, 5, 5);
 		gbc_lblTertiary.gridx = 0;
-		gbc_lblTertiary.gridy = 40;
+		gbc_lblTertiary.gridy = 34;
 		panel.add(lblTertiary, gbc_lblTertiary);
 		
 		textFieldTertiary = new JTextField();
@@ -1370,14 +868,14 @@ public class CharacterPanel extends JPanel {
 		gbc_textFieldTertiary.insets = new Insets(0, 0, 5, 5);
 		gbc_textFieldTertiary.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textFieldTertiary.gridx = 1;
-		gbc_textFieldTertiary.gridy = 40;
+		gbc_textFieldTertiary.gridy = 34;
 		panel.add(textFieldTertiary, gbc_textFieldTertiary);
 		
 		JLabel lblEquipped = new JLabel("Equipped");
 		GridBagConstraints gbc_lblEquipped = new GridBagConstraints();
 		gbc_lblEquipped.insets = new Insets(0, 0, 5, 5);
 		gbc_lblEquipped.gridx = 0;
-		gbc_lblEquipped.gridy = 41;
+		gbc_lblEquipped.gridy = 35;
 		panel.add(lblEquipped, gbc_lblEquipped);
 		
 		panelEquipped = new JPanel();
@@ -1385,7 +883,7 @@ public class CharacterPanel extends JPanel {
 		gbc_panelEquipped.insets = new Insets(0, 0, 5, 5);
 		gbc_panelEquipped.fill = GridBagConstraints.HORIZONTAL;
 		gbc_panelEquipped.gridx = 1;
-		gbc_panelEquipped.gridy = 41;
+		gbc_panelEquipped.gridy = 35;
 		panelEquipped.setEnabled(false);
 		panelEquipped.setVisible(false);
 		panel.add(panelEquipped, gbc_panelEquipped);
@@ -1417,7 +915,7 @@ public class CharacterPanel extends JPanel {
 		gbc_separator_1.fill = GridBagConstraints.VERTICAL;
 		gbc_separator_1.insets = new Insets(0, 0, 5, 0);
 		gbc_separator_1.gridx = 0;
-		gbc_separator_1.gridy = 42;
+		gbc_separator_1.gridy = 36;
 		panel.add(separator_1, gbc_separator_1);
 		
 		JButton btnSaveCharacter = new JButton("New button");
@@ -1426,33 +924,9 @@ public class CharacterPanel extends JPanel {
 		gbc_btnSaveCharacter.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnSaveCharacter.insets = new Insets(0, 0, 0, 5);
 		gbc_btnSaveCharacter.gridx = 1;
-		gbc_btnSaveCharacter.gridy = 43;
+		gbc_btnSaveCharacter.gridy = 37;
 		panel.add(btnSaveCharacter, gbc_btnSaveCharacter);
 		
-	}
-
-	protected void setCharacterColors(Color decode) {
-		sliderCharacterRed.setValue(decode.getRed());
-		sliderCharacterGreen.setValue(decode.getGreen());
-		sliderCharacterBlue.setValue(decode.getBlue());	
-		characterColor.revalidate();
-		characterColor.repaint();
-	}
-
-	protected void setSkinColors(Color decode) {
-		sliderSkinRed.setValue(decode.getRed());
-		sliderSkinGreen.setValue(decode.getGreen());
-		sliderSkinBlue.setValue(decode.getBlue());	
-		skinColor.revalidate();
-		skinColor.repaint();
-	}
-	
-	protected void setHairColors(Color decode) {
-		sliderHairRed.setValue(decode.getRed());
-		sliderHairGreen.setValue(decode.getGreen());
-		sliderHairBlue.setValue(decode.getBlue());	
-		hairColor.revalidate();
-		hairColor.repaint();
 	}
 
 	private class SwingActionLoad extends AbstractAction {
@@ -1493,17 +967,9 @@ public class CharacterPanel extends JPanel {
 				if (string.contains("Backpack") && !(string.contains("Halloween") || string.contains("Christmas")))
 					textFieldBackpack.setText(string.split(" ")[1]);
 				if (string.contains("Color_Skin"))
-				{
-					sliderSkinRed.setValue(Color.decode(string.split(" ")[1]).getRed());
-					sliderSkinGreen.setValue(Color.decode(string.split(" ")[1]).getGreen());
-					sliderSkinBlue.setValue(Color.decode(string.split(" ")[1]).getBlue());
-				}
+					skinColor.setBackground(Color.decode(string.split(" ")[1]));
 				if (string.contains("Color_Hair"))
-				{
-					sliderHairRed.setValue(Color.decode(string.split(" ")[1]).getRed());
-					sliderHairGreen.setValue(Color.decode(string.split(" ")[1]).getGreen());
-					sliderHairBlue.setValue(Color.decode(string.split(" ")[1]).getBlue());
-				}
+					hairColor.setBackground(Color.decode(string.split(" ")[1]));
 				if (string.contains("ID") && !string.contains("GUID"))
 					textFieldID.setText(string.split(" ")[1]);
 				if (string.contains("GUID"))
@@ -1599,51 +1065,6 @@ public class CharacterPanel extends JPanel {
 		}
 	}
 	
-	protected void CharacterColorChanged() {
-		if(sliderCharacterRed!=null&&sliderCharacterGreen!=null&&sliderCharacterBlue!=null)
-		{
-			if(textFieldR3!=null&&textFieldG3!=null&&textFieldB3!=null)
-			{
-				textFieldR3.setText(String.valueOf(sliderCharacterRed.getValue()));
-				textFieldG3.setText(String.valueOf(sliderCharacterGreen.getValue()));
-				textFieldB3.setText(String.valueOf(sliderCharacterBlue.getValue()));
-			}
-			characterColor.setBackground(new Color(sliderCharacterRed.getValue(), sliderCharacterGreen.getValue(), sliderCharacterBlue.getValue()));
-			characterColor.revalidate();
-			characterColor.repaint();
-		}
-	}
-	
-	public static void SkinColorChanged() {
-		if(sliderSkinRed!=null&&sliderSkinGreen!=null&&sliderSkinBlue!=null)
-		{
-			if(textFieldR1!=null&&textFieldG1!=null&&textFieldB1!=null)
-			{
-				textFieldR1.setText(String.valueOf(sliderSkinRed.getValue()));
-				textFieldG1.setText(String.valueOf(sliderSkinGreen.getValue()));
-				textFieldB1.setText(String.valueOf(sliderSkinBlue.getValue()));
-			}
-			skinColor.setBackground(new Color(sliderSkinRed.getValue(), sliderSkinGreen.getValue(), sliderSkinBlue.getValue()));
-			skinColor.revalidate();
-			skinColor.repaint();
-		}
-	}
-
-	public static void HairColorChanged() {
-		if(sliderHairRed!=null&&sliderHairGreen!=null&&sliderHairBlue!=null)
-		{
-			if(textFieldR2!=null&&textFieldG2!=null&&textFieldB2!=null)
-			{
-				textFieldR2.setText(String.valueOf(sliderHairRed.getValue()));
-				textFieldG2.setText(String.valueOf(sliderHairGreen.getValue()));
-				textFieldB2.setText(String.valueOf(sliderHairBlue.getValue()));
-			}
-			hairColor.setBackground(new Color(sliderHairRed.getValue(), sliderHairGreen.getValue(), sliderHairBlue.getValue()));
-			hairColor.revalidate();
-			hairColor.repaint();
-		}
-	}
-	
 	public static String[][] getValues()
 	{
 		String[] assetValues = new String[256];
@@ -1710,8 +1131,8 @@ public class CharacterPanel extends JPanel {
 			string = "0";
 		if (!string.equals("0"))
 			assetValues[i++] = "Hair " + string;
-		assetValues[i++] = "Color_Skin " + String.format("#%02X%02X%02X", sliderSkinRed.getValue(), sliderSkinGreen.getValue(), sliderSkinBlue.getValue());
-		assetValues[i++] = "Color_Hair " + String.format("#%02X%02X%02X", sliderHairRed.getValue(), sliderHairGreen.getValue(), sliderHairBlue.getValue());
+		assetValues[i++] = "Color_Skin " + Integer.toHexString(skinColor.getBackground().getRGB() & 0xFFFFFF).toUpperCase();
+		assetValues[i++] = "Color_Hair " + Integer.toHexString(hairColor.getBackground().getRGB() & 0xFFFFFF).toUpperCase();
 		
 		if (textFieldDialogID.getText().chars().allMatch(Character::isDigit) && textFieldDialogID.getText().length()>0)
 			assetValues[i++] = "Dialogue " + textFieldDialogID.getText();

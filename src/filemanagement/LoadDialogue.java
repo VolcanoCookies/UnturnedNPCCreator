@@ -8,16 +8,19 @@ import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import dialogues.DialoguePanel;
+
 public class LoadDialogue {
 
 	static BufferedReader reader;
 	
-	public static String[] loadDialogue(String path)
+	public static String loadDialogue(String filepath)
 	{
-		path = path.replace("\\", "/");
+		String path = filepath.replace("\\", "/");
 		
 		//The file
 		File file = new File(path);
+		System.out.println(file.getAbsolutePath());
 		
 		//Check path is a directory and if it contains Asset.dat and English.dat
 		if(!file.isDirectory()) {
@@ -73,9 +76,8 @@ public class LoadDialogue {
 			output[0] = content.split(":")[0];
 			output[1] = content.split(":")[1];
 			
-			return output;
-			
-			
+			DialoguePanel.LoadDialogue(output);
+			return null;
 		} catch (IOException e) {	
 			JOptionPane.showMessageDialog(new JFrame("Failed to load"), "Failed to read files.\nStacktrace:\n" + e.getMessage(), "Warning",
 					JOptionPane.WARNING_MESSAGE);

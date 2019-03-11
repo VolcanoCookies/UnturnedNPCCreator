@@ -79,7 +79,7 @@ public class Window extends JFrame {
 	protected JComponent panelExplorer;
 	public static JPanel panelVendors;
 	private JPanel panelFindID;
-	private JPanel panelDialogues;
+	public static JPanel panelDialogues;
 	public static JPanel panelCharacters;
 	
 //	public static MetalButtonUI mbui = new MetalButtonUI();
@@ -447,7 +447,7 @@ public class Window extends JFrame {
 			putValue(SHORT_DESCRIPTION, "Open the Trello roadmap.");
 		}
 		public void actionPerformed(ActionEvent e) {
-			OpenURL.OpenURL("https://trello.com/b/ZMTN0JtW/unturned-npc-creator");
+			OpenURL.openURL("https://trello.com/b/ZMTN0JtW/unturned-npc-creator");
 		}
 	}
 	private class SwingActionOpenIDList extends AbstractAction {
@@ -460,7 +460,7 @@ public class Window extends JFrame {
 			putValue(SHORT_DESCRIPTION, "Open ID list in browser.");
 		}
 		public void actionPerformed(ActionEvent e) {
-			OpenURL.OpenURL("https://unturneditems.com/");
+			OpenURL.openURL("https://unturneditems.com/");
 		}
 	}
 	private static void getBundlesPath()
@@ -503,7 +503,7 @@ public class Window extends JFrame {
 			putValue(SHORT_DESCRIPTION, "Join the support discord server!");
 		}
 		public void actionPerformed(ActionEvent e) {
-			OpenURL.OpenURL("https://discord.gg/BhJM5ve");
+			OpenURL.openURL("https://discord.gg/BhJM5ve");
 		}
 	}
 	private class SwingActionOpenCredits extends AbstractAction {
@@ -564,7 +564,7 @@ public class Window extends JFrame {
 			putValue(SHORT_DESCRIPTION, "Opens the discord channel for reporting bugs");
 		}
 		public void actionPerformed(ActionEvent e) {
-			OpenURL.OpenURL("https://discord.gg/9dUXMYG");
+			OpenURL.openURL("https://discord.gg/9dUXMYG");
 		}
 	}
 }
