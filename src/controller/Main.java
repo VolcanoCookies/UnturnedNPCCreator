@@ -9,12 +9,16 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
+		//Standby window
+		StandbyWindow standbyWindow = new StandbyWindow();
+		
 		//Run before main window opens
 		new Init(VERSION);
 		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					standbyWindow.dispose();
 					new Controller();
 				} catch (Exception e) {
 					e.printStackTrace();

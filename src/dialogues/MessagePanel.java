@@ -162,7 +162,7 @@ public class MessagePanel extends JPanel {
 		textFieldPrevID.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent arg0) {
-				message.setPreviousMessageID(textFieldPrevID.getText());
+				message.setPreviousDialogueID(textFieldPrevID.getText());
 			}
 		});
 		textFieldPrevID.setComponentPopupMenu(popupMenu);
@@ -189,7 +189,7 @@ public class MessagePanel extends JPanel {
 		reload(message);
 	}
 	private void reload(Message message) {
-		textFieldPrevID.setText(message.getPreviousMessageID());
+		textFieldPrevID.setText(message.getPreviousDialogueID());
 		
 		textArea.setText(message.getText());
 		

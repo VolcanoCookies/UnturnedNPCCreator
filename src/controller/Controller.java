@@ -1,7 +1,6 @@
 package controller;
 
 import java.awt.Color;
-import java.awt.Dialog;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -26,6 +25,7 @@ import models.Message;
 import models.NPCCharacter;
 import models.Pose;
 import models.Quest;
+import models.Response;
 import models.Vendor;
 import rewards.RewardsDialog;
 import windows.Window;
@@ -473,15 +473,104 @@ public class Controller {
 		output[0] = "";
 		output[1] = "";
 		
+		//Assing ID´s to responses
+		int i = 0;
+		for(Message message : dialogue.getMessages()) {
+			for(Response response : message.getResponses()) {
+				response.setID(Integer.toString(i++));
+			}
+		}
+		
+		//Basic information
 		if(dialogue.getGUID()!=null)
 			output[0] += "GUID " + dialogue.getGUID() + "\n";
 		output[0] += "ID " + dialogue.getID() + "\n";
 		
 		//Messages
 		output[0] += "\nMessages " + dialogue.getMessages().size() + "\n";
-		for(Message message : dialogue.getMessages()) {
-			
+		for(i = 0; i < dialogue.getMessages().size(); i++) {
+			output[0] += "Message_" + i + "_Pages " + dialogue.getMessages().get(i).getText().split("<p>").length + "\n";
+			if(dialogue.getMessages().get(i).getResponses().size()>0) {
+				output[0] += "Message_" + i + "_Responses " + dialogue.getMessages().get(i).getResponses().size() + "\n";
+				for(int ii = 0; ii < dialogue.getMessages().get(i).getResponses().size(); ii++) {
+					output[0] += "Message_" + i + "_Response_" + ii + " " + dialogue.getMessages().get(i).getResponses().get(ii).getID() + "\n";
+				}
+			}
+			if(dialogue.getMessages().get(i).getPreviousDialogueID()!=null) {
+				output[0] += "Message_" + i + "_Prev " + dialogue.getMessages().get(i).getPreviousDialogueID() + "\n";
+			}
+			if(dialogue.getMessages().get(i).getConditions()!=null) {
+				for(String string : dialogue.getMessages().get(i).getConditions().split("\n")) {
+					output[0] += "Message_" + i + "_" + string + "\n";
+				}
+			}
+			if(dialogue.getMessages().get(i).getConditions()!=null) {
+				for(String string : dialogue.getMessages().get(i).getRewards().split("\n")) {
+					output[0] += "Message_" + i + "_" + string + "\n";
+				}
+			}
 		}
+		
+		//Responses
+		i = 0;
+		output[0] += "\nResponses ";
+		for(Message message : dialogue.getMessages())
+			i += message.getResponses().size();
+				i++;
+		output[0] += i + "\n";
+		i = 0;
+		List<Response> tempList = new ArrayList<Response>();
+		for(Message message : dialogue.getMessages()) {
+			for(Response response : message.getResponses()) {
+				tempList.add(response);
+			}
+		}
+		for(i = 0; i < tempList.size(); i++) {
+			for(Response response : tempList) {
+				if(Integer.valueOf(response.getID())==i) {
+					if(response.getDialogueID()!=null)
+						output[0] += "Response_" + i + "_Dialogue " + response.getDialogueID() + "\n";
+					if(response.getVendorID()!=null)
+						output[0] += "Response_" + i + "_Vendor " + response.getVendorID() + "\n";
+					if(response.getQuestID()!=null)
+						output[0] += "Response_" + i + "_Quest " + response.getQuestID() + "\n";
+					if(response.getConditions()!=null) {
+						for(String string : response.getConditions().split("\n"))
+							output[0] += "Response_" + i + "_" + string + "\n";
+					}
+					if(response.getRewards()!=null) {
+						for(String string : response.getRewards().split("\n"))
+							output[0] += "Response_" + i + "_" + string + "\n";
+					}
+				}
+			}
+		}
+		
+		/*
+		 * ENGLISH PART
+		 */
+		
+		//Messages'
+		for(i = 0; i < dialogue.getMessages().size(); i++) {
+			//If only one page
+			if(!dialogue.getMessages().get(i).getText().contains("<p>"))
+				output[1] += "Message_" + i + "_Page_0 " + dialogue.getMessages().get(i).getText() + "\n";
+			else {
+				//If multiple pages
+				String[] pages = dialogue.getMessages().get(i).getText().split("<p>");
+				for(int ii = 0; ii < pages.length; ii++)
+					output[1] += "Message_" + i + "_Page_" + ii + " " + pages[ii] + "\n";
+			}
+		}
+		output[1] += "\n";
+		for(i = 0; i < tempList.size(); i++) {
+			for(Response response : tempList) {
+				if(Integer.valueOf(response.getID())==i) {
+					output[1] += "Response_" + i + " " + response.getText() + "\n";
+				}
+			}
+		}
+		
 		
 		//Watermark
 		output[0] += "\n\n//Created with UnturnedNPCCreator by Volcano" ;

@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Message {
 	
-	String previousMessageID;
+	String previousDialogueStringID;
 	String conditions;
 	String rewards;
 	List<Response> responses = new ArrayList<Response>();
@@ -17,11 +17,11 @@ public class Message {
 	public void setText(String text) {
 		this.text = text;
 	}
-	public String getPreviousMessageID() {
-		return previousMessageID;
+	public String getPreviousDialogueID() {
+		return previousDialogueStringID;
 	}
-	public void setPreviousMessageID(String previousMessageID) {
-		this.previousMessageID = previousMessageID;
+	public void setPreviousDialogueID(String previousMessageID) {
+		this.previousDialogueStringID = previousMessageID;
 	}
 	public String getConditions() {
 		return conditions;
