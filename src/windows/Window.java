@@ -6,11 +6,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -25,7 +21,6 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -33,13 +28,17 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 
 import character.CharacterPanel;
+import controller.Controller;
 import dialogues.DialoguePanel;
+import models.Settings;
 import panels.CreditPanel;
 import panels.ExplorerPanel;
 import panels.SettingsPanel;
@@ -61,14 +60,15 @@ public class Window extends JFrame {
 	public static String runningPath;
 	private static SettingsPanel settingsPanel;
 	private static CreditPanel creditPanel;
-	private final Action actionExit = new SwingActionExit();
-	private final Action actionOpenTrello = new SwingActionOpenTrello();
 	private final Action actionOpenIDList = new SwingActionOpenIDList();
-	private final Action actionSettings = new SwingActionSettings();
 	private final Action actionOpenDiscord = new SwingActionOpenDiscord();
-	private final Action actionOpenCredits = new SwingActionOpenCredits();
 	private final Action actionReadMeGuide = new SwingActionReadMeGuide();
 	private final Action actionOpenDiscordBug = new SwingActionOpenDiscordBug();
+	private static ExplorerPanel explorerPanel;
+	private static CheckIDConflict checkConflictPanel;
+	private static CharacterPanel characterPanel;
+	private static DialoguePanel dialoguePanel;
+	private static VendorPanel vendorPanel;
 	public static JPanel panelEditors;
 	
 	public final static Color BACKGROUNDCOLOR = Color.decode("#252120");
@@ -76,38 +76,15 @@ public class Window extends JFrame {
 	public final static Color REDCOLOR = Color.decode("#A92F41");
 	public final static Color DARKERBACKGROUNDCOLOR = Color.decode("#1E1A1A");
 	public final static Color FONTCOLOR = Color.decode("#E5DFC5");
-	protected JComponent panelExplorer;
-	public static JPanel panelVendors;
-	private JPanel panelFindID;
-	private JPanel panelDialogues;
-	public static JPanel panelCharacters;
 	
 //	public static MetalButtonUI mbui = new MetalButtonUI();
-	
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					getBundlesPath();
-					System.out.println(runningPath);
-					Window frame = new Window();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
 	 */
-	public Window() {
+	public Window(Controller controller) {
         setTitle("Unturned NPC Creator");
-		setBounds(100, 100, 875, 600);
+		setBounds(100, 100, 828, 630);
 		setResizable(true);
 		new Init();
 		try {
@@ -119,16 +96,15 @@ public class Window extends JFrame {
 		addWindowListener(new WindowAdapter() {
 		    public void windowClosing(WindowEvent we)
 		    { 
-//		    	JButton No = new JButton("No");
-//		    	JButton Yes = new JButton("Yes");
-//		    	No.setFocusPainted(false);
-//		    	Yes.setFocusPainted(false);
-//		    	JButton ObjButtons[] = {No, Yes};
-		        
+		    	if(!Settings.ExitConfirmation()) {
+		    		Settings.save();
+		    		System.exit(0);
+		    	}
 		    	String ObjButtons[] = {"Yes", "No"};
 		    	int PromptResult = JOptionPane.showOptionDialog(null,"Are you sure you want to exit?","Are you sure?",JOptionPane.DEFAULT_OPTION,JOptionPane.WARNING_MESSAGE,null,ObjButtons,ObjButtons[1]);
 		        if(PromptResult==JOptionPane.YES_OPTION)
 		        {
+		        	Settings.save();
 		            System.exit(0);
 		        }
 		    }
@@ -181,12 +157,12 @@ public class Window extends JFrame {
 		menuBar.add(menuFile);
 		
 		JMenuItem menuItemSettings = new JMenuItem("Settings");
-		menuItemSettings.setAction(actionSettings);
+		menuItemSettings.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showPanel("Settings");
+			}
+		});
 		menuFile.add(menuItemSettings);
-		
-		JMenuItem menuItemTrello = new JMenuItem("Trello Roadmap");
-		menuItemTrello.setAction(actionOpenTrello);
-		menuFile.add(menuItemTrello);
 		
 		JMenuItem menuItemDiscord = new JMenuItem("Discord");
 		menuItemDiscord.setAction(actionOpenDiscord);
@@ -197,7 +173,11 @@ public class Window extends JFrame {
 		menuFile.add(menuItemIDList);
 		
 		JMenuItem menuItemCredits = new JMenuItem("Credits");
-		menuItemCredits.setAction(actionOpenCredits);
+		menuItemCredits.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showPanel("Explorer");
+			}
+		});
 		menuFile.add(menuItemCredits);
 		
 		JMenuItem menuItemReportBug = new JMenuItem("Report bugs");
@@ -205,7 +185,11 @@ public class Window extends JFrame {
 		menuFile.add(menuItemReportBug);
 		
 		JMenuItem menuItemQuit = new JMenuItem("Exit");
-		menuItemQuit.setAction(actionExit);
+		menuItemQuit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
 		menuFile.add(menuItemQuit);
 		
 		JMenu menuGuide = new JMenu("Guide");
@@ -223,26 +207,18 @@ public class Window extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		setContentPane(contentPane);
-		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[]{116, 300, 0};
-		gbl_contentPane.rowHeights = new int[]{540, 0};
-		gbl_contentPane.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-		gbl_contentPane.rowWeights = new double[]{1.0, Double.MIN_VALUE};
-		contentPane.setLayout(gbl_contentPane);
+		contentPane.setLayout(new BorderLayout(0, 0));
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setWheelScrollingEnabled(true);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+		getContentPane().add(scrollPane, BorderLayout.CENTER);
+		contentPane.add(scrollPane, BorderLayout.CENTER);
 		
 		JPanel selectorPanel = new JPanel();
-		GridBagConstraints gbc_selectorPanel = new GridBagConstraints();
-		gbc_selectorPanel.insets = new Insets(0, 0, 0, 5);
-		gbc_selectorPanel.fill = GridBagConstraints.BOTH;
-		gbc_selectorPanel.gridx = 0;
-		gbc_selectorPanel.gridy = 0;
-		contentPane.add(selectorPanel, gbc_selectorPanel);
-		GridBagLayout gbl_selectorPanel = new GridBagLayout();
-		gbl_selectorPanel.columnWidths = new int[]{11, 0};
-		gbl_selectorPanel.rowHeights = new int[]{116, 35, 35, 0, 35, 35, 0};
-		gbl_selectorPanel.columnWeights = new double[]{0.0, Double.MIN_VALUE};
-		gbl_selectorPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		selectorPanel.setLayout(gbl_selectorPanel);
+		contentPane.add(selectorPanel, BorderLayout.WEST);
 		
 		JButton buttonIcon = new JButton();
 		buttonIcon.addMouseListener(new MouseAdapter() {
@@ -256,224 +232,106 @@ public class Window extends JFrame {
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				for(Component panel : panelEditors.getComponents())
-				{
-					panel.setVisible(false);
-					panel.setEnabled(false);
-				}
-				panelExplorer.setVisible(true);
-				panelExplorer.setEnabled(true);
+				showPanel("Explorer");
 			}
 		});
+		selectorPanel.setLayout(new BorderLayout(0, 0));
 		buttonIcon.setBorderPainted(false);
 		buttonIcon.setFocusPainted(false);
 		buttonIcon.setContentAreaFilled(false);
 		buttonIcon.setBackground(Color.WHITE);
 		buttonIcon.setIcon(new ImageIcon(Window.class.getResource("/Icons/UIIcons/BTWIcon.png")));
 		buttonIcon.setSize(new Dimension(100,100));
-		GridBagConstraints gbc_buttonIcon = new GridBagConstraints();
-		gbc_buttonIcon.insets = new Insets(0, 0, 5, 0);
 		buttonIcon.setSize(new Dimension(100,100));
-		gbc_buttonIcon.fill = GridBagConstraints.BOTH;
-		gbc_buttonIcon.gridx = 0;
-		gbc_buttonIcon.gridy = 0;
-		selectorPanel.add(buttonIcon, gbc_buttonIcon);
+		selectorPanel.add(buttonIcon, BorderLayout.NORTH);
+		
+		JPanel panelButtons = new JPanel();
+		selectorPanel.add(panelButtons);
 		
 		JButton buttonCharacters = new JButton("Characters");
-//		buttonCharacters.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseEntered(MouseEvent arg0) {
-//				buttonCharacters.setBackground(BUTTONSELECTED);
-//			}
-//			@Override
-//			public void mouseExited(MouseEvent e) {
-//				buttonCharacters.setBackground(DARKERBACKGROUNDCOLOR);
-//			}
-//		});
+		buttonCharacters.setIcon(new ImageIcon(Window.class.getResource("/Icons/ExplorerPanel/characterIcon.png")));
+		buttonCharacters.setHorizontalAlignment(SwingConstants.LEADING);
+		buttonCharacters.setAlignmentY(Component.TOP_ALIGNMENT);
 		buttonCharacters.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				for(Component panel : panelEditors.getComponents())
-				{
-					panel.setVisible(false);
-					panel.setEnabled(false);
-				}
-				panelCharacters.setVisible(true);
-				panelCharacters.setEnabled(true);
+				showPanel("Character");
 			}
 		});
-		buttonCharacters.setFont(new Font("Microsoft YaHei", Font.PLAIN, 14));
-		GridBagConstraints gbc_buttonCharacters = new GridBagConstraints();
-		gbc_buttonCharacters.insets = new Insets(0, 0, 5, 0);
-		gbc_buttonCharacters.fill = GridBagConstraints.BOTH;
-		gbc_buttonCharacters.gridx = 0;
-		gbc_buttonCharacters.gridy = 1;
-		selectorPanel.add(buttonCharacters, gbc_buttonCharacters);
+		buttonCharacters.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 17));
+		panelButtons.setLayout(new BorderLayout(0, 0));
+		panelButtons.add(buttonCharacters, BorderLayout.NORTH);
 		
-		JButton buttonVendors = new JButton("Vendors");
-//		buttonVendors.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseEntered(MouseEvent arg0) {
-//				buttonVendors.setBackground(BUTTONSELECTED);
-//			}
-//			@Override
-//			public void mouseExited(MouseEvent e) {
-//				buttonVendors.setBackground(DARKERBACKGROUNDCOLOR);
-//			}
-//		});
-		buttonVendors.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				for(Component panel : panelEditors.getComponents())
-				{
-					panel.setVisible(false);
-					panel.setEnabled(false);
-				}
-				panelVendors.setVisible(true);
-				panelVendors.setEnabled(true);
-			}
-		});
-		buttonVendors.setFont(new Font("Microsoft YaHei", Font.PLAIN, 14));
-		GridBagConstraints gbc_buttonVendors = new GridBagConstraints();
-		gbc_buttonVendors.insets = new Insets(0, 0, 5, 0);
-		gbc_buttonVendors.fill = GridBagConstraints.BOTH;
-		gbc_buttonVendors.gridx = 0;
-		gbc_buttonVendors.gridy = 2;
-		selectorPanel.add(buttonVendors, gbc_buttonVendors);
-		
-		JButton buttonDialogues = new JButton("Dialogues");
-//		buttonDialogues.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseEntered(MouseEvent arg0) {
-//				buttonDialogues.setBackground(BUTTONSELECTED);
-//			}
-//			@Override
-//			public void mouseExited(MouseEvent e) {
-//				buttonDialogues.setBackground(DARKERBACKGROUNDCOLOR);
-//			}
-//		});
-		buttonDialogues.setVisible(false);
-		buttonDialogues.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				for(Component panel : panelEditors.getComponents())
-				{
-					panel.setVisible(false);
-					panel.setEnabled(false);
-				}
-				panelDialogues.setVisible(true);
-				panelDialogues.setEnabled(true);
-			}
-		});
-		buttonDialogues.setFont(new Font("Microsoft YaHei", Font.PLAIN, 14));
-		GridBagConstraints gbc_buttonDialogues = new GridBagConstraints();
-		gbc_buttonDialogues.insets = new Insets(0, 0, 5, 0);
-		gbc_buttonDialogues.fill = GridBagConstraints.BOTH;
-		gbc_buttonDialogues.gridx = 0;
-		gbc_buttonDialogues.gridy = 3;
-		selectorPanel.add(buttonDialogues, gbc_buttonDialogues);
+		JPanel panelButtons2 = new JPanel();
+		panelButtons.add(panelButtons2, BorderLayout.CENTER);
+		panelButtons2.setLayout(new BorderLayout(0, 0));
+				
+		JPanel panelButtons3 = new JPanel();
+		panelButtons2.add(panelButtons3, BorderLayout.CENTER);
+		panelButtons3.setLayout(new BorderLayout(0, 0));
+				
+		JPanel panelButtons4 = new JPanel();
+		panelButtons3.add(panelButtons4, BorderLayout.CENTER);
+		panelButtons4.setLayout(new BorderLayout(0, 0));
 		
 		JButton buttonIDFinder = new JButton("Find ID");
+		buttonIDFinder.setHorizontalAlignment(SwingConstants.LEADING);
+		panelButtons4.add(buttonIDFinder, BorderLayout.NORTH);
 		buttonIDFinder.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				for(Component panel : panelEditors.getComponents())
-				{
-					panel.setVisible(false);
-					panel.setEnabled(false);
-				}
-				panelFindID.setVisible(true);
-				panelFindID.setEnabled(true);
+				showPanel("CheckConflict");
 			}
 		});
-		buttonIDFinder.setFont(new Font("Microsoft YaHei", Font.PLAIN, 14));
-		GridBagConstraints gbc_buttonIDFinder = new GridBagConstraints();
-		gbc_buttonIDFinder.fill = GridBagConstraints.BOTH;
-		gbc_buttonIDFinder.insets = new Insets(0, 0, 5, 0);
-		gbc_buttonIDFinder.gridx = 0;
-		gbc_buttonIDFinder.gridy = 4;
-		selectorPanel.add(buttonIDFinder, gbc_buttonIDFinder);
+		buttonIDFinder.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 17));
+														
+		JButton buttonDialogues = new JButton("Dialogues");
+		buttonDialogues.setIcon(new ImageIcon(Window.class.getResource("/Icons/ExplorerPanel/dialogIcon.png")));
+		buttonDialogues.setHorizontalAlignment(SwingConstants.LEADING);
+		panelButtons3.add(buttonDialogues, BorderLayout.NORTH);
+		buttonDialogues.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				showPanel("Dialogue");
+			}
+		});
+		buttonDialogues.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 17));
+						
+		JButton buttonVendors = new JButton("Vendors");
+		buttonVendors.setIcon(new ImageIcon(Window.class.getResource("/Icons/ExplorerPanel/vendorIcon.png")));
+		buttonVendors.setHorizontalAlignment(SwingConstants.LEADING);
+		panelButtons2.add(buttonVendors, BorderLayout.NORTH);
+		buttonVendors.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				showPanel("Vendor");
+			}
+		});
+		buttonVendors.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 17));
 		
-//		JButton buttonQuests = new JButton("Quests");
-//		buttonQuests.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseEntered(MouseEvent arg0) {
-//				buttonQuests.setBackground(BUTTONSELECTED);
-//			}
-//			@Override
-//			public void mouseExited(MouseEvent e) {
-//				buttonQuests.setBackground(DARKERBACKGROUNDCOLOR);
-//			}
-//		});
-//		buttonQuests.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent arg0) {
-//			}
-//		});
-//		buttonQuests.setFont(new Font("Microsoft YaHei", Font.PLAIN, 14));
-//		GridBagConstraints gbc_buttonQuests = new GridBagConstraints();
-//		gbc_buttonQuests.fill = GridBagConstraints.BOTH;
-//		gbc_buttonQuests.gridx = 0;
-//		gbc_buttonQuests.gridy = 4;
-//		selectorPanel.add(buttonQuests, gbc_buttonQuests);
-//		
+		//Editor Panels
 		panelEditors = new JPanel();
-		GridBagConstraints gbc_editorsPanel = new GridBagConstraints();
-		gbc_editorsPanel.fill = GridBagConstraints.BOTH;
-		gbc_editorsPanel.gridx = 1;
-		gbc_editorsPanel.gridy = 0;
-		contentPane.add(panelEditors, gbc_editorsPanel);
+
+		scrollPane.setViewportView(panelEditors);
 		panelEditors.setLayout(new CardLayout(0, 0));
 		
-		panelExplorer = new JPanel();
-		panelExplorer.setLayout(new BorderLayout(0, 0));
-		panelExplorer.add(new ExplorerPanel());
-		panelEditors.add(panelExplorer, "name_264979666330042");
+		explorerPanel = new ExplorerPanel();
+		panelEditors.add(explorerPanel);
 		
-		panelFindID = new JPanel();
-		panelFindID.setLayout(new BorderLayout(0, 0));
-		panelFindID.add(new CheckIDConflict());
-		panelEditors.add(panelFindID, "name_264847566330042");
-
-		panelDialogues = new JPanel();
-		panelDialogues.setLayout(new BorderLayout(0, 0));
-		panelDialogues.add(new DialoguePanel());
-		panelEditors.add(panelDialogues, "name_264847566937042");
-		
-		panelCharacters = new JPanel();
-		panelEditors.add(panelCharacters, "name_263821186916050");
-		panelCharacters.setLayout(new BorderLayout(0, 0));
-		panelCharacters.add(new CharacterPanel());
-		
-		panelVendors = new JPanel();
-		panelEditors.add(panelVendors, "name_263826406939550");
-		panelVendors.setLayout(new BorderLayout(0, 0));
-		panelVendors.add(new VendorPanel());
 		settingsPanel = new SettingsPanel();
-		panelEditors.add(settingsPanel, "name_261787332516570");
-		creditPanel = new CreditPanel();
-		panelEditors.add(creditPanel, "name_261787345179725");
-	}
-	private class SwingActionExit extends AbstractAction {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -469162033349655540L;
-		public SwingActionExit() {
-			putValue(NAME, "Quit");
-			putValue(SHORT_DESCRIPTION, "Exit the program.");
-		}
-		public void actionPerformed(ActionEvent e) {
-			System.exit(0);
-		}
-	}
-	private class SwingActionOpenTrello extends AbstractAction {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -2117469150096204951L;
-		public SwingActionOpenTrello() {
-			putValue(NAME, "Trello Roadmap");
-			putValue(SHORT_DESCRIPTION, "Open the Trello roadmap.");
-		}
-		public void actionPerformed(ActionEvent e) {
-			OpenURL.OpenURL("https://trello.com/b/ZMTN0JtW/unturned-npc-creator");
-		}
+		panelEditors.add(settingsPanel);
+		
+		checkConflictPanel = new CheckIDConflict();
+		panelEditors.add(checkConflictPanel);
+		
+		vendorPanel = new VendorPanel(controller, null);
+		panelEditors.add(vendorPanel);
+		
+		characterPanel = new CharacterPanel(controller, null);
+		panelEditors.add(characterPanel);
+		
+		dialoguePanel = new DialoguePanel(controller, null);
+		panelEditors.add(dialoguePanel);
+
+		showPanel("Explorer");
+
+		setVisible(true);
 	}
 	private class SwingActionOpenIDList extends AbstractAction {
 		/**
@@ -485,37 +343,7 @@ public class Window extends JFrame {
 			putValue(SHORT_DESCRIPTION, "Open ID list in browser.");
 		}
 		public void actionPerformed(ActionEvent e) {
-			OpenURL.OpenURL("https://unturneditems.com/");
-		}
-	}
-	private static void getBundlesPath()
-	{
-		runningPath = Window.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-		runningPath = System.getProperty("user.dir");
-		//		if(runningPath.contains("bin"))
-//			runningPath = runningPath.substring(1, runningPath.indexOf("UnturnedNPCCreator")+18);
-//		else
-//			runningPath = runningPath.substring(1, runningPath.length()-22);
-	}
-	private class SwingActionSettings extends AbstractAction {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 6116259081323481186L;
-		public SwingActionSettings() {
-			putValue(NAME, "Settings");
-			putValue(SHORT_DESCRIPTION, "Open the settings.");
-		}
-		public void actionPerformed(ActionEvent e) {
-			for(Component panel : panelEditors.getComponents())
-			{
-				panel.setVisible(false);
-				panel.setEnabled(false);
-			}
-			settingsPanel.setVisible(true);
-			settingsPanel.setEnabled(true);
-			contentPane.revalidate();
-			contentPane.repaint();
+			OpenURL.openURL("https://unturneditems.com/");
 		}
 	}
 	private class SwingActionOpenDiscord extends AbstractAction {
@@ -528,37 +356,8 @@ public class Window extends JFrame {
 			putValue(SHORT_DESCRIPTION, "Join the support discord server!");
 		}
 		public void actionPerformed(ActionEvent e) {
-			OpenURL.OpenURL("https://discord.gg/BhJM5ve");
+			OpenURL.openURL("https://discord.gg/BhJM5ve");
 		}
-	}
-	private class SwingActionOpenCredits extends AbstractAction {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -4752640338493622273L;
-		public SwingActionOpenCredits() {
-			putValue(NAME, "Credits");
-			putValue(SHORT_DESCRIPTION, "Open the credits window.");
-		}
-		public void actionPerformed(ActionEvent e) {
-			for(Component panel : panelEditors.getComponents())
-			{
-				panel.setVisible(false);
-				panel.setEnabled(false);
-			}
-			creditPanel.setVisible(true);
-			creditPanel.setEnabled(true);
-			contentPane.revalidate();
-			contentPane.repaint();
-		}
-	}
-	public static void Back() {
-		settingsPanel.setVisible(false);
-		settingsPanel.setEnabled(false);
-		creditPanel.setVisible(false);
-		creditPanel.setEnabled(false);
-		contentPane.revalidate();
-		contentPane.repaint();
 	}
 	private class SwingActionReadMeGuide extends AbstractAction {
 		/**
@@ -589,7 +388,52 @@ public class Window extends JFrame {
 			putValue(SHORT_DESCRIPTION, "Opens the discord channel for reporting bugs");
 		}
 		public void actionPerformed(ActionEvent e) {
-			OpenURL.OpenURL("https://discord.gg/9dUXMYG");
+			OpenURL.openURL("https://discord.gg/9dUXMYG");
+		}
+	}
+	public static void showPanel(String panel) {
+		//Editor panel needs to have the panel added already
+		for(Component component : panelEditors.getComponents()) {
+			component.setVisible(false);
+			component.setEnabled(false);
+		}
+		switch (panel) {
+		case "Explorer":
+			explorerPanel.setEnabled(true);
+			explorerPanel.setVisible(true);	
+			break;
+		case "Character":
+			characterPanel.setEnabled(true);
+			characterPanel.setVisible(true);	
+			break;
+		case "Vendor":
+			vendorPanel.setEnabled(true);
+			vendorPanel.setVisible(true);	
+			break;
+		case "Dialogue":
+			dialoguePanel.setEnabled(true);
+			dialoguePanel.setVisible(true);	
+			break;
+		case "Quest":
+			explorerPanel.setEnabled(true);
+			explorerPanel.setVisible(true);	
+			break;
+		case "Settings":
+			settingsPanel.setEnabled(true);
+			settingsPanel.setVisible(true);	
+			break;
+		case "Credits":
+			creditPanel.setEnabled(true);
+			creditPanel.setVisible(true);	
+			break;
+		case "CheckConflict":
+			checkConflictPanel.setEnabled(true);
+			checkConflictPanel.setVisible(true);
+			break;
+		default:
+			explorerPanel.setEnabled(true);
+			explorerPanel.setVisible(true);			
+			break;
 		}
 	}
 }

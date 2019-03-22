@@ -10,6 +10,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
+import models.NPCCharacter;
+
 public class HairSelector extends JPanel {
 	/**
 	 * 
@@ -40,20 +42,18 @@ public class HairSelector extends JPanel {
 	private JToggleButton button21;
 	private JToggleButton button22;
 	private JToggleButton button23;
-	
-	private String selected;
 
 	/**
 	 * Create the panel.
 	 */
-	public HairSelector() {
+	public HairSelector(NPCCharacter character) {
 		setLayout(new GridLayout(4, 1, 0, 0));
 		
 		button0 = new JToggleButton("");
 		button0.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "0";
+					character.setHair("0");
 			}
 		});
 		buttonGroup.add(button0);
@@ -65,7 +65,7 @@ public class HairSelector extends JPanel {
 		button1.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "1";
+					character.setHair("1");
 			}
 		});
 		buttonGroup.add(button1);
@@ -77,7 +77,7 @@ public class HairSelector extends JPanel {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
 					if(e.getStateChange()==ItemEvent.SELECTED)
-						selected = "2";
+						character.setHair("2");
 			}
 		});
 		buttonGroup.add(button2);
@@ -88,7 +88,7 @@ public class HairSelector extends JPanel {
 		button3.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "3";
+					character.setHair("3");
 			}
 		});
 		buttonGroup.add(button3);
@@ -99,7 +99,7 @@ public class HairSelector extends JPanel {
 		button4.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "4";
+					character.setHair("4");
 			}
 		});
 		buttonGroup.add(button4);
@@ -110,7 +110,7 @@ public class HairSelector extends JPanel {
 		button5.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "5";
+					character.setHair("5");
 			}
 		});
 		buttonGroup.add(button5);
@@ -121,7 +121,7 @@ public class HairSelector extends JPanel {
 		button6.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "6";
+					character.setHair("6");
 			}
 		});
 		buttonGroup.add(button6);
@@ -132,7 +132,7 @@ public class HairSelector extends JPanel {
 		button7.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "7";
+					character.setHair("7");
 			}
 		});
 		buttonGroup.add(button7);
@@ -143,7 +143,7 @@ public class HairSelector extends JPanel {
 		button8.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "8";
+					character.setHair("8");
 			}
 		});
 		buttonGroup.add(button8);
@@ -154,7 +154,7 @@ public class HairSelector extends JPanel {
 		button9.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "9";
+					character.setHair("9");
 			}
 		});
 		buttonGroup.add(button9);
@@ -165,7 +165,7 @@ public class HairSelector extends JPanel {
 		button10.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "10";
+					character.setHair("10");
 			}
 		});
 		buttonGroup.add(button10);
@@ -176,7 +176,7 @@ public class HairSelector extends JPanel {
 		button11.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "11";
+					character.setHair("11");
 			}
 		});
 		buttonGroup.add(button11);
@@ -187,7 +187,7 @@ public class HairSelector extends JPanel {
 		button12.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "12";
+					character.setHair("12");
 			}
 		});
 		buttonGroup.add(button12);
@@ -198,7 +198,7 @@ public class HairSelector extends JPanel {
 		button13.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "13";
+					character.setHair("13");
 			}
 		});
 		buttonGroup.add(button13);
@@ -209,7 +209,7 @@ public class HairSelector extends JPanel {
 		button14.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "14";
+					character.setHair("14");
 			}
 		});
 		buttonGroup.add(button14);
@@ -220,7 +220,7 @@ public class HairSelector extends JPanel {
 		button15.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "15";
+					character.setHair("15");
 			}
 		});
 		buttonGroup.add(button15);
@@ -231,7 +231,7 @@ public class HairSelector extends JPanel {
 		button16.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "16";
+					character.setHair("16");
 			}
 		});
 		buttonGroup.add(button16);
@@ -242,7 +242,7 @@ public class HairSelector extends JPanel {
 		button17.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "17";
+					character.setHair("17");
 			}
 		});
 		buttonGroup.add(button17);
@@ -253,7 +253,7 @@ public class HairSelector extends JPanel {
 		button18.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "18";
+					character.setHair("18");
 			}
 		});
 		buttonGroup.add(button18);
@@ -264,7 +264,7 @@ public class HairSelector extends JPanel {
 		button19.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "19";
+					character.setHair("19");
 			}
 		});
 		buttonGroup.add(button19);
@@ -275,7 +275,7 @@ public class HairSelector extends JPanel {
 		button20.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "20";
+					character.setHair("20");
 			}
 		});
 		buttonGroup.add(button20);
@@ -286,7 +286,7 @@ public class HairSelector extends JPanel {
 		button21.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "21";
+					character.setHair("21");
 			}
 		});
 		buttonGroup.add(button21);
@@ -297,7 +297,7 @@ public class HairSelector extends JPanel {
 		button22.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "22";
+					character.setHair("22");
 			}
 		});
 		buttonGroup.add(button22);
@@ -307,14 +307,7 @@ public class HairSelector extends JPanel {
 		button23 = new JToggleButton("");
 		button23.setEnabled(false);
 		add(button23);
-
-	}
-	String getHairID()
-	{
-		return selected;
-	}
-	void setHairID(String id)
-	{
-		((AbstractButton) getComponents()[Integer.valueOf(id)]).setSelected(true);
+		
+		((AbstractButton) getComponents()[Integer.valueOf(character.getHair())]).setSelected(true);
 	}
 }

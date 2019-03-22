@@ -10,6 +10,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
+import models.NPCCharacter;
+
 public class FaceSelector extends JPanel {
 	/**
 	 * 
@@ -48,20 +50,18 @@ public class FaceSelector extends JPanel {
 	private JToggleButton button29;
 	private JToggleButton button30;
 	private JToggleButton button31;
-	
-	private String selected;
 
 	/**
 	 * Create the panel.
 	 */
-	public FaceSelector() {
+	public FaceSelector(NPCCharacter character) {
 		setLayout(new GridLayout(6, 1, 0, 0));
 		
 		button0 = new JToggleButton("");
 		button0.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "0";
+					character.setFace("0");
 			}
 		});
 		buttonGroup.add(button0);
@@ -73,7 +73,7 @@ public class FaceSelector extends JPanel {
 		button1.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "1";
+					character.setFace("1");
 			}
 		});
 		buttonGroup.add(button1);
@@ -85,7 +85,7 @@ public class FaceSelector extends JPanel {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
 					if(e.getStateChange()==ItemEvent.SELECTED)
-						selected = "2";
+						character.setFace("2");
 			}
 		});
 		buttonGroup.add(button2);
@@ -96,7 +96,7 @@ public class FaceSelector extends JPanel {
 		button3.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "3";
+					character.setFace("3");
 			}
 		});
 		buttonGroup.add(button3);
@@ -107,7 +107,7 @@ public class FaceSelector extends JPanel {
 		button4.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "4";
+					character.setFace("4");
 			}
 		});
 		buttonGroup.add(button4);
@@ -118,7 +118,7 @@ public class FaceSelector extends JPanel {
 		button5.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "5";
+					character.setFace("5");
 			}
 		});
 		buttonGroup.add(button5);
@@ -129,7 +129,7 @@ public class FaceSelector extends JPanel {
 		button6.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "6";
+					character.setFace("6");
 			}
 		});
 		buttonGroup.add(button6);
@@ -140,7 +140,7 @@ public class FaceSelector extends JPanel {
 		button7.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "7";
+					character.setFace("7");
 			}
 		});
 		buttonGroup.add(button7);
@@ -151,7 +151,7 @@ public class FaceSelector extends JPanel {
 		button8.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "8";
+					character.setFace("8");
 			}
 		});
 		buttonGroup.add(button8);
@@ -162,7 +162,7 @@ public class FaceSelector extends JPanel {
 		button9.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "9";
+					character.setFace("9");
 			}
 		});
 		buttonGroup.add(button9);
@@ -173,7 +173,7 @@ public class FaceSelector extends JPanel {
 		button10.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "10";
+					character.setFace("10");
 			}
 		});
 		buttonGroup.add(button10);
@@ -184,7 +184,7 @@ public class FaceSelector extends JPanel {
 		button11.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "11";
+					character.setFace("11");
 			}
 		});
 		buttonGroup.add(button11);
@@ -195,7 +195,7 @@ public class FaceSelector extends JPanel {
 		button12.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "12";
+					character.setFace("12");
 			}
 		});
 		buttonGroup.add(button12);
@@ -206,7 +206,7 @@ public class FaceSelector extends JPanel {
 		button13.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "13";
+					character.setFace("13");
 			}
 		});
 		buttonGroup.add(button13);
@@ -217,7 +217,7 @@ public class FaceSelector extends JPanel {
 		button14.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "14";
+					character.setFace("14");
 			}
 		});
 		buttonGroup.add(button14);
@@ -228,7 +228,7 @@ public class FaceSelector extends JPanel {
 		button15.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "15";
+					character.setFace("15");
 			}
 		});
 		buttonGroup.add(button15);
@@ -239,7 +239,7 @@ public class FaceSelector extends JPanel {
 		button16.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "16";
+					character.setFace("16");
 			}
 		});
 		buttonGroup.add(button16);
@@ -250,7 +250,7 @@ public class FaceSelector extends JPanel {
 		button17.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "17";
+					character.setFace("17");
 			}
 		});
 		buttonGroup.add(button17);
@@ -261,7 +261,7 @@ public class FaceSelector extends JPanel {
 		button18.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "18";
+					character.setFace("18");
 			}
 		});
 		buttonGroup.add(button18);
@@ -272,7 +272,7 @@ public class FaceSelector extends JPanel {
 		button19.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "19";
+					character.setFace("19");
 			}
 		});
 		buttonGroup.add(button19);
@@ -283,7 +283,7 @@ public class FaceSelector extends JPanel {
 		button20.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "20";
+					character.setFace("20");
 			}
 		});
 		buttonGroup.add(button20);
@@ -294,7 +294,7 @@ public class FaceSelector extends JPanel {
 		button21.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "21";
+					character.setFace("21");
 			}
 		});
 		buttonGroup.add(button21);
@@ -305,7 +305,7 @@ public class FaceSelector extends JPanel {
 		button22.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "22";
+					character.setFace("22");
 			}
 		});
 		buttonGroup.add(button22);
@@ -316,7 +316,7 @@ public class FaceSelector extends JPanel {
 		button23.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "23";
+					character.setFace("23");
 			}
 		});
 		buttonGroup.add(button23);
@@ -327,7 +327,7 @@ public class FaceSelector extends JPanel {
 		button24.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "24";
+					character.setFace("24");
 			}
 		});
 		buttonGroup.add(button24);
@@ -338,7 +338,7 @@ public class FaceSelector extends JPanel {
 		button25.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "25";
+					character.setFace("25");
 			}
 		});
 		buttonGroup.add(button25);
@@ -349,7 +349,7 @@ public class FaceSelector extends JPanel {
 		button26.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "26";
+					character.setFace("26");
 			}
 		});
 		buttonGroup.add(button26);
@@ -360,7 +360,7 @@ public class FaceSelector extends JPanel {
 		button27.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "27";
+					character.setFace("27");
 			}
 		});
 		buttonGroup.add(button27);
@@ -371,7 +371,7 @@ public class FaceSelector extends JPanel {
 		button28.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "28";
+					character.setFace("28");
 			}
 		});
 		buttonGroup.add(button28);
@@ -382,7 +382,7 @@ public class FaceSelector extends JPanel {
 		button29.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "29";
+					character.setFace("29");
 			}
 		});
 		buttonGroup.add(button29);
@@ -393,7 +393,7 @@ public class FaceSelector extends JPanel {
 		button30.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "30";
+					character.setFace("30");
 			}
 		});
 		buttonGroup.add(button30);
@@ -404,7 +404,7 @@ public class FaceSelector extends JPanel {
 		button31.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "31";
+					character.setFace("31");
 			}
 		});
 		buttonGroup.add(button31);
@@ -427,14 +427,7 @@ public class FaceSelector extends JPanel {
 		JToggleButton toggleButton_32 = new JToggleButton("");
 		toggleButton_32.setEnabled(false);
 		add(toggleButton_32);
-
-	}
-	String getFaceID()
-	{
-		return selected;
-	}
-	void setFaceID(String id)
-	{
-		((AbstractButton) getComponents()[Integer.valueOf(id)]).setSelected(true);
+		
+		((AbstractButton) getComponents()[Integer.valueOf(character.getFace())]).setSelected(true);
 	}
 }

@@ -10,6 +10,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
+import models.NPCCharacter;
+
 public class BeardSelector extends JPanel {
 	/**
 	 * 
@@ -34,20 +36,18 @@ public class BeardSelector extends JPanel {
 	private JToggleButton button15;
 	private JToggleButton button16;
 	private JToggleButton button17;
-	
-	private String selected;
 
 	/**
 	 * Create the panel.
 	 */
-	public BeardSelector() {
+	public BeardSelector(NPCCharacter character) {
 		setLayout(new GridLayout(3, 1, 0, 0));
 		
 		button0 = new JToggleButton("");
 		button0.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "0";
+					character.setBeard("0");
 			}
 		});
 		buttonGroup.add(button0);
@@ -59,7 +59,7 @@ public class BeardSelector extends JPanel {
 		button1.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "1";
+					character.setBeard("1");
 			}
 		});
 		buttonGroup.add(button1);
@@ -71,7 +71,7 @@ public class BeardSelector extends JPanel {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
 					if(e.getStateChange()==ItemEvent.SELECTED)
-						selected = "2";
+						character.setBeard("2");
 			}
 		});
 		buttonGroup.add(button2);
@@ -82,7 +82,7 @@ public class BeardSelector extends JPanel {
 		button3.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "3";
+					character.setBeard("3");
 			}
 		});
 		buttonGroup.add(button3);
@@ -93,7 +93,7 @@ public class BeardSelector extends JPanel {
 		button4.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "4";
+					character.setBeard("4");
 			}
 		});
 		buttonGroup.add(button4);
@@ -104,7 +104,7 @@ public class BeardSelector extends JPanel {
 		button5.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "5";
+					character.setBeard("5");
 			}
 		});
 		buttonGroup.add(button5);
@@ -115,7 +115,7 @@ public class BeardSelector extends JPanel {
 		button6.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "6";
+					character.setBeard("6");
 			}
 		});
 		buttonGroup.add(button6);
@@ -126,7 +126,7 @@ public class BeardSelector extends JPanel {
 		button7.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "7";
+					character.setBeard("7");
 			}
 		});
 		buttonGroup.add(button7);
@@ -137,7 +137,7 @@ public class BeardSelector extends JPanel {
 		button8.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "8";
+					character.setBeard("8");
 			}
 		});
 		buttonGroup.add(button8);
@@ -148,7 +148,7 @@ public class BeardSelector extends JPanel {
 		button9.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "9";
+					character.setBeard("9");
 			}
 		});
 		buttonGroup.add(button9);
@@ -159,7 +159,7 @@ public class BeardSelector extends JPanel {
 		button10.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "10";
+					character.setBeard("10");
 			}
 		});
 		buttonGroup.add(button10);
@@ -170,7 +170,7 @@ public class BeardSelector extends JPanel {
 		button11.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "11";
+					character.setBeard("11");
 			}
 		});
 		buttonGroup.add(button11);
@@ -181,7 +181,7 @@ public class BeardSelector extends JPanel {
 		button12.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "12";
+					character.setBeard("12");
 			}
 		});
 		buttonGroup.add(button12);
@@ -192,7 +192,7 @@ public class BeardSelector extends JPanel {
 		button13.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "13";
+					character.setBeard("13");
 			}
 		});
 		buttonGroup.add(button13);
@@ -203,7 +203,7 @@ public class BeardSelector extends JPanel {
 		button14.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "14";
+					character.setBeard("14");
 			}
 		});
 		buttonGroup.add(button14);
@@ -214,7 +214,7 @@ public class BeardSelector extends JPanel {
 		button15.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange()==ItemEvent.SELECTED)
-					selected = "15";
+					character.setBeard("15");
 			}
 		});
 		buttonGroup.add(button15);
@@ -229,13 +229,6 @@ public class BeardSelector extends JPanel {
 		button17.setEnabled(false);
 		add(button17);
 
-	}
-	String getBeardID()
-	{
-		return selected;
-	}
-	void setBeardID(String id)
-	{
-		((AbstractButton) getComponents()[Integer.valueOf(id)]).setSelected(true);
+		((AbstractButton) getComponents()[Integer.valueOf(character.getBeard())]).setSelected(true);
 	}
 }
