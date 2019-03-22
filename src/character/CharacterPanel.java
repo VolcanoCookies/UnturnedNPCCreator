@@ -15,6 +15,7 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -26,6 +27,7 @@ import colorchooser.ColorChooser;
 import controller.Controller;
 import models.Equipped;
 import models.NPCCharacter;
+import models.Pose;
 import objects.TextPrompt;
 
 public class CharacterPanel extends JPanel {
@@ -84,11 +86,28 @@ public class CharacterPanel extends JPanel {
 	private JRadioButton radioButtonSecondary;
 	private JRadioButton radioButtonTertiary;
 	private JRadioButton radioButtonNone;
-	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private final ButtonGroup buttonGroupEquipped = new ButtonGroup();
 	private Canvas canvasSkinColor;
 	private Canvas canvasHairColor;
 	private JPanel panel;
 	private JPanel panelLoadSaveButtons;
+	private JTextField textFieldSecondary;
+	private JTextField textFieldTertiary;
+	private JPanel panel_1;
+	private JPanel panel_2;
+	private JPanel panel_3;
+	private JPanel panel_4;
+	private JCheckBox checkBoxIsLefthanded;
+	private JRadioButton radioButtonStand;
+	private JRadioButton radioButtonSit;
+	private JRadioButton radioButtonAsleep;
+	private JRadioButton radioButtonPassive;
+	private JRadioButton radioButtonCrouch;
+	private JRadioButton radioButtonSurrender;
+	private JRadioButton radioButtonUnderArrest;
+	private JRadioButton radioButtonProne;
+	private JRadioButton radioButtonRest;
+	private final ButtonGroup buttonGroupPose = new ButtonGroup();
 	
 	/**
 	 * Create the panel.
@@ -241,7 +260,7 @@ public class CharacterPanel extends JPanel {
 		textFieldShirt = new JTextField();
 		textFieldShirt.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent e) {
-				Controller.SaveCharacter(character);
+				controller.SaveCharacter(character);
 			}
 		});
 		textPrompt = new TextPrompt("Shirt", textFieldShirt);
@@ -374,15 +393,49 @@ public class CharacterPanel extends JPanel {
 		panelEquippedAndStance.setLayout(new BorderLayout(0, 0));
 		
 		panelEquipped = new JPanel();
+		panelEquipped.setBorder(new TitledBorder(null, "Equipment", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panelEquippedAndStance.add(panelEquipped, BorderLayout.NORTH);
 		panelEquipped.setLayout(new BorderLayout(0, 0));
 		
 		panelEquippedIDs = new JPanel();
 		panelEquipped.add(panelEquippedIDs, BorderLayout.NORTH);
+		panelEquippedIDs.setLayout(new GridLayout(0, 3, 3, 0));
 		
 		textFieldPrimary = new JTextField();
+		textFieldPrimary.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				character.setPrimary(textFieldPrimary.getText());
+			}
+		});
+		textPrompt = new TextPrompt("Primary", textFieldPrimary);
+		textPrompt.changeAlpha(128);
 		panelEquippedIDs.add(textFieldPrimary);
 		textFieldPrimary.setColumns(10);
+		
+		textFieldSecondary = new JTextField();
+		textFieldSecondary.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				character.setSecondary(textFieldSecondary.getText());
+			}
+		});
+		textPrompt = new TextPrompt("Primary", textFieldSecondary);
+		textPrompt.changeAlpha(128);
+		textFieldSecondary.setColumns(10);
+		panelEquippedIDs.add(textFieldSecondary);
+		
+		textFieldTertiary = new JTextField();
+		textFieldTertiary.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				character.setTertiary(textFieldTertiary.getText());
+			}
+		});
+		textPrompt = new TextPrompt("Primary", textFieldTertiary);
+		textPrompt.changeAlpha(128);
+		textFieldTertiary.setColumns(10);
+		panelEquippedIDs.add(textFieldTertiary);
 		
 		panelHolding = new JPanel();
 		panelEquipped.add(panelHolding, BorderLayout.CENTER);
@@ -393,7 +446,7 @@ public class CharacterPanel extends JPanel {
 				character.setEquipped(Equipped.Primary);
 			}
 		});
-		buttonGroup.add(radioButtonPrimary);
+		buttonGroupEquipped.add(radioButtonPrimary);
 		panelHolding.add(radioButtonPrimary);
 		
 		radioButtonSecondary = new JRadioButton("Secondary");
@@ -402,7 +455,7 @@ public class CharacterPanel extends JPanel {
 				character.setEquipped(Equipped.Secondary);
 			}
 		});
-		buttonGroup.add(radioButtonSecondary);
+		buttonGroupEquipped.add(radioButtonSecondary);
 		panelHolding.add(radioButtonSecondary);
 		
 		radioButtonTertiary = new JRadioButton("Tertiary");
@@ -411,7 +464,7 @@ public class CharacterPanel extends JPanel {
 				character.setEquipped(Equipped.Tertiary);
 			}
 		});
-		buttonGroup.add(radioButtonTertiary);
+		buttonGroupEquipped.add(radioButtonTertiary);
 		panelHolding.add(radioButtonTertiary);
 		
 		radioButtonNone = new JRadioButton("None");
@@ -421,8 +474,113 @@ public class CharacterPanel extends JPanel {
 			}
 		});
 		radioButtonNone.setSelected(true);
-		buttonGroup.add(radioButtonNone);
+		buttonGroupEquipped.add(radioButtonNone);
 		panelHolding.add(radioButtonNone);
+		
+		panel_1 = new JPanel();
+		panelEquippedAndStance.add(panel_1, BorderLayout.CENTER);
+		panel_1.setLayout(new BorderLayout(0, 0));
+		
+		panel_2 = new JPanel();
+		panel_2.setBorder(new TitledBorder(null, "Stance", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_1.add(panel_2, BorderLayout.CENTER);
+		panel_2.setLayout(new BorderLayout(0, 0));
+		
+		panel_3 = new JPanel();
+		panel_2.add(panel_3);
+		panel_3.setLayout(new GridLayout(0, 3, 0, 0));
+		
+		radioButtonStand = new JRadioButton("Stand");
+		radioButtonStand.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				character.setPose(Pose.Stand);
+			}
+		});
+		buttonGroupPose.add(radioButtonStand);
+		panel_3.add(radioButtonStand);
+		
+		radioButtonSit = new JRadioButton("Sit");
+		radioButtonSit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				character.setPose(Pose.Sit);
+			}
+		});
+		buttonGroupPose.add(radioButtonSit);
+		panel_3.add(radioButtonSit);
+		
+		radioButtonAsleep = new JRadioButton("Asleep");
+		radioButtonAsleep.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				character.setPose(Pose.Asleep);
+			}
+		});
+		buttonGroupPose.add(radioButtonAsleep);
+		panel_3.add(radioButtonAsleep);
+		
+		radioButtonPassive = new JRadioButton("passive");
+		radioButtonPassive.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				character.setPose(Pose.Passive);
+			}
+		});
+		buttonGroupPose.add(radioButtonPassive);
+		panel_3.add(radioButtonPassive);
+		
+		radioButtonUnderArrest = new JRadioButton("Under arrest");
+		radioButtonUnderArrest.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				character.setPose(Pose.Under_Arrest);
+			}
+		});
+		buttonGroupPose.add(radioButtonUnderArrest);
+		panel_3.add(radioButtonUnderArrest);
+		
+		radioButtonRest = new JRadioButton("Rest");
+		radioButtonRest.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				character.setPose(Pose.Rest);
+			}
+		});
+		buttonGroupPose.add(radioButtonRest);
+		panel_3.add(radioButtonRest);
+		
+		radioButtonProne = new JRadioButton("Prone");
+		radioButtonProne.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				character.setPose(Pose.Prone);
+			}
+		});
+		buttonGroupPose.add(radioButtonProne);
+		panel_3.add(radioButtonProne);
+		
+		radioButtonCrouch = new JRadioButton("Crouch");
+		radioButtonCrouch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				character.setPose(Pose.Crouch);
+			}
+		});
+		buttonGroupPose.add(radioButtonCrouch);
+		panel_3.add(radioButtonCrouch);
+		
+		radioButtonSurrender = new JRadioButton("Surrender");
+		radioButtonSurrender.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				character.setPose(Pose.Surrender);
+			}
+		});
+		buttonGroupPose.add(radioButtonSurrender);
+		panel_3.add(radioButtonSurrender);
+		
+		panel_4 = new JPanel();
+		panel_2.add(panel_4, BorderLayout.SOUTH);
+		
+		checkBoxIsLefthanded = new JCheckBox("Is lefthanded");
+		checkBoxIsLefthanded.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				character.setBackwards(checkBoxIsLefthanded.isSelected());
+			}
+		});
+		panel_4.add(checkBoxIsLefthanded);
 		
 		JPanel panelTop = new JPanel();
 		panel.add(panelTop, BorderLayout.NORTH);
@@ -435,7 +593,7 @@ public class CharacterPanel extends JPanel {
 		textFieldGUID = new JTextField();
 		textPrompt = new TextPrompt("GUID", textFieldGUID);
 		textPrompt.changeAlpha(128);
-		panelGeneral.setLayout(new GridLayout(0, 3, 0, 0));
+		panelGeneral.setLayout(new GridLayout(0, 3, 3, 0));
 		panelGeneral.add(textFieldGUID);
 		textFieldGUID.setColumns(10);
 		
@@ -467,8 +625,8 @@ public class CharacterPanel extends JPanel {
 		panelLoadSaveButtons.add(buttonSave);
 		buttonSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				controller.SaveCharacter(character);
 			}
-			
 		});
 	}
 

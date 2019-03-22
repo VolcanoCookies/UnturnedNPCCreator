@@ -180,6 +180,14 @@ public class Window extends JFrame {
 		});
 		menuFile.add(menuItemCredits);
 		
+		JMenuItem menuItemDonate = new JMenuItem("Donate");
+		menuItemDonate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				OpenURL.openURL("https://paypal.me/volcanocookies/");
+			}
+		});
+		menuFile.add(menuItemDonate);
+		
 		JMenuItem menuItemReportBug = new JMenuItem("Report bugs");
 		menuItemReportBug.setAction(actionOpenDiscordBug);
 		menuFile.add(menuItemReportBug);

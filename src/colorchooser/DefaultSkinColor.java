@@ -78,7 +78,7 @@ public class DefaultSkinColor extends JPanel {
 			putValue(SHORT_DESCRIPTION, "");
 		}
 		public void actionPerformed(ActionEvent e) {
-			//ColorChooser.getChooser().setColor(((JButton) e.getSource()).getBackground());
+			ColorChooser.getChooser().setColor(((JButton) e.getSource()).getBackground());
 		}
 	}
 	public class FixedStateButtonModel extends DefaultButtonModel    {

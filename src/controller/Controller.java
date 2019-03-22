@@ -16,6 +16,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 
 import conditions.conditionsDialog;
+import dialogues.ConfirmDialog;
 import javafx.stage.FileChooser;
 import models.Dialogue;
 import models.Equipped;
@@ -37,6 +38,7 @@ public class Controller {
 	static List<Dialogue> loadedDialogues = new ArrayList<Dialogue>();
 	static List<Quest> loadedQuests = new ArrayList<Quest>();
 	static Window window;
+	public boolean save = true;
 	
 	Controller() {
 		
@@ -57,7 +59,7 @@ public class Controller {
 		loadedQuests.add(quest);
 	}
 	
-	public static void SaveCharacter(NPCCharacter character) {
+	public void SaveCharacter(NPCCharacter character) {
 		//Output string
 		//0 is for Asset, 1 is for English.
 		String[] output = new String[2];
@@ -153,7 +155,7 @@ public class Controller {
 			output[0] += "Dialogue " + character.getDialogueID() + "\n";
 		
 		//Watermark
-		output[0] += "\n\n//Created with UnturnedNPCCreator by Volcano" ;
+		output[0] += "\n\n//Created with UnturnedNPCCreator by Volcano";
 		
 		/*
 		 * English part
@@ -163,9 +165,12 @@ public class Controller {
 		output[1] += "Character " + character.getCharacterName();
 		
 		System.out.println(output[0]);
-		
-
-		writeFile(output, getFile());
+		//Confirmation dialog
+		new ConfirmDialog(this);
+		if(!save)
+			return;
+		else
+			writeFile(output, getFile());
 	}
 	public static Object CreateModelFromFile(String[] input) {
 		//Matcher to determine the type of model to make
@@ -571,7 +576,6 @@ public class Controller {
 			}
 		}
 		
-		
 		//Watermark
 		output[0] += "\n\n//Created with UnturnedNPCCreator by Volcano" ;
 	}
@@ -717,7 +721,7 @@ public class Controller {
 						}
 					}
 					//Load whatever type and open appropriate window for it.
-					if(matcher.group(1).toLowerCase().contains("npc")) {
+					if(matcher.group(1).toLowerCase().contains("type npc")) {
 						NPCCharacter character = CreateCharacterFromFile(output);
 						loadedCharacters.add(character);
 						return character;
