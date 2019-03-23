@@ -675,6 +675,6 @@ public class CharacterPanel extends JPanel {
 		beardSelector = new BeardSelector(character);
 		panelDisplaySelector.add(beardSelector);
 		beardSelector.setVisible(false);
-		
+		panelDisplaySelector.revalidate();
 	}
 }

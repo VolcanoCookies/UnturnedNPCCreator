@@ -59,7 +59,6 @@ public class HairSelector extends JPanel {
 		buttonGroup.add(button0);
 		button0.setIcon(new ImageIcon(HairSelector.class.getResource("/Icons/Hairs/hair0.png")));
 		add(button0);
-		button0.setSelected(true);
 		
 		button1 = new JToggleButton("");
 		button1.addItemListener(new ItemListener() {

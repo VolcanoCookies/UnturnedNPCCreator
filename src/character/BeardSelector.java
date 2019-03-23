@@ -53,7 +53,6 @@ public class BeardSelector extends JPanel {
 		buttonGroup.add(button0);
 		button0.setIcon(new ImageIcon(BeardSelector.class.getResource("/Icons/Beards/beard0.png")));
 		add(button0);
-		button0.setSelected(true);
 		
 		button1 = new JToggleButton("");
 		button1.addItemListener(new ItemListener() {

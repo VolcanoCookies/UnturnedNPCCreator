@@ -4,7 +4,6 @@ import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -66,7 +65,6 @@ public class FaceSelector extends JPanel {
 		});
 		buttonGroup.add(button0);
 		button0.setIcon(new ImageIcon(FaceSelector.class.getResource("/Icons/Faces/face0.png")));
-		button0.setSelected(true);
 		add(button0);
 		
 		button1 = new JToggleButton("");
@@ -428,6 +426,6 @@ public class FaceSelector extends JPanel {
 		toggleButton_32.setEnabled(false);
 		add(toggleButton_32);
 		
-		((AbstractButton) getComponents()[Integer.valueOf(character.getFace())]).setSelected(true);
+		((JToggleButton) getComponents()[Integer.valueOf(character.getFace())]).setSelected(true);
 	}
 }

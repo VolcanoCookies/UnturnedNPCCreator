@@ -17,7 +17,6 @@ import javax.swing.JPanel;
 
 import conditions.conditionsDialog;
 import dialogues.ConfirmDialog;
-import javafx.stage.FileChooser;
 import models.Dialogue;
 import models.Equipped;
 import models.ItemBuying;
@@ -205,153 +204,156 @@ public class Controller {
 		
 		//Get GUID ID etc
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("^ID ([0-9]*)"));
-		if(matcherAsset.matches())
+		matcherAsset.usePattern(Pattern.compile("[^Uu]ID ([0-9]*)"));
+		if(matcherAsset.find()) {
 			character.setID(Integer.valueOf(matcherAsset.group(1)));
+		}
+			
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("^GUID (.*)"));
-		if(matcherAsset.matches())
+		matcherAsset.usePattern(Pattern.compile("^GUID ([^$,\n,\r]*)$", Pattern.MULTILINE));
+		if(matcherAsset.find())
 			character.setGUID(matcherAsset.group(1));
 		
 		//Get clothing
 		//Get regular clothing
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("^Shirt ([0-9]*)"));
-		if(matcherAsset.matches())
+		matcherAsset.usePattern(Pattern.compile("^Shirt ([0-9]*)", Pattern.MULTILINE));
+		if(matcherAsset.find())
 			character.setShirt(matcherAsset.group(1));
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("^Pants ([0-9]*)"));
-		if(matcherAsset.matches())
+		matcherAsset.usePattern(Pattern.compile("^Pants ([0-9]*)", Pattern.MULTILINE));
+		if(matcherAsset.find())
 			character.setPants(matcherAsset.group(1));
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("^Mask ([0-9]*)"));
-		if(matcherAsset.matches())
+		matcherAsset.usePattern(Pattern.compile("^Mask ([0-9]*)", Pattern.MULTILINE));
+		if(matcherAsset.find())
 			character.setMask(matcherAsset.group(1));
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("^Vest ([0-9]*)"));
-		if(matcherAsset.matches())
+		matcherAsset.usePattern(Pattern.compile("^Vest ([0-9]*)", Pattern.MULTILINE));
+		if(matcherAsset.find())
 			character.setVest(matcherAsset.group(1));
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("^Backpack ([0-9]*)"));
-		if(matcherAsset.matches())
+		matcherAsset.usePattern(Pattern.compile("^Backpack ([0-9]*)", Pattern.MULTILINE));
+		if(matcherAsset.find())
 			character.setBackpack(matcherAsset.group(1));
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("^Glasses ([0-9]*)"));
-		if(matcherAsset.matches())
+		matcherAsset.usePattern(Pattern.compile("^Glasses ([0-9]*)", Pattern.MULTILINE));
+		if(matcherAsset.find())
 			character.setGlasses(matcherAsset.group(1));
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("^Hat ([0-9]*)"));
-		if(matcherAsset.matches())
+		matcherAsset.usePattern(Pattern.compile("^Hat ([0-9]*)", Pattern.MULTILINE));
+		if(matcherAsset.find())
 			character.setHat(matcherAsset.group(1));
 		
 		//Get christmas clothing
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("^Has_Christmas_Outfit True.*"));
-		if(matcherAsset.matches()) {
+		matcherAsset.usePattern(Pattern.compile("^Has_Christmas_Outfit True.*", Pattern.MULTILINE));
+		if(matcherAsset.find()) {
 			//Has christmas clothing
 			matcherAsset.reset();
-			matcherAsset.usePattern(Pattern.compile("^Christmas_Shirt ([0-9]*)"));
-			if(matcherAsset.matches())
+			matcherAsset.usePattern(Pattern.compile("^Christmas_Shirt ([0-9]*)", Pattern.MULTILINE));
+			if(matcherAsset.find())
 				character.setChristmasShirt(matcherAsset.group(1));
 			matcherAsset.reset();
-			matcherAsset.usePattern(Pattern.compile("^Christmas_Pants ([0-9]*)"));
-			if(matcherAsset.matches())
+			matcherAsset.usePattern(Pattern.compile("^Christmas_Pants ([0-9]*)", Pattern.MULTILINE));
+			if(matcherAsset.find())
 				character.setChristmasPants(matcherAsset.group(1));
 			matcherAsset.reset();
-			matcherAsset.usePattern(Pattern.compile("^Christmas_Mask ([0-9]*)"));
-			if(matcherAsset.matches())
+			matcherAsset.usePattern(Pattern.compile("^Christmas_Mask ([0-9]*)", Pattern.MULTILINE));
+			if(matcherAsset.find())
 				character.setChristmasMask(matcherAsset.group(1));
 			matcherAsset.reset();
-			matcherAsset.usePattern(Pattern.compile("^Christmas_Vest ([0-9]*)"));
-			if(matcherAsset.matches())
+			matcherAsset.usePattern(Pattern.compile("^Christmas_Vest ([0-9]*)", Pattern.MULTILINE));
+			if(matcherAsset.find())
 				character.setChristmasVest(matcherAsset.group(1));
 			matcherAsset.reset();
-			matcherAsset.usePattern(Pattern.compile("^Christmas_Backpack ([0-9]*)"));
-			if(matcherAsset.matches())
+			matcherAsset.usePattern(Pattern.compile("^Christmas_Backpack ([0-9]*)", Pattern.MULTILINE));
+			if(matcherAsset.find())
 				character.setChristmasBackpack(matcherAsset.group(1));
 			matcherAsset.reset();
-			matcherAsset.usePattern(Pattern.compile("^Christmas_Glasses ([0-9]*)"));
-			if(matcherAsset.matches())
+			matcherAsset.usePattern(Pattern.compile("^Christmas_Glasses ([0-9]*)", Pattern.MULTILINE));
+			if(matcherAsset.find())
 				character.setChristmasGlasses(matcherAsset.group(1));
 			matcherAsset.reset();
-			matcherAsset.usePattern(Pattern.compile("^Christmas_Hat ([0-9]*)"));
-			if(matcherAsset.matches())
+			matcherAsset.usePattern(Pattern.compile("^Christmas_Hat ([0-9]*)", Pattern.MULTILINE));
+			if(matcherAsset.find())
 				character.setChristmasHat(matcherAsset.group(1));
 		}
 		
 		//Get halloween clothing
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("^Has_Halloween_Outfit True.*"));
-		if(matcherAsset.matches()) {
+		matcherAsset.usePattern(Pattern.compile("^Has_Halloween_Outfit True.*", Pattern.MULTILINE));
+		if(matcherAsset.find()) {
 			//Has halloween clothing
 			matcherAsset.reset();
-			matcherAsset.usePattern(Pattern.compile("^Halloween_Shirt ([0-9]*)"));
-			if(matcherAsset.matches())
+			matcherAsset.usePattern(Pattern.compile("^Halloween_Shirt ([0-9]*)", Pattern.MULTILINE));
+			if(matcherAsset.find())
 				character.setHalloweenShirt(matcherAsset.group(1));
 			matcherAsset.reset();
-			matcherAsset.usePattern(Pattern.compile("^Halloween_Pants ([0-9]*)"));
-			if(matcherAsset.matches())
+			matcherAsset.usePattern(Pattern.compile("^Halloween_Pants ([0-9]*)", Pattern.MULTILINE));
+			if(matcherAsset.find())
 				character.setHalloweenPants(matcherAsset.group(1));
 			matcherAsset.reset();
-			matcherAsset.usePattern(Pattern.compile("^Halloween_Mask ([0-9]*)"));
-			if(matcherAsset.matches())
+			matcherAsset.usePattern(Pattern.compile("^Halloween_Mask ([0-9]*)", Pattern.MULTILINE));
+			if(matcherAsset.find())
 				character.setHalloweenMask(matcherAsset.group(1));
 			matcherAsset.reset();
-			matcherAsset.usePattern(Pattern.compile("^Halloween_Vest ([0-9]*)"));
-			if(matcherAsset.matches())
+			matcherAsset.usePattern(Pattern.compile("^Halloween_Vest ([0-9]*)", Pattern.MULTILINE));
+			if(matcherAsset.find())
 				character.setHalloweenVest(matcherAsset.group(1));
 			matcherAsset.reset();
-			matcherAsset.usePattern(Pattern.compile("^Halloween_Backpack ([0-9]*)"));
-			if(matcherAsset.matches())
+			matcherAsset.usePattern(Pattern.compile("^Halloween_Backpack ([0-9]*)", Pattern.MULTILINE));
+			if(matcherAsset.find())
 				character.setHalloweenBackpack(matcherAsset.group(1));
 			matcherAsset.reset();
-			matcherAsset.usePattern(Pattern.compile("^Halloween_Glasses ([0-9]*)"));
-			if(matcherAsset.matches())
+			matcherAsset.usePattern(Pattern.compile("^Halloween_Glasses ([0-9]*)", Pattern.MULTILINE));
+			if(matcherAsset.find())
 				character.setHalloweenGlasses(matcherAsset.group(1));
 			matcherAsset.reset();
-			matcherAsset.usePattern(Pattern.compile("^Halloween_Hat ([0-9]*)"));
-			if(matcherAsset.matches())
+			matcherAsset.usePattern(Pattern.compile("^Halloween_Hat ([0-9]*)", Pattern.MULTILINE));
+			if(matcherAsset.find())
 				character.setHalloweenHat(matcherAsset.group(1));
 		}
 		
 		//Get face, hair etc
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("^Face ([0-9]*)"));
-		if(matcherAsset.matches())
+		matcherAsset.usePattern(Pattern.compile("^Face ([0-9]*)", Pattern.MULTILINE));
+		if(matcherAsset.find())
 			character.setFace(matcherAsset.group(1));
+			
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("^Hair ([0-9]*)"));
-		if(matcherAsset.matches())
+		matcherAsset.usePattern(Pattern.compile("^Hair ([0-9]*)", Pattern.MULTILINE));
+		if(matcherAsset.find())
 			character.setHair(matcherAsset.group(1));
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("^Beard ([0-9]*)"));
-		if(matcherAsset.matches())
+		matcherAsset.usePattern(Pattern.compile("^Beard ([0-9]*)", Pattern.MULTILINE));
+		if(matcherAsset.find())
 			character.setBeard(matcherAsset.group(1));
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("^Color_Skin (.*)"));
-		if(matcherAsset.matches())
+		matcherAsset.usePattern(Pattern.compile("^Color_Skin (.*)", Pattern.MULTILINE));
+		if(matcherAsset.find())
 			character.setSkinColor(Color.decode(matcherAsset.group(1)));
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("^Color_Hair (.*)"));
-		if(matcherAsset.matches())
+		matcherAsset.usePattern(Pattern.compile("^Color_Hair (.*)", Pattern.MULTILINE));
+		if(matcherAsset.find())
 			character.setHairColor(Color.decode(matcherAsset.group(1)));
 		
 		//Get equipped
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("^Primary ([0-9]*)"));
-		if(matcherAsset.matches())
+		matcherAsset.usePattern(Pattern.compile("^Primary ([0-9]*)", Pattern.MULTILINE));
+		if(matcherAsset.find())
 			character.setPrimary(matcherAsset.group(1));
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("^Secondary ([0-9]*)"));
-		if(matcherAsset.matches())
+		matcherAsset.usePattern(Pattern.compile("^Secondary ([0-9]*)", Pattern.MULTILINE));
+		if(matcherAsset.find())
 			character.setPrimary(matcherAsset.group(1));
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("^Tertiary ([0-9]*)"));
-		if(matcherAsset.matches())
+		matcherAsset.usePattern(Pattern.compile("^Tertiary ([0-9]*)", Pattern.MULTILINE));
+		if(matcherAsset.find())
 			character.setPrimary(matcherAsset.group(1));
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("^Equipped (.*)"));
-		if(matcherAsset.matches()) {
+		matcherAsset.usePattern(Pattern.compile("^Equipped ([^$,\n,\r]*)$", Pattern.MULTILINE));
+		if(matcherAsset.find()) {
 			if(matcherAsset.group().toLowerCase().contains("primary"))
 				character.setEquipped(Equipped.Primary);
 			else if(matcherAsset.group().toLowerCase().contains("secondary"))
@@ -364,8 +366,8 @@ public class Controller {
 		
 		//Get pose and dialogue
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("^Pose (.*)"));
-		if(matcherAsset.matches()) {
+		matcherAsset.usePattern(Pattern.compile("^Pose ([^$,\n,\r]*)"));
+		if(matcherAsset.find()) {
 			if(matcherAsset.group().toLowerCase().contains("stand"))
 				character.setPose(Pose.Stand);
 			else if(matcherAsset.group().toLowerCase().contains("sit"))
@@ -389,16 +391,16 @@ public class Controller {
 			}
 		}
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("^Dialogue ([0-9]*)"));
-		if(matcherAsset.matches())
+		matcherAsset.usePattern(Pattern.compile("^Dialogue ([0-9]*)", Pattern.MULTILINE));
+		if(matcherAsset.find())
 			character.setDialogueID(matcherAsset.group(1));
 		
 		/*
 		 * English part
 		 */
 		matcherEnglish.reset();
-		matcherEnglish.usePattern(Pattern.compile("^Character (.*)"));
-		if(matcherEnglish.matches()) {
+		matcherEnglish.usePattern(Pattern.compile("^Character (.*)", Pattern.MULTILINE));
+		if(matcherEnglish.find()) {
 			character.setCharacterName(matcherEnglish.group(1));
 			character.setName(matcherEnglish.group(1));
 		}
@@ -693,52 +695,83 @@ public class Controller {
 		
 		return vendor;
 	}
+	public void GetDirectoryToSave(String[] output) {
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setDialogTitle("Choose a directory to save your file: ");
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+		int returnValue = fileChooser.showSaveDialog(null);
+		if (returnValue == JFileChooser.APPROVE_OPTION) {
+			if (fileChooser.getSelectedFile().isDirectory()) {
+				File[] files = new File[2];
+				files[0] = new File(fileChooser.getSelectedFile().getAbsolutePath() + "/Asset.dat");
+				files[1] = new File(fileChooser.getSelectedFile().getAbsolutePath() + "/English.dat");
+				writeFile(output, files);
+				System.out.println("Saving in: " + fileChooser.getSelectedFile().getAbsolutePath());
+			}
+		}
+	}
 	public Object LoadFile(JPanel panel, String loadType) {
 		String[] output = new String[2];
 		output[0] = "";
 		output[1] = "";
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setDialogTitle("Choose a directory to load from: ");
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		int returnValue = fileChooser.showOpenDialog(null);
+		if (returnValue == JFileChooser.APPROVE_OPTION) {
+			if (fileChooser.getSelectedFile().isDirectory()) {
+				System.out.println("Loading from: " + fileChooser.getSelectedFile().getAbsolutePath());
+			} else {
+				return null;
+			}
+		}
 		File[] files = new File[2];
-		FileChooser fileChooser = new FileChooser();
-		String filepath = fileChooser.showOpenDialog(null).getAbsolutePath();
-		files[0] = new File(filepath + "/Asset.dat");
-		files[1] = new File(filepath + "/English.dat");
+		files[0] = new File(fileChooser.getSelectedFile().getAbsolutePath() + "\\Asset.dat");
+		files[1] = new File(fileChooser.getSelectedFile().getAbsolutePath() + "\\English.dat");
+		
+		System.out.println(files[0].getAbsolutePath() + "\n" + files[1].getAbsolutePath());
 		for(int i = 0; i < 2; i++) {
 			try {
 				BufferedReader reader = new BufferedReader(new FileReader(files[i]));
 				String nextLine = reader.readLine();
 				while(nextLine!=null) {
-					output[i] += nextLine;
+					output[i] += nextLine + "\n";
 					nextLine = reader.readLine();
 				}
 				reader.close();
-				Matcher matcher = Pattern.compile("^Type (.*)$").matcher(output[0]);
-				if(matcher.find()) {
-					//Loadtype is if you want to open files of a special type, and give a error if you for example try to open a character from the vendor panel.
-					if(loadType!=null) {
-						//Load a special type, error if loaded wrong type
-						if(!matcher.group(1).toLowerCase().contains(loadType)) {
-							return null;
-						}
-					}
-					//Load whatever type and open appropriate window for it.
-					if(matcher.group(1).toLowerCase().contains("type npc")) {
-						NPCCharacter character = CreateCharacterFromFile(output);
-						loadedCharacters.add(character);
-						return character;
-					} else if(matcher.group(1).toLowerCase().contains("vendor")) {
-						
-					} else if(matcher.group(1).toLowerCase().contains("dialogue")) {
-						
-					} else if(matcher.group(1).toLowerCase().contains("quest")) {
-						
-					} else {
-						//Could not resolve filetype
-					}
-				}
 			} catch ( IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+		Matcher matcher = Pattern.compile("type (npc|vendor|quest|dialogue)").matcher(output[0].toLowerCase());
+		if(matcher.find()) {
+			//Loadtype is if you want to open files of a special type, and give a error if you for example try to open a character from the vendor panel.
+			if(loadType!=null) {
+				//Load a special type, error if loaded wrong type
+				if(!matcher.group(1).toLowerCase().contains(loadType)) {
+					return null;
+				}
+			}
+			//Load whatever type and open appropriate window for it.
+			if(matcher.group(1).toLowerCase().contains("npc")) {
+				NPCCharacter character = CreateCharacterFromFile(output);
+				loadedCharacters.add(character);
+				System.out.println("LoadFile: Returning character.");
+				return character;
+			} else if(matcher.group(1).toLowerCase().contains("vendor")) {
+				System.out.println("LoadFile: Returning vendor.");
+			} else if(matcher.group(1).toLowerCase().contains("dialogue")) {
+				System.out.println("LoadFile: Returning dialogue.");
+			} else if(matcher.group(1).toLowerCase().contains("quest")) {
+				System.out.println("LoadFile: Returning quest.");
+			} else {
+				//Could not resolve filetype
+				System.out.println("LoadFile: Could not resolve filetype");
+			}
+		} else {
+			System.out.println("LoadFile: Could not find filetype");
 		}
 		
 		return null;
@@ -767,7 +800,7 @@ public class Controller {
 	public static void writeFile(String[] output, File[] files) {
 		try {
 			BufferedWriter writer;
-			for(int i = 0; i < 2; i++) {
+			for(int i = 0; i < files.length; i++) {
 				writer = new BufferedWriter(new FileWriter(files[i]));
 				writer.write(output[i]);
 				writer.close();
