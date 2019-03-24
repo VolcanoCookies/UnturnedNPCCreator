@@ -17,6 +17,12 @@ public class Message {
 	public void setText(String text) {
 		this.text = text;
 	}
+	public void addText(String text) {
+		if(this.text!=null)
+			this.text += "<p>" + text;
+		else
+			this.text = text;
+	}
 	public String getPreviousDialogueID() {
 		return previousDialogueStringID;
 	}
@@ -43,5 +49,11 @@ public class Message {
 	}
 	public void addResponse(Response response) {
 		this.responses.add(response);
+	}
+	public void addRewards(String rewards) {
+		this.rewards += rewards;
+	}
+	public void addConditions(String condition) {
+		this.conditions += condition;
 	}
 }

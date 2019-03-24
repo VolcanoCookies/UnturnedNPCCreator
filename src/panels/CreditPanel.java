@@ -63,7 +63,7 @@ public class CreditPanel extends JPanel {
 		textAppIcon.setEditorKit(JEditorPane.createEditorKitForContentType("text/html"));
 		textAppIcon.setAlignmentX(Component.CENTER_ALIGNMENT);
 		textAppIcon.setFont(new Font("Trebuchet MS", Font.PLAIN, 12));
-		textAppIcon.setText("Icons used created by\r\n<a href=\"http://www.freepik.com/:C\">Freepik</a>,\r\n<a href=\"https://www.flaticon.com/authors/google\">Google</a>,\r\n<a href=\"https://www.flaticon.com/authors/dave-gandy\">Dave Grandy</a>,\r\n<a href=\"https://www.flaticon.com/authors/bogdan-rosu\">Bogdan Rosu</a>\r\n on www.flaticon.com");
+		textAppIcon.setText("Icons used created by\r\n<a href=\"http://www.freepik.com/:C\">Freepik</a>,\r\n<a href=\"https://www.flaticon.com/authors/google\">Google</a>,\r\n<a href=\"https://www.flaticon.com/authors/dave-gandy\">Dave Grandy</a>,\r\n<a href=\"https://www.flaticon.com/authors/bogdan-rosu\">Bogdan Rosu</a>\r\n on www.flaticon.com\r\n\r\nGreatly inspired by Kenzi#0001");
 		textAppIcon.addHyperlinkListener(new HyperlinkListener() {
 		    public void hyperlinkUpdate(HyperlinkEvent e) {
 		        if(e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {

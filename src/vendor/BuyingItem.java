@@ -179,7 +179,7 @@ public class BuyingItem extends JPanel {
 			textFieldID.setBackground(Conditions);
 			textFieldCost.setBackground(Conditions);
 		}
-		
+		revalidate();
 	}
 
 }

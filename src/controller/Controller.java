@@ -62,6 +62,8 @@ public class Controller {
 		//Output string
 		//0 is for Asset, 1 is for English.
 		String[] output = new String[2];
+		output[0] = "";
+		output[1] = "";
 		
 		/*
 		 * Asset part
@@ -74,7 +76,7 @@ public class Controller {
 		output[0] += "Type " + character.getType() + "\n";
 		
 		//Clothing section
-		output[0] += "\n\\\\Clothing\n";
+		output[0] += "\n//Clothing\n";
 		if(character.getShirt()!=null)
 			output[0] += "Shirt " + character.getShirt() + "\n";
 		if(character.getPants()!=null)
@@ -90,7 +92,7 @@ public class Controller {
 		
 		//If NPC has christmas clothing
 		if(character.hasChristmasClothing()) {
-			output[0] += "\n\\\\Christmas Clothing\n";
+			output[0] += "\n//Christmas Clothing\n";
 			output[0] += "Has_Christmas_Outfit true\n";
 			if(character.getChristmasShirt()!=null)
 				output[0] += "Christmas_Shirt " + character.getChristmasShirt() + "\n";
@@ -108,7 +110,7 @@ public class Controller {
 		
 		//If NPC has halloween clothing
 		if(character.hasHalloweenClothing()) {
-			output[0] += "\n\\\\Halloween Clothing\n";
+			output[0] += "\n//Halloween Clothing\n";
 			output[0] += "Has_Halloween_Outfit true\n";
 			if(character.getHalloweenShirt()!=null)
 				output[0] += "Halloween_Shirt " + character.getHalloweenShirt() + "\n";
@@ -125,7 +127,7 @@ public class Controller {
 		}
 		
 		//Face and hair
-		output[0] += "\n\\\\Face and hair\n";
+		output[0] += "\n//Face and hair\n";
 		output[0] += "Face " + character.getFace() + "\n";
 		output[0] += "Hair " + character.getHair() + "\n";
 		output[0] += "Beard " + character.getBeard() + "\n";
@@ -134,7 +136,7 @@ public class Controller {
 		
 		//Equipped section
 		if(character.getPrimary()!=null || character.getSecondary()!=null || character.getTertiary()!=null) {
-			output[0] += "\n\\\\Equipment\n";
+			output[0] += "\n//Equipment\n";
 			if(character.getPrimary()!=null)
 				output[0] += "Primary " + character.getPrimary() + "\n";
 			if(character.getSecondary()!=null)
@@ -146,7 +148,7 @@ public class Controller {
 		}
 		
 		//Pose and dialogue
-		output[0] += "\n\\\\Pose and dialogue\n";
+		output[0] += "\n//Pose and dialogue\n";
 		output[0] += "Pose " + character.getPose() + "\n";
 		if(character.isBackwards())
 			output[0] += "Backwards True\n";
@@ -163,9 +165,8 @@ public class Controller {
 		output[1] += "Name " + character.getName() + "\n";
 		output[1] += "Character " + character.getCharacterName();
 		
-		System.out.println(output[0]);
 		//Confirmation dialog
-		new ConfirmDialog(this);
+		new ConfirmDialog(this, output);
 		if(!save)
 			return;
 		else
@@ -422,7 +423,7 @@ public class Controller {
 	public static void LoadCharacter() {
 		
 	}
-	public static void SaveVendor(Vendor vendor) {
+	public void SaveVendor(Vendor vendor) {
 		//Output
 		String[] output = new String[2];
 		output[0] = "";
@@ -436,12 +437,14 @@ public class Controller {
 		
 		//Buying items
 		if(vendor.getBuyingItems().size()>0) {
-			output[0] += "\nBuying Items\n";
+			output[0] += "\n//Buying Items\n";
 			output[0] += "Buying " + vendor.getBuyingItems().size() + "\n";
 			int i = 0;
 			for(ItemBuying item : vendor.getBuyingItems()) {
 				output[0] += "Buying_" + i + "_ID " + item.getItemID() + "\n";
 				output[0] += "Buying_" + i + "_Cost " + item.getCost() + "\n";
+				if(item.getItemAmount()!=null)
+					output[0] += "Buying_" + i + "_Amount " + item.getItemAmount() + "\n";
 				if(item.getConditions()!=null) {
 					for(String string : item.getConditions().split("\n"))
 						output[0] += "Buying_" + i + "_" + string + "\n";
@@ -451,7 +454,7 @@ public class Controller {
 		}
 		//Selling items
 		if(vendor.getSellingItems().size()>0) {
-			output[0] += "\nBuying Items\n";
+			output[0] += "\n//Selling Items\n";
 			output[0] += "Selling " + vendor.getSellingItems().size() + "\n";
 			int i = 0;
 			for(ItemSelling item : vendor.getSellingItems()) {
@@ -461,7 +464,7 @@ public class Controller {
 				output[0] += "Selling_" + i + "_Cost " + item.getCost() + "\n";
 				if(item.isVehicle())
 					output[0] += "Selling_" + i + "_Spawnpoint " + item.getSpawnpoint() + "\n";
-				else
+				else if (item.getItemAmount()!=null)
 					output[0] += "Selling_" + i + "_Amount " + item.getItemAmount() + "\n";
 				if(item.getConditions()!=null) {
 					for(String string : item.getConditions().split("\n"))
@@ -473,8 +476,21 @@ public class Controller {
 		//Watermark
 		output[0] += "\n\n//Created with UnturnedNPCCreator by Volcano" ;
 		
+		/*
+		 * ENGLISH PART
+		 */
+		
+		output[1] += "Name " + vendor.getName() + "\n";
+		output[1] += "Description " + vendor.getDescription() + "\n";
+		
+		//Confirmation dialog
+		new ConfirmDialog(this, output);
+		if(!save)
+			return;
+		else
+			writeFile(output, getFile());
 	}
-	public static void SaveDialogue(Dialogue dialogue) {
+	public void SaveDialogue(Dialogue dialogue) {
 		//Output
 		String[] output = new String[2];
 		output[0] = "";
@@ -601,17 +617,17 @@ public class Controller {
 		
 		//General information
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("[^GU]ID ([0-9]*)"));
-		if(matcherAsset.matches())
+		matcherAsset.usePattern(Pattern.compile("^ID ([0-9]*)[$,\n,\r]", Pattern.MULTILINE));
+		if(matcherAsset.find())
 			vendor.setID(matcherAsset.group(1));
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("GUID (.*)"));
-		if(matcherAsset.matches())
+		matcherAsset.usePattern(Pattern.compile("^GUID ([^$,\n,\r]*)", Pattern.MULTILINE));
+		if(matcherAsset.find())
 			vendor.setGUID(matcherAsset.group(1));
 		
 		//Get buying items
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("Buying ([0-9]*)"));
+		matcherAsset.usePattern(Pattern.compile("Buying ([0-9]*)", Pattern.MULTILINE));
 		if(matcherAsset.find()) {
 			//Found items the vendor is buying
 			//Generate items
@@ -619,29 +635,29 @@ public class Controller {
 				vendor.addBuyingItem(new ItemBuying());
 			//Get item ID's
 			matcherAsset.reset();
-			matcherAsset.usePattern(Pattern.compile("Buying_([0-9]+)_ID ([0-9]*)"));
+			matcherAsset.usePattern(Pattern.compile("Buying_([0-9]+)_ID ([0-9]*)", Pattern.MULTILINE));
 			while(matcherAsset.find())
 				vendor.getBuyingItems().get(Integer.valueOf(matcherAsset.group(1))).setItemID(matcherAsset.group(2));
 			//Get item costs
 			matcherAsset.reset();
-			matcherAsset.usePattern(Pattern.compile("Buying_([0-9]+)_Cost ([0-9]*)"));
+			matcherAsset.usePattern(Pattern.compile("Buying_([0-9]+)_Cost ([0-9]*)", Pattern.MULTILINE));
 			while(matcherAsset.find())
 				vendor.getBuyingItems().get(Integer.valueOf(matcherAsset.group(1))).setCost(matcherAsset.group(2));
 			//Get item amounts
 			matcherAsset.reset();
-			matcherAsset.usePattern(Pattern.compile("Buying_([0-9]+)_Amount ([0-9]*)"));
+			matcherAsset.usePattern(Pattern.compile("Buying_([0-9]+)_Amount ([0-9]*)", Pattern.MULTILINE));
 			while(matcherAsset.find())
 				vendor.getBuyingItems().get(Integer.valueOf(matcherAsset.group(1))).setItemAmount(matcherAsset.group(2));
 			//Get item conditions
 			matcherAsset.reset();
-			matcherAsset.usePattern(Pattern.compile("Buying_([0-9]+)_(Condition.*)"));
-			while(matcherAsset.matches())
+			matcherAsset.usePattern(Pattern.compile("Buying_([0-9]+)_(Condition.*)[\n,\r,$]", Pattern.MULTILINE));
+			while(matcherAsset.find())
 				vendor.getBuyingItems().get(Integer.valueOf(matcherAsset.group(1))).addToConditions(matcherAsset.group(2));
 		}
 		
 		//Get selling items
 		matcherAsset.reset();
-		matcherAsset.usePattern(Pattern.compile("Selling ([0-9]*)"));
+		matcherAsset.usePattern(Pattern.compile("Selling ([0-9]*)", Pattern.MULTILINE));
 		if(matcherAsset.find()) {
 			//Found items the vendor is selling
 			//Generate items
@@ -649,34 +665,36 @@ public class Controller {
 				vendor.addSellingItem(new ItemSelling());
 			//Get item ID's
 			matcherAsset.reset();
-			matcherAsset.usePattern(Pattern.compile("Selling_([0-9]+)_ID ([0-9]*)"));
+			matcherAsset.usePattern(Pattern.compile("Selling_([0-9]+)_ID ([0-9]*)", Pattern.MULTILINE));
 			while(matcherAsset.find())
 				vendor.getSellingItems().get(Integer.valueOf(matcherAsset.group(1))).setItemID(matcherAsset.group(2));
 			//Get item costs
 			matcherAsset.reset();
-			matcherAsset.usePattern(Pattern.compile("Selling_([0-9]+)_Cost ([0-9]*)"));
+			matcherAsset.usePattern(Pattern.compile("Selling_([0-9]+)_Cost ([0-9]*)", Pattern.MULTILINE));
 			while(matcherAsset.find())
 				vendor.getSellingItems().get(Integer.valueOf(matcherAsset.group(1))).setCost(matcherAsset.group(2));
 			//Check if item is a vehicle
 			matcherAsset.reset();
-			matcherAsset.usePattern(Pattern.compile("Selling_([0-9]+)_Type Vehicle"));
+			matcherAsset.usePattern(Pattern.compile("Selling_([0-9]+)_Type Vehicle", Pattern.MULTILINE));
 			while(matcherAsset.find())
 				vendor.getSellingItems().get(Integer.valueOf(matcherAsset.group(1))).setVehicle(true);
 			//Get Spawnpoints for all vehicles
 			matcherAsset.reset();
-			matcherAsset.usePattern(Pattern.compile("Selling_([0-9]+)_Spawnpoint (.*)"));
+			matcherAsset.usePattern(Pattern.compile("Selling_([0-9]+)_Spawnpoint (.*)[\n,\r,$]", Pattern.MULTILINE));
 			while(matcherAsset.find())
 				vendor.getSellingItems().get(Integer.valueOf(matcherAsset.group(1))).setSpawnpoint(matcherAsset.group(2));
 			//Get item amounts
 			matcherAsset.reset();
-			matcherAsset.usePattern(Pattern.compile("Selling_([0-9]+)_Amount ([0-9]*)"));
+			matcherAsset.usePattern(Pattern.compile("Selling_([0-9]+)_Amount ([0-9]*)", Pattern.MULTILINE));
 			while(matcherAsset.find())
 				vendor.getSellingItems().get(Integer.valueOf(matcherAsset.group(1))).setItemAmount(matcherAsset.group(2));
 			//Get item conditions
 			matcherAsset.reset();
-			matcherAsset.usePattern(Pattern.compile("Selling_([0-9]+)_(Condition.*)"));
-			while(matcherAsset.matches())
-				vendor.getSellingItems().get(Integer.valueOf(matcherAsset.group(1))).addToConditions(matcherAsset.group(2));
+			matcherAsset.usePattern(Pattern.compile("Selling_([0-9]+)_(Condition[^\n,\r,$]*)", Pattern.MULTILINE));
+			while(matcherAsset.find()) {
+				System.out.println(matcherAsset.group(2));
+				vendor.getSellingItems().get(Integer.valueOf(matcherAsset.group(1))).addToConditions(matcherAsset.group(2) + "\n");
+			}
 		}
 		
 		/*
@@ -684,13 +702,13 @@ public class Controller {
 		 */
 		//Get name
 		matcherEnglish.reset();
-		matcherEnglish.usePattern(Pattern.compile("Name (.*)\n"));
-		if(matcherEnglish.matches())
+		matcherEnglish.usePattern(Pattern.compile("^Name (.*)$", Pattern.MULTILINE));
+		if(matcherEnglish.find())
 			vendor.setName(matcherEnglish.group(1));
 		//Get description
 		matcherEnglish.reset();
-		matcherEnglish.usePattern(Pattern.compile("Description (.*)[\n$]*"));
-		if(matcherEnglish.matches())
+		matcherEnglish.usePattern(Pattern.compile("^Description (.*)$*", Pattern.MULTILINE));
+		if(matcherEnglish.find())
 			vendor.setDescription(matcherEnglish.group(1));
 		
 		return vendor;
@@ -823,7 +841,7 @@ public class Controller {
 				reader = new BufferedReader(new FileReader(files[i]));
 				nextLine = reader.readLine();
 				while(nextLine!=null) {
-					output[i] += nextLine;
+					output[i] += nextLine + "\n";
 					nextLine = reader.readLine();
 				}
 			}
@@ -847,5 +865,128 @@ public class Controller {
 	}
 	public String OpenRewards(String rewards) {
 		return RewardsDialog.Dialog(rewards);
+	}
+	public Dialogue LoadDialogue() {
+		String[] input = LoadFile(getFile());
+		
+		Dialogue dialogue = new Dialogue();
+		
+		//Matchers
+		Matcher matcherAsset = Pattern.compile("").matcher(input[0]);
+		Matcher matcherEnglish = Pattern.compile("").matcher(input[1]);
+		
+		List<Response> tempResponses = new ArrayList<Response>();
+		
+		//Get values
+		matcherAsset.reset();
+		matcherAsset.usePattern(Pattern.compile("^ID ([0-9]*)[\n,\r,$]", Pattern.MULTILINE));
+		if(matcherAsset.find())
+			dialogue.setID(matcherAsset.group(1));
+		matcherAsset.reset();
+		matcherAsset.usePattern(Pattern.compile("GUID ([0-9]*)[\n,\r,$]", Pattern.MULTILINE));
+		if(matcherAsset.find())
+			dialogue.setGUID(matcherAsset.group(1));
+		
+		//Find amount of messages
+		matcherAsset.reset();
+		matcherAsset.usePattern(Pattern.compile("[^_]Messages ([0-9]*)[\n,\r,$]", Pattern.MULTILINE));
+		if(matcherAsset.find()) {
+			for(int i = 0; i < Integer.valueOf(matcherAsset.group(1)); i++) {
+				dialogue.addMessage(new Message());
+			}
+		}
+		matcherAsset.reset();
+		matcherAsset.usePattern(Pattern.compile("[^_]Responses ([0-9]*)[\n,\r,$]", Pattern.MULTILINE));
+		if(matcherAsset.find()) {
+			System.out.println(matcherAsset.group());
+			for(int i = 0; i < Integer.valueOf(matcherAsset.group(1)); i++) {
+				tempResponses.add(new Response());
+				tempResponses.get(i).setID(Integer.toString(i));
+			}
+		}
+		//Get response information
+		matcherAsset.reset();
+		matcherAsset.usePattern(Pattern.compile("Response_([0-9]*)_Dialogue ([0-9]*)[\n,\r,$]", Pattern.MULTILINE));
+		while(matcherAsset.find()) {
+			System.out.println(matcherAsset.group());
+			tempResponses.get(Integer.valueOf(matcherAsset.group(1))).setDialogueID(matcherAsset.group(2));
+		}
+			
+		matcherAsset.reset();
+		matcherAsset.usePattern(Pattern.compile("Response_([0-9]*)_Vendor ([0-9]*)[\n,\r,$]", Pattern.MULTILINE));
+		while(matcherAsset.find())
+			tempResponses.get(Integer.valueOf(matcherAsset.group(1))).setVendorID(matcherAsset.group(2));
+		matcherAsset.reset();
+		matcherAsset.usePattern(Pattern.compile("Response_([0-9]*)_Quest ([0-9]*)[\n,\r,$]", Pattern.MULTILINE));
+		while(matcherAsset.find())
+			tempResponses.get(Integer.valueOf(matcherAsset.group(1))).setQuestID(matcherAsset.group(2));
+		matcherAsset.reset();
+		matcherAsset.usePattern(Pattern.compile("Response_([0-9]*)_(Condition[^\n,\r,$]*)[\n,\r,$]", Pattern.MULTILINE));
+		while(matcherAsset.find()) {
+			if(tempResponses.get(Integer.valueOf(matcherAsset.group(1))).getConditions()==null)
+				tempResponses.get(Integer.valueOf(matcherAsset.group(1))).setConditions(matcherAsset.group(2) + "\n");
+			else
+				tempResponses.get(Integer.valueOf(matcherAsset.group(1))).addConditions(matcherAsset.group(2) + "\n");
+		}
+		matcherAsset.reset();
+		matcherAsset.usePattern(Pattern.compile("Response_([0-9]*)_(Reward[^\n,\r,$]*)[\n,\r,$]", Pattern.MULTILINE));
+		while(matcherAsset.find()) {
+			if(tempResponses.get(Integer.valueOf(matcherAsset.group(1))).getRewards()==null)
+				tempResponses.get(Integer.valueOf(matcherAsset.group(1))).setRewards(matcherAsset.group(2) + "\n");
+			else
+				tempResponses.get(Integer.valueOf(matcherAsset.group(1))).addRewards(matcherAsset.group(2) + "\n");
+		}
+		matcherEnglish.reset();
+		matcherEnglish.usePattern(Pattern.compile("Response_([0-9]*) ([^\n,\r,$]*)[\n,\r,$]", Pattern.MULTILINE));
+		while(matcherEnglish.find()) {
+			tempResponses.get(Integer.valueOf(matcherEnglish.group(1))).setText(matcherEnglish.group(2));;
+		}
+		
+		//Get message information
+		matcherAsset.reset();
+		matcherAsset.usePattern(Pattern.compile("Message_([0-9]*)_Response_[0-9]* ([0-9]*)[\n,\r,$]", Pattern.MULTILINE));
+		while (matcherAsset.find()) {
+			dialogue.getMessages().get(Integer.valueOf(matcherAsset.group(1))).addResponse(tempResponses.get(Integer.valueOf(matcherAsset.group(2))));
+			tempResponses.get(Integer.valueOf(matcherAsset.group(2))).setGlobal(false);
+		}
+		matcherAsset.reset();
+		matcherAsset.usePattern(Pattern.compile("Message_([0-9]*)_Prev ([0-9]*)[\n,\r,$]", Pattern.MULTILINE));
+		while (matcherAsset.find()) {
+			dialogue.getMessages().get(Integer.valueOf(matcherAsset.group(1))).setPreviousDialogueID(matcherAsset.group(2));
+		}
+		matcherAsset.reset();
+		matcherAsset.usePattern(Pattern.compile("Message_([0-9]*)_(Condition[^\n,\r,$]*)[\n,\r,$]", Pattern.MULTILINE));
+		while(matcherAsset.find()) {
+			if(dialogue.getMessages().get(Integer.valueOf(matcherAsset.group(1))).getConditions()==null)
+				dialogue.getMessages().get(Integer.valueOf(matcherAsset.group(1))).setConditions(matcherAsset.group(2) + "\n");
+			else
+				dialogue.getMessages().get(Integer.valueOf(matcherAsset.group(1))).addConditions(matcherAsset.group(2) + "\n");
+		}
+		matcherAsset.reset();
+		matcherAsset.usePattern(Pattern.compile("Message_([0-9]*)_(Reward[^\n,\r,$]*)[\n,\r,$]", Pattern.MULTILINE));
+		while(matcherAsset.find()) {
+			if(dialogue.getMessages().get(Integer.valueOf(matcherAsset.group(1))).getRewards()==null)
+				dialogue.getMessages().get(Integer.valueOf(matcherAsset.group(1))).setRewards(matcherAsset.group(2) + "\n");
+			else
+				dialogue.getMessages().get(Integer.valueOf(matcherAsset.group(1))).addRewards(matcherAsset.group(2) + "\n");
+		}
+		matcherEnglish.reset();
+		matcherEnglish.usePattern(Pattern.compile("Message_([0-9]*)_Page_([0-9]*) ([^\n,\r,$]*)", Pattern.MULTILINE));
+		while(matcherEnglish.find()) {
+			dialogue.getMessages().get(Integer.valueOf(matcherEnglish.group(1))).addText(matcherEnglish.group(3));
+		}
+		
+		//Remove non global responses from list
+		List<Response> toRemove = new ArrayList<Response>();
+		for(Response response : tempResponses)
+			if(!response.isGlobal())
+				toRemove.add(response);
+		tempResponses.removeAll(toRemove);
+		
+		//Process global responses
+		for(Response response : tempResponses)
+			dialogue.addGlobalResponse(response);
+		
+		return dialogue;
 	}
 }

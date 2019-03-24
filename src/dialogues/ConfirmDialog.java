@@ -26,7 +26,7 @@ public class ConfirmDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public ConfirmDialog(Controller controller) {
+	public ConfirmDialog(Controller controller, String[] strings) {
 		setModal(true);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(ConfirmDialog.class.getResource("/Icons/UIIcons/Icon.png")));
 		setBounds(100, 100, 588, 533);
@@ -48,6 +48,7 @@ public class ConfirmDialog extends JDialog {
 			assetPanel.setLayout(new BorderLayout(0, 0));
 			{
 				JTextArea textArea = new JTextArea();
+				textArea.setText(strings[0]);
 				textArea.setFont(new Font("Tahoma", Font.PLAIN, 11));
 				textArea.setEditable(false);
 				assetPanel.add(textArea);
@@ -56,6 +57,7 @@ public class ConfirmDialog extends JDialog {
 			englishPanel.setLayout(new BorderLayout(0, 0));
 			{
 				JTextArea textArea = new JTextArea();
+				textArea.setText(strings[1]);
 				textArea.setFont(new Font("Tahoma", Font.PLAIN, 11));
 				textArea.setEditable(false);
 				englishPanel.add(textArea, BorderLayout.CENTER);
@@ -70,9 +72,9 @@ public class ConfirmDialog extends JDialog {
 				confirmButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						controller.save = true;
+						dispose();
 					}
 				});
-				confirmButton.setActionCommand("OK");
 				buttonPane.add(confirmButton);
 				getRootPane().setDefaultButton(confirmButton);
 			}
@@ -81,6 +83,7 @@ public class ConfirmDialog extends JDialog {
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						controller.save = false;
+						dispose();
 					}
 				});
 				buttonPane.add(cancelButton);

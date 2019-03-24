@@ -25,6 +25,7 @@ import javax.swing.JTextField;
 
 import controller.Controller;
 import models.Message;
+import models.Response;
 import models.Settings;
 import objects.TextPrompt;
 
@@ -48,11 +49,12 @@ public class MessagePanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 2705985586487282881L;
 	private JPanel panelResponses;
-	public Component self = this;
+	public JPanel self = this;
 	private TextPrompt textPrompt;
 	private JTextArea textArea;
 	private JTextField textFieldPrevID;
 	private Message message;
+	private Controller controller;
 
 	/**
 	 * Create the panel.
@@ -60,8 +62,10 @@ public class MessagePanel extends JPanel {
 	 * @param messageResponses 
 	 * @param messageResponsesEnglish 
 	 */
-	public MessagePanel(Controller controller, Message passedMessage, DialoguePanel parentPanel) {
+	public MessagePanel(Controller passedController, Message passedMessage, DialoguePanel parentPanel) {
 		setLayout(new BorderLayout());
+		
+		this.controller = passedController;
 		
 		message = passedMessage;
 		if(message==null)
@@ -193,6 +197,11 @@ public class MessagePanel extends JPanel {
 		
 		textArea.setText(message.getText());
 		
+		panelResponses.removeAll();
+		for(Response response : message.getResponses()) {
+			panelResponses.add(new ResponsePanel(controller, response, self));
+		}
+		
 		changeColor();
 	}
 	private void changeColor() {
@@ -213,6 +222,7 @@ public class MessagePanel extends JPanel {
 			textFieldPrevID.setBackground(color);
 			textArea.setBackground(color);
 		}
+		revalidate();
 	}
 	public void removeResponse(Component component) {
 		panelResponses.remove(component);

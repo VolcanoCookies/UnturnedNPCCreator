@@ -38,11 +38,17 @@ public class Response {
 	public void setConditions(String conditions) {
 		this.conditions = conditions;
 	}
+	public void addConditions(String conditions) {
+		this.conditions += conditions;
+	}
 	public String getRewards() {
 		return rewards;
 	}
 	public void setRewards(String rewards) {
 		this.rewards = rewards;
+	}
+	public void addRewards(String rewards) {
+		this.rewards += rewards;
 	}
 	public List<Message> getMessages() {
 		return messages;

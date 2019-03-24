@@ -193,7 +193,7 @@ public class VendorPanel extends JPanel {
 		panelLoadSave.add(buttonSave);
 		buttonSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				controller.SaveVendor(vendor);
 			}
 		});
 		buttonLoad.addActionListener(new ActionListener() {

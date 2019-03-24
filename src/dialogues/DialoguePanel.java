@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.DuplicateFormatFlagsException;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -26,15 +27,25 @@ public class DialoguePanel extends JPanel {
 	private JTextField textFieldDialogueID;
 	private TextPrompt textPrompt;
 	private JTabbedPane tabbedPane;
-	private DialoguePanel self = this;
+	private DialoguePanel self = this;	
+	private Dialogue dialogue;
+	private Controller controller;
 	
 	/**
 	 * Create the panel.
 	 * @param object 
 	 * @param controller 
 	 */
-	public DialoguePanel(Controller controller, Dialogue dialogue) {
+	public DialoguePanel(Controller passedController, Dialogue dialogue) {
 		setLayout(new BorderLayout(0, 0));
+		
+		this.controller = passedController;
+		
+		if(dialogue!=null)
+			this.dialogue = dialogue;
+		else
+			this.dialogue = new Dialogue();
+		
 		
 		JPanel panelTop = new JPanel();
 		add(panelTop, BorderLayout.NORTH);
@@ -45,13 +56,23 @@ public class DialoguePanel extends JPanel {
 		panel.setLayout(new GridLayout(0, 2, 0, 0));
 		
 		JButton buttonLoad = new JButton("Load");
+		buttonLoad.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				setCurrentDialogue(controller.LoadDialogue());
+			}
+		});
 		panel.add(buttonLoad);
-		buttonLoad.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		buttonLoad.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		buttonLoad.setFocusPainted(false);
 		
 		JButton buttonSave = new JButton("Save");
+		buttonSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				controller.SaveDialogue(dialogue);
+			}
+		});
 		panel.add(buttonSave);
-		buttonSave.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		buttonSave.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		buttonSave.setFocusPainted(false);
 		
 		JPanel panelMid = new JPanel();
@@ -89,7 +110,7 @@ public class DialoguePanel extends JPanel {
 		});
 		panelBot.add(buttonAddMessage);
 		buttonAddMessage.setFocusPainted(false);
-		buttonAddMessage.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		buttonAddMessage.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		
 		JButton buttonAddResponse = new JButton("Add response");
 		buttonAddResponse.addActionListener(new ActionListener() {
@@ -99,13 +120,37 @@ public class DialoguePanel extends JPanel {
 		});
 		panelBot.add(buttonAddResponse);
 		buttonAddResponse.setFocusPainted(false);
-		buttonAddResponse.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		buttonAddResponse.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		
 		JButton buttonAddGlobalResponse = new JButton("Add global response");
+		buttonAddGlobalResponse.setToolTipText("Currently not available");
 		buttonAddGlobalResponse.setEnabled(false);
 		panelBot.add(buttonAddGlobalResponse);
 		buttonAddGlobalResponse.setFocusPainted(false);
-		buttonAddGlobalResponse.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		buttonAddGlobalResponse.setFont(new Font("Tahoma", Font.PLAIN, 11));
+	}
+	protected void setCurrentDialogue(Dialogue dialogue) {
+		this.dialogue = dialogue;
+		
+		//Clear Messages and Responses
+		tabbedPane.removeAll();
+		
+		//Generate message
+		for(int i = 0; i < dialogue.getMessages().size(); i++) {
+			tabbedPane.addTab("Message #" + (i + 1), new MessagePanel(controller, dialogue.getMessages().get(i), self));
+		}
+		
+		//Generate global responses
+		for(int i = 0; i < dialogue.getGlobalResponses().size(); i++) {
+			tabbedPane.addTab("G-Response #" + (i+ 1), new ResponsePanel(controller, dialogue.getGlobalResponses().get(i), self));
+		}
+		
+		//Set dialogue ID
+		textFieldDialogueID.setText(dialogue.getID());
+		
+		self.revalidate();
+		self.repaint();
+		
 	}
 	public void removeResponse(Component component) {
 		tabbedPane.remove(component);

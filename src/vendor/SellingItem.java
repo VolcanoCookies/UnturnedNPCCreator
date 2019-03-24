@@ -243,6 +243,7 @@ public class SellingItem extends JPanel {
 			textFieldCost.setBackground(Conditions);
 			spawnpointPanel.textFieldBackgroundColor(Conditions);
 		}
+		revalidate();
 	}
 }
 class spawnpointPanel extends JPanel {

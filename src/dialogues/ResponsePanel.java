@@ -40,15 +40,16 @@ public class ResponsePanel extends JPanel {
 	private JTextField textFieldVendorID;
 	private TextPrompt textPrompt;
 	private Response response;
+	private Controller controller;
 	/**
 	 * Create the panel.
 	 * @param response 
 	 */
-	public ResponsePanel(Controller controller, Response passedResponse, JPanel parentPanel) {
+	public ResponsePanel(Controller passedController, Response passedResponse, JPanel parentPanel) {
 		setBorder(new TitledBorder(null, "Response", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		
 		response = passedResponse;
-		
+		this.controller = passedController;
 		if(response==null) {
 			response = new Response();
 		}
@@ -237,5 +238,6 @@ public class ResponsePanel extends JPanel {
 			textFieldVendorID.setBackground(color);
 			textAreaReply.setBackground(color);
 		}
+		revalidate();
 	}
 }

@@ -57,9 +57,12 @@ public class Settings {
 			//Get all settings values
 			output += "Check for updates = " + CheckForUpdates + "\n";
 			output += "Confirm before exiting = " + ExitConfirmation + "\n";
-			output += "Conditions color = #" + Integer.toHexString(conditionsPresentColor.getRGB()).substring(2) + "\n";
-			output += "Rewards color = #" + Integer.toHexString(rewardsPresentColor.getRGB()).substring(2) + "\n";
-			output += "Both color = #" + Integer.toHexString(mixedPresentColor.getRGB()).substring(2) + "\n";
+			if(conditionsPresentColor!=null)
+				output += "Conditions color = #" + Integer.toHexString(conditionsPresentColor.getRGB()).substring(2) + "\n";
+			if(rewardsPresentColor!=null)
+				output += "Rewards color = #" + Integer.toHexString(rewardsPresentColor.getRGB()).substring(2) + "\n";
+			if(mixedPresentColor!=null)
+				output += "Both color = #" + Integer.toHexString(mixedPresentColor.getRGB()).substring(2) + "\n";
 			
 			//Write
 			writer.write(output);
