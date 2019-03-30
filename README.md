@@ -8,4 +8,8 @@ Here you can find the source code for the program, to download a runnable .exe f
 #### The fastest way to get answers to questions is through discord, use this link: https://discord.gg/BhJM5ve
 
 ----------------------------------------
-I wont hunt you down for it, or take any substantial action against you, however i kindly ask not to remove the "Watermark" thats created when saving npcs, vendors etc. Its just to ensure this tool gets some publicity/credit, and if you used it to create the npc then i think youd agree with me.
+If you have any questions about the program then head over to the wiki, however it's not completed, thus i'd be very happy if you'd contribute to it.
+
+----------------------------------------
+
+I wont hunt you down for it, or take any substantial action against you, however i kindly ask not to remove the "Watermark" thats created when saving npcs, vendors etc. Its just to ensure this tool gets some publicity/credit, and if you used it to create the npc then i think you'd agree with me.
