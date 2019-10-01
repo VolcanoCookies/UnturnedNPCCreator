@@ -4,13 +4,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import objects.IdConflict;
 
 public class IDFinder {
 	
-	private HashMap<File, IdConflict> idMap;
+	private HashMap<Integer, ArrayList<IdConflict>> idMap;
 	
 	public IDFinder() {
 		
@@ -18,7 +19,7 @@ public class IDFinder {
 		
 	}
 	
-	public HashMap<File, IdConflict> getIDs(File... files) {
+	public HashMap<Integer, ArrayList<IdConflict>> getIDs(File... files) {
 		idMap = new HashMap<>();
 		
 		for(File file : files) {
@@ -63,16 +64,21 @@ public class IDFinder {
 		}
 		
 		if(idConflict.getFile()!=null && idConflict.getId()!=0) {
-			idMap.put(file, idConflict);
+			if(idMap.containsKey(idConflict.getId())) {
+				idMap.get(idConflict.getId()).add(idConflict);
+			} else {
+				idMap.put(idConflict.getId(), new ArrayList<>());
+				idMap.get(idConflict.getId()).add(idConflict);
+			}
 		}
 		
 	}
 	
-	public HashMap<File, IdConflict> getIdMap() {
+	public HashMap<Integer, ArrayList<IdConflict>> getIdMap() {
 		return idMap;
 	}
 
-	public void setIdMap(HashMap<File, IdConflict> idMap) {
+	public void setIdMap(HashMap<Integer, ArrayList<IdConflict>> idMap) {
 		this.idMap = idMap;
 	}
 	

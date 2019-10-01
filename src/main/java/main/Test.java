@@ -2,6 +2,7 @@ package main;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import objects.Equipped;
@@ -17,11 +18,18 @@ public class Test {
 		
 		IDFinder finder = new IDFinder();
 		
-		HashMap<File, IdConflict> map = finder.getIDs(new File("C:\\Users\\frane\\Desktop\\NPCs"));
+		HashMap<Integer, ArrayList<IdConflict>> map = finder.getIDs(new File("C:\\Users\\frane\\Desktop\\NPCs"));
 		
-		for(IdConflict conflict : map.values()) {
-			System.out.println("-------------------------------------------------------------------------------------------------------------------");
-			System.out.print("ID: " + conflict.getId() + "\nType: " + conflict.getType() + "\nPath: " + conflict.getFile().getPath() +"\n");
+		for(ArrayList<IdConflict> lists : map.values()) {
+			if(lists.size() > 1) {
+				System.out.println("-----------------------------------------------------------------------------------");
+				System.out.println("\t\t\tConflict");
+				for(IdConflict conflict : lists) {
+					System.out.println("ID: " + conflict.getId());
+					System.out.println("Type: " + conflict.getType());
+					System.out.println("Path: " + conflict.getFile().getPath());
+				}
+			}
 		}
 		
 	}	
