@@ -12,10 +12,12 @@ import objects.IdConflict;
 public class IDFinder {
 	
 	private HashMap<Integer, ArrayList<IdConflict>> idMap;
+	private HashMap<Integer, ArrayList<IdConflict>> conflictMap;
 	
 	public IDFinder() {
 		
 		idMap = new HashMap<>();
+		conflictMap = new HashMap<>();
 		
 	}
 	
@@ -26,9 +28,21 @@ public class IDFinder {
 			lookThrough(file);
 		}
 		
+		calculateConflicts();
+		
 		return idMap;
 	}
 	
+	private void calculateConflicts() {
+		
+		idMap.forEach((k, v) -> {
+			if(v.size()>1) {
+				conflictMap.put(k, v);
+			}
+		});
+		
+	}
+
 	private void lookThrough(File dir) {
 		for(File file : dir.listFiles()) {
 			if(file.isDirectory()) {
@@ -78,6 +92,10 @@ public class IDFinder {
 		return idMap;
 	}
 
+	public HashMap<Integer, ArrayList<IdConflict>> getConflictMap() {
+		return conflictMap;
+	}
+	
 	public void setIdMap(HashMap<Integer, ArrayList<IdConflict>> idMap) {
 		this.idMap = idMap;
 	}
