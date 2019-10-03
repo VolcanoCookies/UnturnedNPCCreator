@@ -33,6 +33,7 @@ import bibliothek.gui.dock.common.event.CFocusListener;
 import bibliothek.gui.dock.common.intern.CDockable;
 import objects.Character;
 import objects.ItemSelling;
+import objects.Vendor;
 import panels.PanelCharacter;
 import panels.PanelPreview;
 import panels.PanelVendor;
@@ -196,6 +197,12 @@ public class Frame extends JFrame {
 		menuFile.add(menuItemLoad);
 		
 		JMenuItem menuItemSave = new JMenuItem("Save");
+		menuItemSave.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
 		menuFile.add(menuItemSave);
 		
 		JMenuItem menuItemSaveAs = new JMenuItem("Save as");
@@ -252,13 +259,16 @@ public class Frame extends JFrame {
 				control.addFocusListener(new CFocusListener() {
 					@Override
 					public void focusGained(CDockable dockable) {
-						System.out.println("X");
 						if(((JScrollPane) ((DefaultMultipleCDockable) dockable).getContentPane().getComponent(0)).getViewport().getComponent(0) instanceof PanelCharacter) {
 							Character character = ((PanelCharacter) ((JScrollPane) ((DefaultMultipleCDockable) dockable).getContentPane().getComponent(0)).getViewport().getComponent(0)).getCharacter();
 							String[] strings = FileIO.getCharacterText(character);
 							panelPreview.setAssetText(strings[0]);
 							panelPreview.setEnglishText(strings[1]);
-							System.out.println("Accepted");
+						} else if(((JScrollPane) ((DefaultMultipleCDockable) dockable).getContentPane().getComponent(0)).getViewport().getComponent(0) instanceof PanelVendor) {
+							Vendor vendor= ((PanelVendor) ((JScrollPane) ((DefaultMultipleCDockable) dockable).getContentPane().getComponent(0)).getViewport().getComponent(0)).getVendor();
+							String[] strings = FileIO.getVendorText(vendor);
+							panelPreview.setAssetText(strings[0]);
+							panelPreview.setEnglishText(strings[1]);
 						}
 					}
 					public void focusLost(CDockable dockable) {}

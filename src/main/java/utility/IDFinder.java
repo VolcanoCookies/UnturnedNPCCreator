@@ -64,9 +64,24 @@ public class IDFinder {
 			String nextLine = reader.readLine().toLowerCase();
 			while(nextLine != null) {
 				if(nextLine.startsWith("id")) {
-					idConflict.setId(Integer.valueOf(nextLine.split(" ")[1]));
+					String[] strings = nextLine.split(" ");
+					if(strings.length<=1) {
+						System.out.println("Missing id in file: " + file.getPath());
+					} else {
+						try {
+							idConflict.setId(Integer.valueOf(strings[1]));
+						} catch (NumberFormatException e) {
+							System.out.println("Invalid id in file: " + file.getPath());
+						}
+						
+					}
 				} else if (nextLine.startsWith("type")) {
-					idConflict.setType(nextLine.split(" ")[1]);
+					String[] strings = nextLine.split(" ");
+					if(strings.length<=1) {
+						System.out.println("Missing type in file: " + file.getPath());
+					} else {
+						idConflict.setType(strings[1]);
+					}
 				}
 				nextLine = reader.readLine();
 				if(nextLine != null) nextLine = nextLine.toLowerCase();

@@ -1,15 +1,10 @@
 package main;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import objects.Equipped;
 import objects.IdConflict;
-import objects.Type;
-import objects.Vendor;
-import utility.FileIO;
 import utility.IDFinder;
 
 public class Test {
@@ -18,10 +13,11 @@ public class Test {
 		
 		IDFinder finder = new IDFinder();
 		
-		HashMap<Integer, ArrayList<IdConflict>> map = finder.getIDs(new File("C:\\Users\\frane\\Desktop\\NPCs"));
+		HashMap<Integer, ArrayList<IdConflict>> map = finder.getIDs(new File("C:\\Program Files (x86)\\Steam\\steamapps\\common\\Unturned"), new File("C:\\Program Files (x86)\\Steam\\steamapps\\workshop\\content\\304930"));
 		
 		for(ArrayList<IdConflict> lists : map.values()) {
 			if(lists.size() > 1) {
+				
 				System.out.println("-----------------------------------------------------------------------------------");
 				System.out.println("\t\t\tConflict");
 				for(IdConflict conflict : lists) {

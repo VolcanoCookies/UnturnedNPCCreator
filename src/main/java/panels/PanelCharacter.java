@@ -296,7 +296,7 @@ public class PanelCharacter extends JPanel {
 		
 		textFieldShirtChristmas = new JTextField();
 		new TextPrompt("Shirt", textFieldShirtChristmas, 100);
-		textFieldShirt.addKeyListener(new KeyListener() {
+		textFieldShirtChristmas.addKeyListener(new KeyListener() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				loadedCharacter.setShirtChristmas(Integer.valueOf(textFieldShirtChristmas.getText()));
@@ -309,7 +309,7 @@ public class PanelCharacter extends JPanel {
 		
 		textFieldPantsChristmas = new JTextField();
 		new TextPrompt("Pants", textFieldPantsChristmas, 100);
-		textFieldPants.addKeyListener(new KeyListener() {
+		textFieldPantsChristmas.addKeyListener(new KeyListener() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				loadedCharacter.setPantsChristmas(Integer.valueOf(textFieldPantsChristmas.getText()));
@@ -322,7 +322,7 @@ public class PanelCharacter extends JPanel {
 		
 		textFieldHatChristmas = new JTextField();
 		new TextPrompt("Hat", textFieldHatChristmas, 100);
-		textFieldHat.addKeyListener(new KeyListener() {
+		textFieldHatChristmas.addKeyListener(new KeyListener() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				loadedCharacter.setHatChristmas(Integer.valueOf(textFieldHatChristmas.getText()));
@@ -335,7 +335,7 @@ public class PanelCharacter extends JPanel {
 		
 		textFieldBackpackChristmas = new JTextField();
 		new TextPrompt("Backpack", textFieldBackpackChristmas, 100);
-		textFieldBackpack.addKeyListener(new KeyListener() {
+		textFieldBackpackChristmas.addKeyListener(new KeyListener() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				loadedCharacter.setBackpackChristmas(Integer.valueOf(textFieldBackpackChristmas.getText()));
@@ -351,7 +351,7 @@ public class PanelCharacter extends JPanel {
 				
 		textFieldVestChristmas = new JTextField();
 		new TextPrompt("Vest", textFieldVestChristmas, 100);
-		textFieldVest.addKeyListener(new KeyListener() {
+		textFieldVestChristmas.addKeyListener(new KeyListener() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				loadedCharacter.setVestChristmas(Integer.valueOf(textFieldVestChristmas.getText()));
@@ -364,7 +364,7 @@ public class PanelCharacter extends JPanel {
 		
 		textFieldGlassesChristmas = new JTextField();
 		new TextPrompt("Glasses", textFieldGlassesChristmas, 100);
-		textFieldGlasses.addKeyListener(new KeyListener() {
+		textFieldGlassesChristmas.addKeyListener(new KeyListener() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				loadedCharacter.setGlassesChristmas(Integer.valueOf(textFieldGlassesChristmas.getText()));
@@ -377,7 +377,7 @@ public class PanelCharacter extends JPanel {
 		
 		textFieldMaskChristmas = new JTextField();
 		new TextPrompt("Mask", textFieldMaskChristmas, 100);
-		textFieldMask.addKeyListener(new KeyListener() {
+		textFieldMaskChristmas.addKeyListener(new KeyListener() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				loadedCharacter.setMaskChristmas(Integer.valueOf(textFieldMaskChristmas.getText()));
@@ -401,7 +401,7 @@ public class PanelCharacter extends JPanel {
 		
 		textFieldShirtHalloween = new JTextField();
 		new TextPrompt("Shirt", textFieldShirtHalloween, 100);
-		textFieldShirt.addKeyListener(new KeyListener() {
+		textFieldShirtHalloween.addKeyListener(new KeyListener() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				loadedCharacter.setShirtHalloween(Integer.valueOf(textFieldShirtHalloween.getText()));
@@ -414,7 +414,7 @@ public class PanelCharacter extends JPanel {
 		
 		textFieldPantsHalloween = new JTextField();
 		new TextPrompt("Pants", textFieldPantsHalloween, 100);
-		textFieldPants.addKeyListener(new KeyListener() {
+		textFieldPantsHalloween.addKeyListener(new KeyListener() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				loadedCharacter.setPantsHalloween(Integer.valueOf(textFieldPantsHalloween.getText()));
@@ -427,7 +427,7 @@ public class PanelCharacter extends JPanel {
 		
 		textFieldHatHalloween = new JTextField();
 		new TextPrompt("Hat", textFieldHatHalloween, 100);
-		textFieldHat.addKeyListener(new KeyListener() {
+		textFieldHatHalloween.addKeyListener(new KeyListener() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				loadedCharacter.setHatHalloween(Integer.valueOf(textFieldHatHalloween.getText()));
@@ -440,7 +440,7 @@ public class PanelCharacter extends JPanel {
 		
 		textFieldBackpackHalloween = new JTextField();
 		new TextPrompt("Backpack", textFieldBackpackHalloween, 100);
-		textFieldBackpack.addKeyListener(new KeyListener() {
+		textFieldBackpackHalloween.addKeyListener(new KeyListener() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				loadedCharacter.setBackpackHalloween(Integer.valueOf(textFieldBackpackHalloween.getText()));
@@ -456,7 +456,7 @@ public class PanelCharacter extends JPanel {
 				
 		textFieldVestHalloween = new JTextField();
 		new TextPrompt("Vest", textFieldVestHalloween, 100);
-		textFieldVest.addKeyListener(new KeyListener() {
+		textFieldVestHalloween.addKeyListener(new KeyListener() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				loadedCharacter.setVestHalloween(Integer.valueOf(textFieldVestHalloween.getText()));
@@ -469,7 +469,7 @@ public class PanelCharacter extends JPanel {
 		
 		textFieldGlassesHalloween = new JTextField();
 		new TextPrompt("Glasses", textFieldGlassesHalloween, 100);
-		textFieldGlasses.addKeyListener(new KeyListener() {
+		textFieldGlassesHalloween.addKeyListener(new KeyListener() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				loadedCharacter.setGlassesHalloween(Integer.valueOf(textFieldGlassesHalloween.getText()));
@@ -482,7 +482,7 @@ public class PanelCharacter extends JPanel {
 		
 		textFieldMaskHalloween = new JTextField();
 		new TextPrompt("Mask", textFieldMaskHalloween, 100);
-		textFieldMask.addKeyListener(new KeyListener() {
+		textFieldMaskHalloween.addKeyListener(new KeyListener() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				loadedCharacter.setMaskHalloween(Integer.valueOf(textFieldMaskHalloween.getText()));

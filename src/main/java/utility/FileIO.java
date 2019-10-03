@@ -246,9 +246,9 @@ public class FileIO {
 		appendExcludeDefault(assetStringBuilder, "Color_Hair", "#" + Integer.toHexString(character.getHairColor().getRGB()), "#FFFFFF", "#FFFFFF");
 		
 		assetStringBuilder.append("\n");
-		append(assetStringBuilder, "Primary", character.getPrimary());
-		append(assetStringBuilder, "Secondary", character.getSecondary());
-		append(assetStringBuilder, "Tertiary", character.getTertiary());
+		appendNoZero(assetStringBuilder, "Primary", character.getPrimary());
+		appendNoZero(assetStringBuilder, "Secondary", character.getSecondary());
+		appendNoZero(assetStringBuilder, "Tertiary", character.getTertiary());
 		appendExclude(assetStringBuilder, "Equipped", character.getEquipped().toString(), "None");
 		appendExclude(assetStringBuilder, "Backwards", Boolean.toString(character.isBackwards()), "False");
 		
@@ -468,6 +468,11 @@ public class FileIO {
 		return character;
 	}
 	
+	public static String[] getVendorText(Vendor vendor) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	private static Vendor loadVendor(File dir) {
 		Vendor vendor = new Vendor();
 		
@@ -575,4 +580,5 @@ public class FileIO {
 			e.printStackTrace();
 		}
 	}
+
 }

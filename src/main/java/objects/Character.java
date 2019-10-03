@@ -1,6 +1,7 @@
 package objects;
 
 import java.awt.Color;
+import java.awt.Event;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -186,6 +187,7 @@ public class Character {
 
 	public void setShirt(int shirt) {
 		this.shirt = shirt;
+		
 	}
 
 	public int getPants() {

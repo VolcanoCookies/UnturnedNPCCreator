@@ -228,5 +228,9 @@ public class PanelVendor extends JPanel {
 	void removeBuyingItem(PanelBuyingItem item) {
 		panelBuyingContent.remove(item);
 	}
+
+	public Vendor getVendor() {
+		return this.loadedVendor;
+	}
 	
 }
